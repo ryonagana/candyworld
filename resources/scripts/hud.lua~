@@ -1,0 +1,20 @@
+
+
+ hud_life_pos_x = 0
+ hud_life_pos_y = _getHeight() - 120
+ 
+ 
+ hud_offset_width =  _getWidth()
+ hud_offset_height = _getHeight()
+
+
+
+function  init(host)
+    _createHud(host,  hud_offset_width, hud_offset_height)
+    _setLivesPosition(host,  hud_life_pos_x,  hud_life_pos_y)
+end
+
+function destroy(host)
+    print "morri!"
+end
+

@@ -1,0 +1,12 @@
+INPUT(
+./release\main.o
+./release\log.o
+./release\lua_shared.o
+./release\window.o
+./release\sound.o
+./release\shared.o
+./release\game.o
+./release\lua_vm.o
+./release\lua_hud.o
+./release\hud.o
+);

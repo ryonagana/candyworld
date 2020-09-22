@@ -1,7 +1,12 @@
 #include <stdio.h>
+#include "window.h"
+#include "game.h"
 
 int main()
 {
-    printf("Hello World!\n");
+    window_init(800,600, 0, "Candy!");
+
+    game_init();
+    game_start();
     return 0;
 }

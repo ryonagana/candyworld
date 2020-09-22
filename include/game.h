@@ -17,7 +17,7 @@ void game_init();
 void game_end();
 void game_start();
 
-void main_game_loop();
+void game_loop();
 
 
 #endif

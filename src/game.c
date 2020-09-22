@@ -1,17 +1,32 @@
 #include "game.h"
 #include "window.h"
+#include "hud.h"
+#include "lua_shared.h"
+#include "lua_hud.h"
+#include "lua_vm.h"
 
 static int64_t timer_count = 0;
 
 void game_init()
 {
     window_get()->gamestate = GAMESTATE_IN_GAME;
+    lua_start();
+    lua_shared_register(lua_get_state());
+    hud_init();
+    lua_hud_register(lua_get_state(), hud_get());
+    lua_free();
 }
 
 
 void game_start()
 {
 
+
+    switch(window_get()->gamestate){
+        case  GAMESTATE_IN_GAME:
+        game_loop();
+    break;
+    }
 }
 
 
@@ -21,7 +36,7 @@ void game_end()
 }
 
 
-void main_game_loop()
+void game_loop()
 {
 
 

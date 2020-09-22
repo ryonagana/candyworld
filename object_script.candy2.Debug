@@ -1,0 +1,12 @@
+INPUT(
+./debug\main.o
+./debug\log.o
+./debug\lua_shared.o
+./debug\window.o
+./debug\sound.o
+./debug\shared.o
+./debug\game.o
+./debug\lua_vm.o
+./debug\lua_hud.o
+./debug\hud.o
+);

@@ -47,6 +47,7 @@ win32: {
 
     #PROJECT
     INCLUDEPATH += $$PWD
+    INCLUDEPATH += $$PWD/include
 }
 
 
@@ -54,15 +55,23 @@ win32: {
 HEADERS += \
         $$PWD/include/main.h \
         include/log.h \
+    include/lua_shared.h \
         include/window.h\
         include/sound.h \
         include/shared.h \
-        include/game.h
+        include/game.h \
+        include/lua_vm.h \
+        include/lua_hud.h \
+        include/hud.h
 
 SOURCES += \
         $$PWD/src/main.c \
         src/log.c \
+    src/lua_shared.c \
         src/window.c \
         src/sound.c \
         src/shared.c \
-        src/game.c
+        src/game.c \
+        src/lua_vm.c \
+        src/lua_hud.c \
+        src/hud.c
