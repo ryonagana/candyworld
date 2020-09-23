@@ -4,6 +4,7 @@
 #include "lua_shared.h"
 #include "lua_hud.h"
 #include "lua_vm.h"
+#include "resources.h"
 
 static int64_t timer_count = 0;
 
@@ -15,6 +16,16 @@ void game_init()
     hud_init();
     lua_hud_register(lua_get_state(), hud_get());
     lua_free();
+
+
+    resources_start(NULL);
+    resources_file_add("resources//sprites//sprite2.png");
+    resources_file_add("resources//sprites//debug_tiles.png");
+    resources_file_add("resources//sfx//test.ogg");
+
+
+    resources_sprite_get("sprite2", RESOURCE_TYPE_SPRITE);
+    resources_sound_get("test.ogg", RESOURCE_EXTENSION_OGG);
 }
 
 

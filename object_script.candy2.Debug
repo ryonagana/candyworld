@@ -2,6 +2,7 @@ INPUT(
 ./debug\main.o
 ./debug\log.o
 ./debug\lua_shared.o
+./debug\resources.o
 ./debug\window.o
 ./debug\sound.o
 ./debug\shared.o

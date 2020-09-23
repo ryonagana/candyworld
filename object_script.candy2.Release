@@ -2,6 +2,7 @@ INPUT(
 ./release\main.o
 ./release\log.o
 ./release\lua_shared.o
+./release\resources.o
 ./release\window.o
 ./release\sound.o
 ./release\shared.o

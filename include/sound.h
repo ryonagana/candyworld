@@ -11,7 +11,12 @@ struct  sfx_t {
     ALLEGRO_SAMPLE_INSTANCE *instance;
 };
 
+typedef  struct sfx_t sfx_t;
+
 int sound_start(int samples);
 void sound_end();
+
+struct sfx_t *sfx_load(const char *filename);
+void sfx_destroy(sfx_t *sfx);
 
 #endif

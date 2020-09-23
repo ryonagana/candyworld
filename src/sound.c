@@ -11,6 +11,8 @@ int sound_start(int samples)
         return 0;
     }
 
+
+
     game_voice = al_create_voice(44100, ALLEGRO_AUDIO_DEPTH_INT16, ALLEGRO_CHANNEL_CONF_2);
 
     if(!game_voice){
@@ -44,4 +46,36 @@ void sound_end()
     if(game_mixer) al_destroy_mixer(game_mixer);
     game_voice = NULL;
     game_mixer = NULL;
+}
+
+struct sfx_t *sfx_load(const char *filename)
+{
+    sfx_t *tmp = NULL;
+
+    tmp = malloc(sizeof(sfx_t));
+    tmp->sample = al_load_sample(filename);
+
+    if(tmp == NULL || tmp->sample == NULL){
+        DLOG("Sample %s Failed to load", filename);
+        return NULL;
+    }
+
+    tmp->instance = al_create_sample_instance(tmp->sample);
+    al_attach_sample_instance_to_mixer(tmp->instance, game_mixer);
+    return tmp;
+
+
+}
+
+void sfx_destroy(sfx_t *sfx)
+{
+    if(sfx->instance) al_detach_sample_instance(sfx->instance);
+
+    if(sfx->sample){
+        al_destroy_sample(sfx->sample);
+        sfx->sample = 0x0;
+        return;
+    }
+
+    return;
 }
