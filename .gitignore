@@ -7,3 +7,5 @@ candy2
 Makefile*
 Makefile.*
 object_script.*
+*.o
+

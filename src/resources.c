@@ -146,7 +146,6 @@ static int resources_file_load(const char *filepath){
     FILE *fp = NULL;
 
     if( (fp = fopen(filepath,"rb")) == NULL){
-        fclose(fp);
         DWARN("resource: %s not found!", filepath);
         return 0;
     }

@@ -6,6 +6,7 @@ static ALLEGRO_MIXER *game_mixer = NULL;
 
 int sound_start(int samples)
 {
+
     if(!al_install_audio()){
         DLOG("Allegro sound error!");
         return 0;

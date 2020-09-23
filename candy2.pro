@@ -1,14 +1,22 @@
 TEMPLATE = app
 CONFIG += console
+CONFIG += c11
 CONFIG -= app_bundle
 CONFIG -= qt
+TEMPLATE += app
 
+
+QMAKE_CFLAGS += -Wall -Wextra -pedantic
+QMAKE_CC=gcc
 
 unix : {
     debug: {
         DEFINES += DEBUG
         DEFINES += ALLEGRO_LOG
     }
+
+
+
 
     #allegro
     LIBS += -L/usr/local/lib -lallegro -lallegro_main -lallegro_audio -lallegro_acodec -lallegro_image -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_dialog -lallegro_physfs
@@ -55,8 +63,8 @@ win32: {
 HEADERS += \
         $$PWD/include/main.h \
         include/log.h \
-    include/lua_shared.h \
-    include/resources.h \
+        include/lua_shared.h \
+        include/resources.h \
         include/window.h\
         include/sound.h \
         include/shared.h \
@@ -68,8 +76,8 @@ HEADERS += \
 SOURCES += \
         $$PWD/src/main.c \
         src/log.c \
-    src/lua_shared.c \
-    src/resources.c \
+        src/lua_shared.c \
+        src/resources.c \
         src/window.c \
         src/sound.c \
         src/shared.c \
