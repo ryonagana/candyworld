@@ -6,3 +6,4 @@ candy2
 *.pro.user
 Makefile*
 Makefile.*
+object_script.*
