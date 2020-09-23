@@ -4,3 +4,5 @@
 candy2
 *.log
 *.pro.user
+Makefile*
+Makefile.*
