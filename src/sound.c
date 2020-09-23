@@ -58,12 +58,17 @@ struct sfx_t *sfx_load(const char *filename)
 
     if(tmp == NULL || tmp->sample == NULL){
         DLOG("Sample %s Failed to load", filename);
-        return NULL;
+        goto exit_error;
     }
 
     tmp->instance = al_create_sample_instance(tmp->sample);
     al_attach_sample_instance_to_mixer(tmp->instance, game_mixer);
     return tmp;
+
+exit_error:
+    free(tmp);
+    tmp = NULL;
+    return NULL;
 
 
 }

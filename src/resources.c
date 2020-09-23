@@ -4,6 +4,19 @@
 
 static struct resources_t game_resources;
 
+static void resources_debug_msg_add(file_t *f){
+    switch(f->type){
+        case RESOURCE_TYPE_SPRITE:
+        DLOG("SPRITE: %s added", f->name);
+        break;
+
+    case RESOURCE_TYPE_SOUND:
+        DLOG("SOUND: %s added", f->name);
+        break;
+    }
+
+}
+
 void resources_start(const char *dir)
 {
     game_resources.head = NULL;
@@ -73,7 +86,11 @@ static void resources_list_add(file_t *f){
 
 
     game_resources.total_loaded++;
-    DLOG("%s added", f->name);
+
+#if defined(DEBUG)
+    resources_debug_msg_add(f);
+#endif
+
 }
 
 static int resources_load_image(const char *filepath, int extension){
