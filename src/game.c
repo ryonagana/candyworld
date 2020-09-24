@@ -44,6 +44,9 @@ void game_start()
 void game_end()
 {
 
+    resources_free();
+    window_end();
+
 }
 
 

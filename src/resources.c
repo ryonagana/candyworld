@@ -206,7 +206,7 @@ int resources_file_add(const char *file)
 file_t* resource_get_ptr(const char *name, int type)
 {
     file_t *tmp = game_resources.head;
-    while(tmp->next != NULL && strcmp(tmp->name, name) == 0 && tmp->type == type){
+    while(tmp != NULL && strcmp(tmp->name, name) == 0 && tmp->type == type){
         tmp = tmp->next;
     }
 
@@ -238,7 +238,13 @@ struct sfx_t* resources_sound_get(const char *name, int extension){
 ALLEGRO_BITMAP *resources_sprite_get(const char* name, int extension)
 {
     file_t *tmp = resource_get_ptr(name, extension);
-     ALLEGRO_BITMAP *data = NULL;
+
+    if(!tmp){
+        DLOG("Resource %s not found");
+        return NULL;
+    }
+
+    ALLEGRO_BITMAP *data = NULL;
     switch(extension){
         case RESOURCE_EXTENSION_BMP:
         case RESOURCE_EXTENSION_JPG:
@@ -248,6 +254,26 @@ ALLEGRO_BITMAP *resources_sprite_get(const char* name, int extension)
     }
 
     return data;
+
+
+}
+
+void resources_free()
+{
+    file_t *tmp = game_resources.head;
+    file_t *old = NULL;
+
+
+    while(tmp != NULL){
+
+          old = tmp;
+          tmp = tmp->next;
+
+          free(old->block);
+          free(old);
+
+    }
+
 
 
 }

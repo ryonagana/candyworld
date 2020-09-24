@@ -8,5 +8,6 @@ int main()
 
     game_init();
     game_start();
+    game_end();
     return 0;
 }
