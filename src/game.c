@@ -5,8 +5,11 @@
 #include "lua_hud.h"
 #include "lua_vm.h"
 #include "resources.h"
+#include "player.h"
 
 static int64_t timer_count = 0;
+
+static player_t player;
 
 void game_init()
 {
@@ -25,13 +28,14 @@ void game_init()
 
 
     resources_sprite_get("sprite2", RESOURCE_TYPE_SPRITE);
-    resources_sound_get("test.ogg", RESOURCE_EXTENSION_OGG);
+    resources_sound_get("test", RESOURCE_EXTENSION_OGG);
 }
 
 
 void game_start()
 {
 
+    player_init(&player);
 
     switch(window_get()->gamestate){
         case  GAMESTATE_IN_GAME:
@@ -99,6 +103,9 @@ void game_loop()
         if(redraw && al_is_event_queue_empty(window_get()->events.queue)){
             al_set_target_bitmap(window_get()->events.screen);
             al_clear_to_color(al_map_rgba_f(1,0,0,1));
+
+
+               player_draw(&player);
 
              //GameState::getStateInstance()->getState()->Draw();
 

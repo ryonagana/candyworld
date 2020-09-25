@@ -8,7 +8,7 @@
 
 #define RESOURCES_FOLDER "resources//"
 
-#define RESOURCES_SPRITE_FOLDER RESOURCE_FOLDER "sprites//"
+#define RESOURCES_FOLDER_SPRITE RESOURCES_FOLDER"sprites//"
 
 
 #define RESOURCE_TYPE_SPRITE 1
@@ -49,8 +49,9 @@ int  resources_file_add(const char *file);
 
 void resources_free();
 
-ALLEGRO_BITMAP* resources_sprite_get(const char* name, int type);
+ALLEGRO_BITMAP* resources_sprite_get(const char* name, int extension);
 struct sfx_t* resources_sound_get(const char *name, int extension);
+
 
 
 

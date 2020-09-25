@@ -20,7 +20,7 @@ typedef uint64_t Uint32;
 
 
 
-typedef struct Rect {
+typedef struct rect_t {
     int x;
     int y;
     int width;
@@ -29,10 +29,10 @@ typedef struct Rect {
     int left;
     int bottom;
     int right;
-}Rect;
+}rect_t;
 
-void rect_init(Rect *r);
-void rect_set(Rect *r, int x, int y, int w, int h);
+void rect_init(rect_t *r);
+void rect_set(rect_t *r, int x, int y, int w, int h);
 
 
 

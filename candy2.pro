@@ -71,6 +71,7 @@ HEADERS += \
         $$PWD/include/main.h \
         include/log.h \
         include/lua_shared.h \
+        include/player.h \
         include/resources.h \
         include/window.h\
         include/sound.h \
@@ -84,6 +85,7 @@ SOURCES += \
         $$PWD/src/main.c \
         src/log.c \
         src/lua_shared.c \
+        src/player.c \
         src/resources.c \
         src/window.c \
         src/sound.c \

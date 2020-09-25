@@ -33,6 +33,9 @@ void resources_start(const char *dir)
 
     }
 
+    DLOG("Resources Folder %s", RESOURCES_FOLDER);
+    DLOG("Resources Folder %s", RESOURCES_FOLDER_SPRITE);
+
 
 
 }
@@ -70,22 +73,45 @@ static int resource_get_ext(const char *filename)
     return RESOURCE_EXTENSION_NONE;
 }
 
+
+static void resources_free_sprite(file_t **f){
+    ALLEGRO_BITMAP *img = (*f)->block;
+    al_destroy_bitmap(img);
+    img = NULL;
+
+    free((void *)*f);
+    f = NULL;
+
+    return;
+}
+
+static void resources_free_sound(file_t **f){
+    sfx_t *sfx = (*f)->block;
+
+    if(sfx->instance) al_destroy_sample_instance(sfx->instance);
+    if(sfx->sample) al_destroy_sample(sfx->sample);
+
+    free((void *)*f);
+    f = NULL;
+    return;
+
+
+}
+
 static void resources_list_add(file_t *f){
 
-
-    if(game_resources.total_loaded <= 0 ){
-            game_resources.head = f;
-            game_resources.tail =  game_resources.head;
-            game_resources.tail = game_resources.tail->next;
-            game_resources.total_loaded++;
-            return;
+    if(game_resources.tail == NULL || game_resources.total_loaded <= 0){
+        game_resources.tail = f;
+        game_resources.head = game_resources.tail;
+        game_resources.total_loaded++;
+        return;
     }
 
-    game_resources.tail = f;
+
+    game_resources.tail->next = f;
     game_resources.tail = game_resources.tail->next;
-
-
     game_resources.total_loaded++;
+
 
 #if defined(DEBUG)
     resources_debug_msg_add(f);
@@ -206,7 +232,7 @@ int resources_file_add(const char *file)
 file_t* resource_get_ptr(const char *name, int type)
 {
     file_t *tmp = game_resources.head;
-    while(tmp != NULL && strcmp(tmp->name, name) == 0 && tmp->type == type){
+    while(tmp != NULL && strcmp(tmp->name, name) != 0 && tmp->type != type){
         tmp = tmp->next;
     }
 
@@ -265,14 +291,25 @@ void resources_free()
 
 
     while(tmp != NULL){
+            old = tmp;
+            tmp = tmp->next;
 
-          old = tmp;
-          tmp = tmp->next;
+            switch(old->type){
+                case RESOURCE_TYPE_SPRITE:
+                    DWARN("Releasing Sprite Resource: %s", old->name);
+                    resources_free_sprite(&old);
 
-          free(old->block);
-          free(old);
+                break;
 
-    }
+                case RESOURCE_TYPE_SOUND:
+                    DWARN("Releasing Sound Resource: %s", old->name);
+                    resources_free_sound(&old);
+                break;
+            }
+
+
+            game_resources.total_loaded--;
+    };
 
 
 

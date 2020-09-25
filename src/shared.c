@@ -1,6 +1,6 @@
 #include "shared.h"
 
-void rect_init(Rect *r){
+void rect_init(rect_t *r){
 
     r->x = 0;
     r->y = 0;
@@ -13,7 +13,7 @@ void rect_init(Rect *r){
     return;
 
 }
-void rect_set(Rect *r, int x, int y, int w, int h){
+void rect_set(rect_t *r, int x, int y, int w, int h){
     r->x = x;
     r->y = y;
     r->width = w;
