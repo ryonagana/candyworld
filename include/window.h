@@ -20,6 +20,8 @@
 #endif // _WIN32
 
 
+#define FPS 60.0
+
 #define FREE_HELPER(expr)  { if(expr != NULL) { free(expr); expr = NULL;} }
 #define FREE_DISPLAY(dsp)   { if(dsp != NULL) {al_destroy_display(dsp); dsp = NULL;} }
 #define FREE_QUEUE(x)   { if(x != NULL) {al_destroy_event_queue(x); x = NULL;} }

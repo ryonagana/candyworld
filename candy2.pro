@@ -73,6 +73,7 @@ HEADERS += \
         include/lua_shared.h \
         include/player.h \
         include/resources.h \
+        include/thread.h \
         include/window.h\
         include/sound.h \
         include/shared.h \
@@ -87,6 +88,7 @@ SOURCES += \
         src/lua_shared.c \
         src/player.c \
         src/resources.c \
+        src/thread.c \
         src/window.c \
         src/sound.c \
         src/shared.c \

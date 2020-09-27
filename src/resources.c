@@ -270,17 +270,7 @@ ALLEGRO_BITMAP *resources_sprite_get(const char* name, int extension)
         return NULL;
     }
 
-    ALLEGRO_BITMAP *data = NULL;
-    switch(extension){
-        case RESOURCE_EXTENSION_BMP:
-        case RESOURCE_EXTENSION_JPG:
-        case RESOURCE_EXTENSION_PNG:
-            data = (ALLEGRO_BITMAP*)tmp->block;
-        break;
-    }
-
-    return data;
-
+    return (ALLEGRO_BITMAP *) tmp->block;
 
 }
 
