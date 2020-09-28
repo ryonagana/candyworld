@@ -304,3 +304,8 @@ void resources_free()
 
 
 }
+
+struct resources_t *resources_get()
+{
+    return &game_resources;
+}

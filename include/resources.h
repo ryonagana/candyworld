@@ -43,12 +43,15 @@ struct resources_t
     char dir[2048];
 };
 
+typedef struct resources_t resources_t;
 
 void resources_start(const char *dir);
 int  resources_file_add(const char *file);
 
 void resources_free();
 
+
+struct resources_t* resources_get();
 ALLEGRO_BITMAP* resources_sprite_get(const char* name, int extension);
 struct sfx_t* resources_sound_get(const char *name, int extension);
 

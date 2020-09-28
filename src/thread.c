@@ -1,10 +1,6 @@
 #include  "thread.h"
+#include "log.h"
 
-
-struct thread_data_t {
-    ALLEGRO_MUTEX *mutex;
-    void *data;
-};
 
 void thread_init(thread_t *th, thread_func func, void *data)
 {
@@ -30,8 +26,24 @@ void thread_destroy(thread_t *th)
 
 void thread_start(thread_t *th)
 {
-    if(th->thread) al_start_thread(th->thread);
+    if(th->thread == NULL) {
+        return;
+    }
+    al_start_thread(th->thread);
+
+    return;
 }
 
 
 
+
+void* thread_join(thread_t *th)
+{
+    if(th == NULL){
+        DLOG("Thread Join Failed!");
+        return NULL;
+    }
+    void *ret_val = NULL;
+    al_join_thread(th->thread, &ret_val);
+    return ret_val;
+}

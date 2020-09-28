@@ -1,6 +1,7 @@
 #include "window.h"
 #include "log.h"
 #include "sound.h"
+#include "keyboard.h"
 
 #define REPORT_ERROR(...) { fprintf(stderr,  ##__VA_ARGS__); }
 
@@ -158,6 +159,7 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
 
     //init logging
     log_init();
+    keyboard_init();
 }
 
 /** \brief access the window struct
@@ -172,7 +174,7 @@ game_window*  window_get(){
 
 void window_init(int w, int h, int fullscreen, const char* caption){
     window_create(w,h,fullscreen, 1, caption);
-    DINFO("Window is Created!");
+    DINFO("Window is Created! -  Width: %d Height: %d, title: %s  fullscreen: %s", w,h, caption, fullscreen ? "True" : "False");
 }
 
 
@@ -186,7 +188,7 @@ int window_end(void){
     FREE_QUEUE(main_window.events.queue);
     FREE_DISPLAY(main_window.events.display);
     sound_end();
-
+    keyboard_end();
 
     al_uninstall_system();
     al_uninstall_mouse();

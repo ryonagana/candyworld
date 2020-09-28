@@ -85,3 +85,28 @@ void sfx_destroy(sfx_t *sfx)
 
     return;
 }
+
+void sfx_play_sample(sfx_t* sfx, float gain, float pan, float speed, ALLEGRO_PLAYMODE mode){
+
+    if(sfx == NULL){
+        DWARN("Sound not found");
+        return;
+    }
+
+    al_set_sample_instance_gain(sfx->instance, gain);
+    al_set_sample_instance_pan(sfx->instance, pan);
+    al_set_sample_instance_gain(sfx->instance, gain);
+    al_set_sample_instance_speed(sfx->instance, speed);
+    al_set_sample_instance_playmode(sfx->instance, mode);
+    al_play_sample_instance(sfx->instance);
+}
+
+void sfx_play(sfx_t *sfx)
+{
+    if(sfx == NULL) {
+        return;
+    }
+
+    sfx_play_sample(sfx, 1.0f,0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE);
+
+}
