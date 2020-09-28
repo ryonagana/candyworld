@@ -80,7 +80,7 @@ static void resources_free_sprite(file_t **f){
     img = NULL;
 
     free((void *)*f);
-    f = NULL;
+    *f = NULL;
 
     return;
 }
@@ -92,7 +92,7 @@ static void resources_free_sound(file_t **f){
     if(sfx->sample) al_destroy_sample(sfx->sample);
 
     free((void *)*f);
-    f = NULL;
+    *f = NULL;
     return;
 
 
