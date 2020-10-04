@@ -8,4 +8,5 @@ Makefile*
 Makefile.*
 object_script.*
 *.o
-
+!debug.c
+!debug.h

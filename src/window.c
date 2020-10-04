@@ -139,7 +139,7 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
     main_window.info.renderer = renderer;
     main_window.events.display = al_create_display(width,height);
     main_window.events.queue = al_create_event_queue();
-    main_window.events.main_timer = al_create_timer(1.0 / FPS); //60 fps
+    main_window.events.main_timer = al_create_timer(1.0f / FPS); //60 fps
     main_window.events.timer = al_create_timer(0.1);
     main_window.events.screen = al_create_bitmap(width, height);
 

@@ -3,29 +3,32 @@
 #include "keyboard.h"
 #include "window.h"
 #include "log.h"
+#include "debug.h"
+
+
 static ALLEGRO_BITMAP* player_spritesheet = NULL;
 
 
 static void player_move_up(player_t *pl){
     pl->direction = PLAYER_DIRECTION_UP;
-    pl->y -= 1;
+    pl->y -= 1 * PLAYER_SPEED;
 }
 
 static void player_move_dn(player_t *pl){
     pl->direction = PLAYER_DIRECTION_DOWN;
-    pl->y += 1;
+    pl->y += 1 * PLAYER_SPEED;
 }
 
 
 static void player_move_left(player_t *pl){
     pl->direction = PLAYER_DIRECTION_LEFT;
-    pl->x -= 1;
+    pl->x -= 1 * PLAYER_SPEED;
 }
 
 
 static void player_move_right(player_t *pl){
     pl->direction = PLAYER_DIRECTION_RIGHT;
-    pl->x += 1;
+    pl->x += 1 * PLAYER_SPEED;
 }
 
 
@@ -53,14 +56,20 @@ void player_init(player_t *pl)
 
 void player_draw(player_t *pl)
 {
-    al_draw_bitmap_region(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->direction, 32,32, pl->x, pl->y, 0);
+#ifdef DEBUG
+    debug_render_player_hitbox(pl);
+#endif
+    al_draw_bitmap_region(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->frames, 32,32, pl->x, pl->y, 0);
     return;
 }
 
 void player_update(ALLEGRO_EVENT *ev, player_t *pl)
 {
 
+    UNUSED(ev);
 
+
+    rect_set(&pl->hitbox, pl->x, pl->y, 32,32);
 
     pl->offset_x = al_get_bitmap_width(player_spritesheet) / 12;
     pl->offset_y = al_get_bitmap_height(player_spritesheet) / 8;
@@ -83,7 +92,7 @@ void player_update(ALLEGRO_EVENT *ev, player_t *pl)
         break;
     }
 
-    if(pl->anim_counter >= 10){
+    if(pl->anim_counter++ >= 10){
         pl->anim_counter = 0;
         pl->frames++;
     }
@@ -91,11 +100,28 @@ void player_update(ALLEGRO_EVENT *ev, player_t *pl)
     if(pl->frames >= pl->max_frames){
         pl->frames = 0;
     }
+
+
 }
 
 void player_handle_input(ALLEGRO_EVENT *ev, player_t *pl)
 {
+    UNUSED((ev));
 
+    if(key_is_pressed(ALLEGRO_KEY_A)){
+        player_move_left(pl);
+    }else  if(key_is_pressed(ALLEGRO_KEY_D)){
+        player_move_right(pl);
+    }else  if(key_is_pressed(ALLEGRO_KEY_W)){
+        player_move_up(pl);
+    }else  if(key_is_pressed(ALLEGRO_KEY_S)){
+        player_move_dn(pl);
+    }else {
+        pl->direction = PLAYER_DIRECTION_NONE;
+    }
+
+
+/*
     if(key_is_pressed(ALLEGRO_KEY_W)){
         player_move_up(pl);
         DLOG("pressed W");
@@ -109,6 +135,7 @@ void player_handle_input(ALLEGRO_EVENT *ev, player_t *pl)
         pl->direction = PLAYER_DIRECTION_NONE;
         pl->state = PLAYER_STATE_IDLE;
     }
+*/
 }
 
 void player_set_pos_screen(player_t *player, int x, int y)

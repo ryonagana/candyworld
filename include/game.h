@@ -26,6 +26,7 @@ typedef struct game_data_t {
     int64_t timer_count;
     player_t player;
     int  transition_state;
+    int redraw_frame;
 }game_data_t;
 
 
