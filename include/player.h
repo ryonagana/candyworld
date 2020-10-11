@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "shared.h"
-#include <allegro5/allegro.h>
+
 
 #define PLAYER_DIRECTION_NONE  0
 #define PLAYER_DIRECTION_UP    1
@@ -25,7 +25,7 @@ struct player_t {
     int y;
     rect_t hitbox;
     int lives;
-    Sint64 score;
+    int64_t score;
     int direction;
     int state;
     int offset_x;
@@ -41,8 +41,8 @@ typedef struct player_t player_t;
 
 void player_init(player_t *pl);
 void player_draw(player_t *pl);
-void player_update(ALLEGRO_EVENT *ev, player_t *pl);
-void player_handle_input(ALLEGRO_EVENT *ev, player_t *pl);
+void player_update(player_t *pl);
+void player_handle_input(player_t *pl);
 
 
 void player_set_pos_screen(player_t *player, int x, int y);

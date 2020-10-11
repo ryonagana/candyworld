@@ -10,3 +10,4 @@ object_script.*
 *.o
 !debug.c
 !debug.h
+log.txt

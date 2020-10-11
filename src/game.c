@@ -1,14 +1,16 @@
 #include "game.h"
-#include "keyboard.h"
+//#include "keyboard.h"
+#include "lua_vm.h"
+#include "lua_shared.h"
+#include "lua_hud.h"
+#include "hud.h"
+#include "resources.h"
+#include "timer.h"
+#include "log.h"
 
 static game_data_t gamedata;
 
 
-static void game_update(ALLEGRO_EVENT *event){
-    player_update(event, &gamedata.player);
-    gamedata.redraw_frame = 1;
-    return;
-}
 
 void game_init()
 {
@@ -24,12 +26,12 @@ void game_init()
 
     resources_start(NULL);
 
-    resources_file_add("resources//sprites//sprite2.png");
-    resources_file_add("resources//sprites//debug_tiles.png");
-    resources_file_add("resources//sfx//test.ogg");
+    resources_file_add("resources//sprites//sprite2.png", "sprite2");
+    resources_file_add("resources//sprites//debug_tiles.png", "debug_tiles");
+    resources_file_add("resources//sfx//test.ogg", "test_music");
 
-    resources_sprite_get("sprite2", RESOURCE_TYPE_SPRITE);
-    resources_sound_get("test", RESOURCE_EXTENSION_OGG);
+    //resources_sprite_get("sprite2", RESOURCE_TYPE_SPRITE);
+    //resources_sound_get("test", RESOURCE_EXTENSION_OGG);
 }
 
 
@@ -60,69 +62,37 @@ void game_end()
 void game_loop()
 {
 
+    Uint32 ticks = 0;
+    timer_t game_timer;
 
-
-    ALLEGRO_EVENT event;
-    sfx_t *sound = resources_sound_get("test", RESOURCE_EXTENSION_OGG);
-
-    //sfx_play(sound);
-    sfx_play_sample(sound, 1.0,0.0,0.5,ALLEGRO_PLAYMODE_ONCE);
-
-
+    timer_init(&game_timer);
+    timer_set_start(&game_timer);
 
     while(!window_get()->closed){
-
-            al_wait_for_event(window_get()->events.queue, &event);
-
-            //keys->Update(&event);
+        SDL_Event ev;
 
 
-            switch (event.type) {
-                case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                    window_get()->closed = 1;
+
+        if(SDL_PollEvent(&ev)){
+            if(ev.type == SDL_QUIT){
+                window_get()->closed = 1;
                 break;
 
-                case ALLEGRO_EVENT_TIMER: {
-                        if(event.timer.source == window_get()->events.main_timer){
-                            game_update(&event);
-                        }
-
-
-                     }
-                break;
-
-                case ALLEGRO_EVENT_DISPLAY_RESIZE:
-                    al_acknowledge_resize(window_get()->events.display);
-                    window_get()->info.width = al_get_display_width(window_get()->events.display);
-                    window_get()->info.height = al_get_display_height(window_get()->events.display);
-                break;
             }
-
-
-
-             keyboard_update(&event);
-             player_handle_input(&event, &gamedata.player);
-
-
-
-
-        if(gamedata.redraw_frame && al_is_event_queue_empty(window_get()->events.queue)){
-            gamedata.redraw_frame = 0;
-            al_set_target_bitmap(window_get()->events.screen);
-            al_clear_to_color(al_map_rgba_f(1,0,0,1));
-
-
-             player_draw(&gamedata.player);
-
-
-            al_set_target_backbuffer(window_get()->events.display);
-            al_draw_bitmap(window_get()->events.screen, 0,0,0);
-            al_flip_display();
-
-
         }
 
+        ticks = timer_get_ticks(&game_timer);
+
+        //DLOG("ticks %d", TIMER_TICKS_TO_SECS(ticks));
+
+        SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
+        SDL_RenderClear(window_get()->events.renderer);
+
+        player_draw(&gamedata.player);
+
+        SDL_RenderPresent(window_get()->events.renderer);
     }
+
 
 }
 

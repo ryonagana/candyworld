@@ -1,12 +1,12 @@
 #include "player.h"
 #include "resources.h"
-#include "keyboard.h"
+//#include "keyboard.h"
 #include "window.h"
 #include "log.h"
-#include "debug.h"
+//#include "debug.h"
 
 
-static ALLEGRO_BITMAP* player_spritesheet = NULL;
+static SDL_Texture* player_spritesheet = NULL;
 
 
 static void player_move_up(player_t *pl){
@@ -32,8 +32,7 @@ static void player_move_right(player_t *pl){
 }
 
 
-void player_init(player_t *pl)
-{
+void player_init(player_t *pl){
     pl->x = 0;
     pl->y = 0;
     pl->lives = 3;
@@ -57,17 +56,34 @@ void player_init(player_t *pl)
 void player_draw(player_t *pl)
 {
 #ifdef DEBUG
-    debug_render_player_hitbox(pl);
+   // debug_render_player_hitbox(pl);
 #endif
-    al_draw_bitmap_region(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->frames, 32,32, pl->x, pl->y, 0);
+    int tex_width, tex_height;
+
+    SDL_QueryTexture(player_spritesheet, NULL, NULL, &tex_width, &tex_height);
+
+    SDL_Rect orig, dest;
+
+    orig.x = 0;
+    orig.y = 0;
+    orig.w = 32;
+    orig.h = 32;
+
+    dest.x = 0;
+    dest.y = 0;
+    dest.w = 32;
+    dest.h = 32;
+
+    //SDL_RenderCopyEx(window_get()->events.renderer, player_spritesheet,&orig, &dest, 0, NULL, 0);
+    SDL_RenderCopy(window_get()->events.renderer, player_spritesheet, &orig, &dest);
+    //al_draw_bitmap_region(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->frames, 32,32, pl->x, pl->y, 0);
     return;
 }
 
-void player_update(ALLEGRO_EVENT *ev, player_t *pl)
+void player_update(player_t *pl)
 {
 
-    UNUSED(ev);
-
+    /*
 
     rect_set(&pl->hitbox, pl->x, pl->y, 32,32);
 
@@ -101,11 +117,15 @@ void player_update(ALLEGRO_EVENT *ev, player_t *pl)
         pl->frames = 0;
     }
 
+    */
 
 }
 
-void player_handle_input(ALLEGRO_EVENT *ev, player_t *pl)
+void player_handle_input(player_t *pl)
 {
+
+
+    /*
     UNUSED((ev));
 
     if(key_is_pressed(ALLEGRO_KEY_A)){
@@ -119,7 +139,7 @@ void player_handle_input(ALLEGRO_EVENT *ev, player_t *pl)
     }else {
         pl->direction = PLAYER_DIRECTION_NONE;
     }
-
+    */
 
 /*
     if(key_is_pressed(ALLEGRO_KEY_W)){

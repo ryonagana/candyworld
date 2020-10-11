@@ -4,18 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_native_dialog.h>
 #include "window.h"
+#include "player.h"
+
+/*
 #include "hud.h"
 #include "lua_shared.h"
 #include "lua_hud.h"
 #include "lua_vm.h"
 #include "resources.h"
-#include "player.h"
 #include "thread.h"
 #include "sound.h"
-
+*/
 
 #define GAME_LOGOS_STATE  1
 #define GAME_INGAME_STATE 2

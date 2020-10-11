@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#include <allegro5/allegro_native_dialog.h>
+
 //static variables init;
 #include "shared.h"
 
@@ -10,10 +10,10 @@
 extern "C" {
 #endif
 
-
+#ifdef ALLEGRO_LOG
+#include <allegro5/allegro_native_dialog.h>
 static ALLEGRO_TEXTLOG *allegro_log = NULL;
-static FILE *common_log = NULL;
-
+#endif
 
 static char prefix[30] = {0};
 
@@ -22,8 +22,6 @@ void log_init()
 #ifdef ALLEGRO_LOG
     allegro_log = al_open_native_text_log("Debug Log:", ALLEGRO_TEXTLOG_MONOSPACE | ALLEGRO_TEXTLOG_NO_CLOSE);
     UNUSED(common_log);
-#else
-    common_log = fopen("log.txt", "at");
 #endif
 
 }
@@ -78,20 +76,10 @@ void log_write(const char *msg, ...)
 void log_file(const char *msg)
 {
 #ifndef ALLEGRO_LOG
-
-        if (NULL == (common_log = fopen("log.txt","at"))){
-            log_write(__FILE__, __LINE__, "failed to create a log file.. (might be permission?)");
-            return;
-        }
-
-
         char buf[255] = {0};
         strncpy(buf, msg, 255);
-        fprintf(common_log, "%s", buf);
-        fprintf(common_log,"\n");
-        fclose(common_log);
         fprintf(stderr, "%s", prefix);
-        fprintf(stderr, "%s - Line: %d, Src: %s", logbuf, __LINE__, __FILE__);
+        fprintf(stderr, "%s - Line: %d, Src: %s", buf, __LINE__, __FILE__);
         fprintf(stderr, "\n");
 #else
         al_append_native_text_log(allegro_log, "\n%s: %s - Line: %d, Src: %s\n", prefix, msg, __LINE__, __FILE__);

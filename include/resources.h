@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <allegro5/allegro.h>
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_image.h>
 
 #define RESOURCES_FOLDER "resources//"
 
@@ -46,13 +47,18 @@ struct resources_t
 typedef struct resources_t resources_t;
 
 void resources_start(const char *dir);
-int  resources_file_add(const char *file);
+int  resources_file_add(const char *file, const char *name);
 
 void resources_free();
 
 
+
+SDL_Surface *resources_load_surface(const char *filename);
+SDL_Texture *resources_surf_to_tex(SDL_Surface *surface, int cleanup);
+
+
 struct resources_t* resources_get();
-ALLEGRO_BITMAP* resources_sprite_get(const char* name, int extension);
+SDL_Texture* resources_sprite_get(const char* name, int extension);
 struct sfx_t* resources_sound_get(const char *name, int extension);
 
 

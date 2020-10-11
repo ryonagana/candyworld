@@ -1,6 +1,6 @@
 #pragma once
 #define  LOG_HEADER
-#include <allegro5/allegro.h>
+//#include <allegro5/allegro.h>
 
 
 #define LOG_COMMON 4

@@ -2,7 +2,7 @@
 #define KEYBOARD_H
 #include <stdio.h>
 #include <string.h>
-#include <allegro5/allegro.h>
+//#include <allegro5/allegro.h>
 
 /*
 typedef struct game_keys_t {

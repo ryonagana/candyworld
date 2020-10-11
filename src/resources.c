@@ -1,6 +1,7 @@
 #include "resources.h"
 #include "log.h"
 #include "sound.h"
+#include "window.h"
 
 static struct resources_t game_resources;
 
@@ -75,8 +76,9 @@ static int resource_get_ext(const char *filename)
 
 
 static void resources_free_sprite(file_t **f){
-    ALLEGRO_BITMAP *img = (*f)->block;
-    al_destroy_bitmap(img);
+    SDL_Texture *img = (*f)->block;
+    //al_destroy_bitmap(img);
+    SDL_DestroyTexture(img);
     img = NULL;
 
     free((void *)*f);
@@ -87,14 +89,17 @@ static void resources_free_sprite(file_t **f){
 
 static void resources_free_sound(file_t **f){
     sfx_t *sfx = (*f)->block;
+    sfx_destroy(sfx);
+    return;
 
+    /*
     if(sfx->instance) al_destroy_sample_instance(sfx->instance);
     if(sfx->sample) al_destroy_sample(sfx->sample);
 
     free((void *)*f);
     *f = NULL;
     return;
-
+    */
 
 }
 
@@ -119,7 +124,9 @@ static void resources_list_add(file_t *f){
 
 }
 
-static int resources_load_image(const char *filepath, int extension){
+static int resources_load_image(const char *filepath, const char *name, int extension){
+
+    /*
     ALLEGRO_BITMAP *img  =  NULL;
     ALLEGRO_PATH   *path =  NULL;
 
@@ -131,6 +138,10 @@ static int resources_load_image(const char *filepath, int extension){
 
     path = al_create_path(filepath);
     const char *name = al_get_path_basename(path);
+    */
+
+    SDL_Surface *surf  = resources_load_surface(filepath);
+    SDL_Texture *tex   = resources_surf_to_tex(surf, 0);
 
     file_t *tmp = malloc(sizeof (file_t));
     strncpy(tmp->name,"\0", 255);
@@ -138,12 +149,9 @@ static int resources_load_image(const char *filepath, int extension){
     tmp->next = NULL;
     tmp->type = RESOURCE_TYPE_SPRITE;
     tmp->block = NULL;
-    tmp->block = img;
+    tmp->block = tex;
     tmp->extension = extension;
-
-
-    al_destroy_path(path);
-    path = 0x0;
+    SDL_FreeSurface(surf);
     resources_list_add(tmp);
 
     return 1;
@@ -151,20 +159,17 @@ static int resources_load_image(const char *filepath, int extension){
 }
 
 
-static int resources_load_sound(const char *filepath, int extension){
-    //ALLEGRO_BITMAP *img  =  NULL;
+static int resources_load_sound(const char *filepath, const char *name,  int extension){
+
     sfx_t* sfx = NULL;
-    ALLEGRO_PATH   *path =  NULL;
 
     sfx = sfx_load(filepath);
-    //img = al_load_bitmap(filepath);
+
     if(!sfx){
-        DCRITICAL("failed to load sound %s", filepath);
+        DLOG("Error! failed to load sound resource: %s", filepath);
         return 0;
     }
 
-    path = al_create_path(filepath);
-    const char *name = al_get_path_basename(path);
 
     file_t *tmp = malloc(sizeof (file_t));
     //memcpy(tmp->name, '\0', 255);
@@ -176,16 +181,13 @@ static int resources_load_sound(const char *filepath, int extension){
     tmp->block = sfx;
     tmp->extension = extension;
 
-
-    al_destroy_path(path);
-    path = 0x0;
     resources_list_add(tmp);
 
     return 1;
 
 }
 
-static int resources_file_load(const char *filepath){
+static int resources_file_load(const char *filepath, const char *name){
     FILE *fp = NULL;
 
     if( (fp = fopen(filepath,"rb")) == NULL){
@@ -197,35 +199,35 @@ static int resources_file_load(const char *filepath){
 
     switch(extension){
         case RESOURCE_EXTENSION_PNG:
-            resources_load_image(filepath, RESOURCE_EXTENSION_PNG);
+            resources_load_image(filepath, name, RESOURCE_EXTENSION_PNG);
         break;
 
         case RESOURCE_EXTENSION_JPG:
-            resources_load_image(filepath, RESOURCE_EXTENSION_JPG);
+            resources_load_image(filepath, name, RESOURCE_EXTENSION_JPG);
         break;
 
         case RESOURCE_EXTENSION_BMP:
-             resources_load_image(filepath, RESOURCE_EXTENSION_BMP);
+             resources_load_image(filepath, name, RESOURCE_EXTENSION_BMP);
         break;
 
         case RESOURCE_EXTENSION_OGG:
-            resources_load_sound(filepath, RESOURCE_EXTENSION_OGG);
+            resources_load_sound(filepath, name, RESOURCE_EXTENSION_OGG);
         break;
 
         case RESOURCE_EXTENSION_WAV:
-            resources_load_sound(filepath, RESOURCE_EXTENSION_WAV);
+            resources_load_sound(filepath, name, RESOURCE_EXTENSION_WAV);
         break;
 
         case RESOURCE_EXTENSION_MP3:
-            resources_load_sound(filepath, RESOURCE_EXTENSION_MP3);
+            resources_load_sound(filepath, name, RESOURCE_EXTENSION_MP3);
         break;
     }
     return 1;
 }
 
-int resources_file_add(const char *file)
+int resources_file_add(const char *file, const char *name)
 {
-    return resources_file_load(file);
+    return resources_file_load(file, name);
 }
 
 
@@ -261,7 +263,7 @@ struct sfx_t* resources_sound_get(const char *name, int extension){
 }
 
 
-ALLEGRO_BITMAP *resources_sprite_get(const char* name, int extension)
+SDL_Texture *resources_sprite_get(const char* name, int extension)
 {
     file_t *tmp = resource_get_ptr(name, extension);
 
@@ -270,7 +272,7 @@ ALLEGRO_BITMAP *resources_sprite_get(const char* name, int extension)
         return NULL;
     }
 
-    return (ALLEGRO_BITMAP *) tmp->block;
+    return (SDL_Texture *) tmp->block;
 
 }
 
@@ -308,4 +310,31 @@ void resources_free()
 struct resources_t *resources_get()
 {
     return &game_resources;
+}
+
+SDL_Surface *resources_load_surface(const char *filename)
+{
+    char path_buf[2048] = {0};
+    SDL_Surface *tmp = NULL;
+    strncpy(path_buf, filename, 2048 - 1);
+    tmp = IMG_Load(path_buf);
+    return tmp;
+}
+
+SDL_Texture *resources_surf_to_tex(SDL_Surface *surface, int cleanup)
+{
+    SDL_Texture *texture =  NULL;
+
+    texture = SDL_CreateTextureFromSurface(window_get()->events.renderer, surface);
+
+    if(!texture){
+        DWARN("failed to convert surface to texture");
+    }
+
+    if(cleanup) SDL_FreeSurface(surface);
+
+
+    return texture;
+
+
 }
