@@ -75,14 +75,15 @@ void log_write(const char *msg, ...)
 
 void log_file(const char *msg)
 {
-#ifndef ALLEGRO_LOG
-        char buf[255] = {0};
-        strncpy(buf, msg, 255);
-        fprintf(stderr, "%s", prefix);
-        fprintf(stderr, "%s - Line: %d, Src: %s", buf, __LINE__, __FILE__);
-        fprintf(stderr, "\n");
+#ifdef ALLEGRO_LOG
+     al_append_native_text_log(allegro_log, "\n%s: %s - Line: %d, Src: %s\n", prefix, msg, __LINE__, __FILE__);
+
 #else
-        al_append_native_text_log(allegro_log, "\n%s: %s - Line: %d, Src: %s\n", prefix, msg, __LINE__, __FILE__);
+    char buf[255] = {0};
+    strncpy(buf, msg, 255);
+    fprintf(stderr, "%s", prefix);
+    fprintf(stderr, "%s - Line: %d, Src: %s", buf, __LINE__, __FILE__);
+    fprintf(stderr, "\n");
 #endif
 }
 
