@@ -17,16 +17,22 @@ INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 unix : {
     debug: {
         DEFINES += DEBUG
-        DEFINES += ALLEGRO_LOG
+        #DEFINES += ALLEGRO_LOG
 
         QMAKE_CFLAGS += -O0
     }
 
 
-
+    #SDL
+    LIBS += -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
+    INCLUDEPATH += /usr/include
+    INCLUDEPATH += /usr/include/lua5.3
+    DEPENDPATH  += /usr/include
 
     #allegro
-    LIBS += -L/usr/local/lib -lallegro -lallegro_main -lallegro_audio -lallegro_acodec -lallegro_image -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_dialog -lallegro_physfs
+
+    #LIBS += -L/usr/local/lib -lallegro -lallegro_main -lallegro_audio -lallegro_acodec -lallegro_image -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_dialog -lallegro_physfs
+
     LIBS += -L/usr/lib64 -llua
     LIBS += -lm
     LIBS += -L/usr/lib64 -lphysfs
@@ -78,7 +84,7 @@ win32: {
 HEADERS += \
         $$PWD/include/main.h \
         #include/debug.h \
-        #include/keyboard.h \
+        include/keyboard.h \
         include/log.h \
         include/lua_shared.h \
         include/player.h \
@@ -96,7 +102,7 @@ HEADERS += \
 SOURCES += \
         $$PWD/src/main.c \
         #src/debug.c \
-        #src/keyboard.c \
+        src/keyboard.c \
         src/log.c \
         src/lua_shared.c \
         src/player.c \

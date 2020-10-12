@@ -9,20 +9,21 @@ enum {
     TIMER_PLAY       = 0x8
 };
 
-typedef struct timer_t {
+typedef struct game_timer_t {
     Uint32 start_time;
     Uint32 pause_ticks;
     Uint32 flags;
-}timer_t;
+}game_timer_t;
 
 
-void timer_init(timer_t *tm);
-void timer_set_start(timer_t *tm);
-void timer_set_stop(timer_t *tm);
-void timer_set_pause(timer_t *tm);
-int  timer_is_started(timer_t *tm);
-int  timer_is_paused(timer_t *tm);
-Uint32 timer_get_ticks(timer_t *tm);
+void timer_init(game_timer_t *tm);
+void timer_set_start(game_timer_t *tm);
+void timer_set_stop(game_timer_t *tm);
+void timer_set_pause(game_timer_t *tm);
+int  timer_is_started(game_timer_t *tm);
+int  timer_is_paused(game_timer_t *tm);
+Uint32 timer_get_ticks(game_timer_t *tm);
+Uint32 timer_frame_cap(game_timer_t *tm);
 
 #define TIMER_TICKS_TO_SECS(t) (Uint32)((t) / 1000)
 //#define TIMER_TICKS_TO_MSECS(t) (Uint32)((t) / 10)

@@ -24,7 +24,8 @@
 #endif // _WIN32
 */
 
-#define FPS 60.0
+#define FPS 60
+#define MAX_TICKS 1000/FPS
 
 
 enum {

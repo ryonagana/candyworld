@@ -7,6 +7,7 @@
 #include "resources.h"
 #include "timer.h"
 #include "log.h"
+#include "keyboard.h"
 
 static game_data_t gamedata;
 
@@ -63,13 +64,14 @@ void game_loop()
 {
 
     Uint32 ticks = 0;
-    timer_t game_timer;
+    game_timer_t game_timer;
 
     timer_init(&game_timer);
     timer_set_start(&game_timer);
 
     while(!window_get()->closed){
         SDL_Event ev;
+        ticks = timer_get_ticks(&game_timer);
 
 
 
@@ -77,11 +79,16 @@ void game_loop()
             if(ev.type == SDL_QUIT){
                 window_get()->closed = 1;
                 break;
-
             }
+
+            keyboard_update(&ev);
         }
 
-        ticks = timer_get_ticks(&game_timer);
+
+
+        if(key_pressed(SDLK_w)){
+            DLOG("Press w");
+        }
 
         //DLOG("ticks %d", TIMER_TICKS_TO_SECS(ticks));
 
@@ -91,6 +98,9 @@ void game_loop()
         player_draw(&gamedata.player);
 
         SDL_RenderPresent(window_get()->events.renderer);
+
+        timer_frame_cap(&game_timer);
+
     }
 
 

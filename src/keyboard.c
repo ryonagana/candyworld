@@ -2,75 +2,38 @@
 #include "window.h"
 #include "log.h"
 
-static int game_keys[ALLEGRO_KEY_MAX] = {0};
-ALLEGRO_EVENT *game_event = NULL;
+Uint8 key_list[285] = {0};
+
 
 void keyboard_init()
 {
-    memset(game_keys, 0, sizeof(int) * ALLEGRO_KEY_MAX);
+    int i;
 
+    for(i = 0; i < 285; i++){
+        key_list[i] = 0;
+    }
 }
 
-void keyboard_end()
+
+void keyboard_update(SDL_Event *ev)
 {
 
-}
-
-int key_is_pressed(int key)
-{
-   return key == game_event->keyboard.keycode ? game_keys[key] : 0;
-}
-
-int key_is_released(int key)
-{
-    if(!game_keys[key] && key == game_event->keyboard.keycode){
-        game_keys[key] = 0;
-    }else {
-        game_keys[key] = 1;
+    if(ev->key.type == SDL_KEYUP){
+        key_list[ev->key.keysym.scancode] = 0;
+        DLOG("RELEASED %s\n", SDL_GetKeyName(ev->key.keysym.sym));
     }
 
-    return game_keys[key];
-}
-
-int key_is_pressed_once(int key)
-{
-    if(game_keys[key] && key == game_event->keyboard.keycode && !game_event->keyboard.repeat){
-        game_keys[key] = 1;
-    }else {
-        game_keys[key] = 0;
-    }
-
-    return game_keys[key];
-}
-
-int key_is_released_once(int key)
-{
-    if(!game_keys[key] && key == game_event->keyboard.keycode && !game_event->keyboard.repeat){
-        game_keys[key] = 0;
-    }else {
-        game_keys[key] = 1;
-    }
-
-    return game_keys[key];
-}
-
-void keyboard_update(ALLEGRO_EVENT *ev)
-{
-
-    game_event = ev;
-
-    if(ev->type == ALLEGRO_EVENT_KEY_DOWN){
-        game_keys[ev->keyboard.keycode] = 1;
-        DLOG("PRESSED KEY: %d - %s", ev->keyboard.keycode, al_keycode_to_name(ev->keyboard.keycode));
-    }
-
-    if(ev->type == ALLEGRO_EVENT_KEY_UP){
-        game_keys[ev->keyboard.keycode] = 0;
-          DLOG("RELEASED KEY: %d - %s", ev->keyboard.keycode, al_keycode_to_name(ev->keyboard.keycode));
+    if(ev->key.type == SDL_KEYDOWN){
+        key_list[ev->key.keysym.scancode] = 1;
+        DLOG("PRESSED %s\n", SDL_GetKeyName(ev->key.keysym.sym));
     }
 
 
 
-    return;
-
 }
+
+Uint8 key_pressed(int key)
+{
+    return key_list[key];
+}
+
