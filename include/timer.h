@@ -10,8 +10,9 @@ enum {
 };
 
 typedef struct game_timer_t {
-    Uint32 start_time;
-    Uint32 pause_ticks;
+    Uint64 start_time;
+    Uint64 last;
+    Uint64 pause_ticks;
     Uint32 flags;
 }game_timer_t;
 
@@ -23,7 +24,7 @@ void timer_set_pause(game_timer_t *tm);
 int  timer_is_started(game_timer_t *tm);
 int  timer_is_paused(game_timer_t *tm);
 Uint32 timer_get_ticks(game_timer_t *tm);
-Uint32 timer_frame_cap(game_timer_t *tm);
+void timer_frame_cap(Uint32 ticks);
 
 #define TIMER_TICKS_TO_SECS(t) (Uint32)((t) / 1000)
 //#define TIMER_TICKS_TO_MSECS(t) (Uint32)((t) / 10)

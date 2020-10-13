@@ -98,7 +98,7 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
     char title_buf[255] = {0};
     strncpy(title_buf, caption, 255);
 
-    main_window.events.window = SDL_CreateWindow(title_buf, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+    main_window.events.window = SDL_CreateWindow(title_buf, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     if(!main_window.events.window){
         DCRITICAL("Main Window Error!");
@@ -174,4 +174,17 @@ void window_exit(void){
 
    DINFO("Main Window closed successfully");
    return;
+}
+
+void window_resize(int width, int height)
+{
+    //SDL_GetWindowSize(window_get()->events.window, )
+    SDL_SetWindowSize(window_get()->events.window, width, height);
+
+    int w,h;
+
+    SDL_GetWindowSize(window_get()->events.window, &w,&h);
+
+    window_get()->info.width = w;
+    window_get()->info.height = h;
 }

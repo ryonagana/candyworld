@@ -75,20 +75,29 @@ void game_loop()
 
 
 
-        if(SDL_PollEvent(&ev)){
+        if(SDL_PollEvent(&ev) != 0){
             if(ev.type == SDL_QUIT){
                 window_get()->closed = 1;
                 break;
             }
 
-            keyboard_update(&ev);
+            if(ev.type == SDL_WINDOWEVENT){
+                if(ev.window.event == SDL_WINDOWEVENT_RESIZED){
+                    window_resize(ev.window.data1, ev.window.data2);
+                    SDL_Log("Window Resized to:  %dx%d", window_get()->info.width, window_get()->info.height);
+                }
+            }
+
+
         }
 
+        keyboard_update(&ev);
+
+        player_handle_input(&gamedata.player);
+
+        ticks = timer_get_ticks(&game_timer);
 
 
-        if(key_pressed(SDLK_w)){
-            DLOG("Press w");
-        }
 
         //DLOG("ticks %d", TIMER_TICKS_TO_SECS(ticks));
 
@@ -99,7 +108,7 @@ void game_loop()
 
         SDL_RenderPresent(window_get()->events.renderer);
 
-        timer_frame_cap(&game_timer);
+        timer_frame_cap(ticks);
 
     }
 

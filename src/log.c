@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-
+#include <SDL2/SDL.h>
 //static variables init;
 #include "shared.h"
 
@@ -79,11 +79,7 @@ void log_file(const char *msg)
      al_append_native_text_log(allegro_log, "\n%s: %s - Line: %d, Src: %s\n", prefix, msg, __LINE__, __FILE__);
 
 #else
-    char buf[255] = {0};
-    strncpy(buf, msg, 255);
-    fprintf(stderr, "%s", prefix);
-    fprintf(stderr, "%s - Line: %d, Src: %s", buf, __LINE__, __FILE__);
-    fprintf(stderr, "\n");
+    SDL_Log("%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
 #endif
 }
 

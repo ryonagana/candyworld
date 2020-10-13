@@ -44,6 +44,7 @@ Uint32 timer_get_ticks(game_timer_t *tm)
             actual_time = tm->pause_ticks;
        }else {
             actual_time = SDL_GetTicks() - tm->start_time;
+            tm->last = actual_time;
        }
     }
     return actual_time;
@@ -55,14 +56,14 @@ void timer_set_pause(game_timer_t *tm)
 }
 
 
-Uint32 timer_frame_cap(game_timer_t *tm)
+void timer_frame_cap(Uint32 ticks)
 {
-    int frameTicks = timer_get_ticks(tm);
 
-    if( frameTicks < MAX_TICKS )
+
+    if( ticks < MAX_TICKS )
     {
         //Wait remaining time
-        SDL_Delay( MAX_TICKS - frameTicks );
+        SDL_Delay( MAX_TICKS - ticks );
     }
 
 }

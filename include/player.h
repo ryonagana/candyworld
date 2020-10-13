@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "shared.h"
-
+#include <SDL2/SDL.h>
 
 #define PLAYER_DIRECTION_NONE  0
 #define PLAYER_DIRECTION_UP    1
@@ -23,17 +23,17 @@
 struct player_t {
     int x;
     int y;
-    rect_t hitbox;
+    SDL_Rect hitbox;
     int lives;
-    int64_t score;
+    Sint64 score;
     int direction;
     int state;
     int offset_x;
     int offset_y;
-    int anim_counter;
+    Uint32 anim_counter;
     int max_frames;
     int frames;
-    uint32_t flags;
+    Uint32 flags;
 };
 
 typedef struct player_t player_t;
@@ -41,7 +41,7 @@ typedef struct player_t player_t;
 
 void player_init(player_t *pl);
 void player_draw(player_t *pl);
-void player_update(player_t *pl);
+void player_update(player_t *pl, Uint32 delta);
 void player_handle_input(player_t *pl);
 
 

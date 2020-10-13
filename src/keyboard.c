@@ -20,12 +20,12 @@ void keyboard_update(SDL_Event *ev)
 
     if(ev->key.type == SDL_KEYUP){
         key_list[ev->key.keysym.scancode] = 0;
-        DLOG("RELEASED %s\n", SDL_GetKeyName(ev->key.keysym.sym));
+        //DLOG("RELEASED %s\n", SDL_GetKeyName(ev->key.keysym.sym));
     }
 
     if(ev->key.type == SDL_KEYDOWN){
         key_list[ev->key.keysym.scancode] = 1;
-        DLOG("PRESSED %s\n", SDL_GetKeyName(ev->key.keysym.sym));
+       //DLOG("PRESSED %s\n", SDL_GetKeyName(ev->key.keysym.sym));
     }
 
 

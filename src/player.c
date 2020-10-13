@@ -1,6 +1,6 @@
 #include "player.h"
 #include "resources.h"
-//#include "keyboard.h"
+#include "keyboard.h"
 #include "window.h"
 #include "log.h"
 //#include "debug.h"
@@ -45,7 +45,8 @@ void player_init(player_t *pl){
     pl->anim_counter = 0;
     pl->max_frames = 0;
     pl->frames = 0;
-    rect_init(&pl->hitbox);
+    //rect_init(&pl->hitbox);
+    SDL_RectEmpty(&pl->hitbox);
 
     player_spritesheet = resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG);
 
@@ -64,13 +65,13 @@ void player_draw(player_t *pl)
 
     SDL_Rect orig, dest;
 
-    orig.x = 0;
-    orig.y = 0;
+    orig.x = pl->frames;
+    orig.y = pl->direction;
     orig.w = 32;
     orig.h = 32;
 
-    dest.x = 0;
-    dest.y = 0;
+    dest.x = pl->x;
+    dest.y = pl->y;
     dest.w = 32;
     dest.h = 32;
 
@@ -80,8 +81,42 @@ void player_draw(player_t *pl)
     return;
 }
 
-void player_update(player_t *pl)
+void player_update(player_t *pl, Uint32 delta)
 {
+
+    SDL_QueryTexture(player_spritesheet, NULL, NULL, &pl->offset_x, &pl->offset_y);
+    //pl->offset_x = al_get_bitmap_width(player_spritesheet) / 12;
+    //pl->offset_y = al_get_bitmap_height(player_spritesheet) / 8;
+
+    switch(pl->direction){
+        case PLAYER_DIRECTION_UP:
+            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+        break;
+
+        case PLAYER_DIRECTION_DOWN:
+            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+        break;
+
+        case PLAYER_DIRECTION_LEFT:
+            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+        break;
+
+        case PLAYER_DIRECTION_RIGHT:
+            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+        break;
+    }
+
+    Uint32 animTime = SDL_GetTicks();
+
+    if(animTime > pl->anim_counter + 100){
+        pl->frames++;
+        pl->anim_counter = animTime;
+    }
+
+    if(pl->frames >= pl->max_frames){
+        pl->frames = 0;
+    }
+
 
     /*
 
@@ -123,6 +158,23 @@ void player_update(player_t *pl)
 
 void player_handle_input(player_t *pl)
 {
+
+    if(key_pressed(SDL_SCANCODE_W)){
+        player_move_up(pl);
+    }
+
+    if(key_pressed(SDL_SCANCODE_S)){
+        player_move_dn(pl);
+    }
+
+    if(key_pressed(SDL_SCANCODE_A)){
+        player_move_left(pl);
+    }
+
+
+    if(key_pressed(SDL_SCANCODE_D)){
+        player_move_right(pl);
+    }
 
 
     /*

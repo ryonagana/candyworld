@@ -62,6 +62,8 @@ void window_init(int w, int h, int fullscreen, const char* caption);
 int window_end(void);
 void window_exit(void);
 
+void window_resize(int width, int height);
+
 game_window*  window_get();
 
 #endif // WINDOW_HEADER
