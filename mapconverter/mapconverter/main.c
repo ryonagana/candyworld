@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <allegro5/allegro.h>
+#include "ini.h"
 
+#ifdef __GNUC__
+#include <errno.h>
+#endif
 
 
 #define MAPCONV_ERROR(x,...) fprintf(stderr, x"\n", ##__VA_ARGS__)
@@ -33,6 +36,26 @@ static map_layer* alloc_mem_layers(int num);
 static map_layer ** alloc_map_layer(int rows, int cols);
 
 static void read_config(map *map, const char *filepath){
+
+    FILE *fp = NULL;
+    const char *map_info = "//map_info.ini\n";
+    char map_path[4096] = {0};
+
+    strncpy(map_path, filepath, strlen(filepath));
+    strncat(map_path, map_info, strlen(map_info));
+
+
+    if((fp = fopen(map_path, "rb")) == NULL){
+        MAPCONV_ERROR("filepath not found - %s", strerror(errno));
+        return;
+    }
+
+
+
+
+
+
+    /*
     ALLEGRO_CONFIG *cfg = NULL;
     ALLEGRO_PATH *path = NULL;
 
@@ -67,6 +90,7 @@ static void read_config(map *map, const char *filepath){
 
     al_destroy_config(cfg);
     al_destroy_path(path);
+    */
 
 }
 

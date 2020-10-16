@@ -10,7 +10,10 @@ INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 #will be removed later
 
 
-    LIBS += -L/usr/local/lib -lallegro -lallegro_main
+    LIBS += -L/usr/local/lib #-lallegro -lallegro_main
     INCLUDEPATH += /usr/local/include /usr/include
 SOURCES += \
-        main.c
+        main.c \
+        ini.c
+
+HEADERS += ini.h
