@@ -11,3 +11,5 @@ object_script.*
 !debug.c
 !debug.h
 log.txt
+*.cbmap
+mapconverter/mapconv*

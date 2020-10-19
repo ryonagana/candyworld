@@ -25,12 +25,12 @@ int ini_handler_proc(void* user, const char* section, const char* name, const ch
 
 
        if(INI_MATCH("map", "tiles_layer")){
-           game_map->layers[0].name = strdup(value);
+           game_map->layers[LAYER_TILES].name = strdup(value);
            return 0;
        }
 
        if(INI_MATCH("map", "bg_layer")){
-           game_map->layers[1].name = strdup(value);
+           game_map->layers[LAYER_BACKGROUND].name = strdup(value);
            return 0;
        }
 

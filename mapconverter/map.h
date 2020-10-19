@@ -15,8 +15,10 @@
 
 #define MAPCONV_ERROR(x,...) fprintf(stderr, x"\n", ##__VA_ARGS__)
 
+#define LAYER_TILES 0
+#define LAYER_BACKGROUND 1
 
-#define LAYERS_NUM 3
+#define LAYERS_NUM 2
 
 typedef struct map_layer {
     const char *name;
@@ -38,9 +40,12 @@ typedef struct map_t {
 
 
 
-void read_config(map_t *map, const char *filepath);
+int map_read_config(map_t *map, const char *filepath);
 map_t *map_init(void);
 map_layer *alloc_layer_num(int num);
 map_layer *alloc_map_layer(int rows, int cols);
+
+
+void map_save_file(map_t *map, const char *output_filename);
 
 #endif // MAP_H
