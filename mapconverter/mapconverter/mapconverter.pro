@@ -13,7 +13,13 @@ INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
     LIBS += -L/usr/local/lib #-lallegro -lallegro_main
     INCLUDEPATH += /usr/local/include /usr/include
 SOURCES += \
+        csv_parser.c \
+        ini_parser.c \
         main.c \
-        ini.c
+        ini.c \
+        map.c
 
-HEADERS += ini.h
+HEADERS += ini.h \
+    csv_parser.h \
+    ini_parser.h \
+    map.h
