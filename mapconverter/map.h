@@ -20,6 +20,8 @@
 
 #define LAYERS_NUM 2
 
+#define MAP_FORMAT ".cbmap"
+
 typedef struct map_layer {
     char name[127];
     int *layer;

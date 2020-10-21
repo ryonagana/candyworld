@@ -141,7 +141,7 @@ void map_save_file(map_t *map, const char *output_filename)
     FILE *out = NULL;
 
     strncpy(name, output_filename,56);
-    strcat(name, ".cbmap");
+    strcat(name, MAP_FORMAT);
 
     if((out = fopen(name, "wb+")) == NULL){
         fclose(out);
@@ -154,15 +154,12 @@ void map_save_file(map_t *map, const char *output_filename)
     fputc(map->width, out);
     fputc(map->height, out);
 
-    int i;
-
-    int j;
+    int i,j;
 
     for(i = 0; i < LAYERS_NUM; i++){
 
         //layer number
         fputc(i, out);
-        //:fwrite(map->layers[i].name, 127,1, out);
 
         //layer tiles
         for(j = 0; j < map->width * map->height; j++){
