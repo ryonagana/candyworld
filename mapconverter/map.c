@@ -104,6 +104,10 @@ map_t *map_init(void){
 
     mp = calloc(1, sizeof(map_t));
     mp->layers = alloc_layer_num(LAYERS_NUM);
+    mp->tilesets = calloc(1, sizeof(map_tileset));
+    //mp->name = "";
+    mp->width = 0;
+    mp->height = 0;
     return mp;
 }
 
@@ -116,6 +120,7 @@ map_t *map_init(void){
         MAPCONV_ERROR("Error Trying to Allocate  %d map layers", num);
         return l_tmp;
     }
+
     return l_tmp;
 }
 
@@ -138,20 +143,32 @@ void map_save_file(map_t *map, const char *output_filename)
     strncpy(name, output_filename,56);
     strcat(name, ".cbmap");
 
-    if((out = fopen(name, "wb")) == NULL){
+    if((out = fopen(name, "wb+")) == NULL){
         fclose(out);
         MAPCONV_ERROR("invalid file creation");
         return;
     }
 
     fwrite("CBMAP\n", 6,1,out);
-    fwrite(map->name, strlen(map->name), 1, out);
+    fwrite(map->name, 127, 1, out);
     fputc(map->width, out);
     fputc(map->height, out);
 
     int i;
+
+    int j;
+
     for(i = 0; i < LAYERS_NUM; i++){
-        fwrite(map->layers[i].layer, map->width * map->height + 1, 1, out);
+
+        //layer number
+        fputc(i, out);
+        //:fwrite(map->layers[i].name, 127,1, out);
+
+        //layer tiles
+        for(j = 0; j < map->width * map->height; j++){
+            fputc(map->layers[i].layer[j], out);
+        }
+
     }
 
 
@@ -159,6 +176,41 @@ void map_save_file(map_t *map, const char *output_filename)
 
     fprintf(stdout, "map: %s is written to file", name);
 
+
+
+}
+
+void map_free(map_t **map_ptr)
+{
+    int i;
+
+    map_t *map = *map_ptr;
+
+    if(map == NULL) return;
+
+    for(i = 0; i < LAYERS_NUM; i++){
+
+        if(map->layers[i].layer != NULL){
+            free(map->layers[i].layer);
+            map->layers[i].layer = NULL;
+        }
+
+    }
+
+    if(map->layers != NULL){
+        free(map->layers);
+        map->layers = NULL;
+    }
+
+    if(map->tilesets != NULL){
+        free(map->tilesets);
+        map->tilesets = NULL;
+    }
+
+
+    free(map);
+    map = NULL;
+    *map_ptr = map;
 
 
 }

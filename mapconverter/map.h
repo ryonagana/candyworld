@@ -21,27 +21,35 @@
 #define LAYERS_NUM 2
 
 typedef struct map_layer {
-    const char *name;
+    char name[127];
     int *layer;
     int flags;
 }map_layer;
 
 
-typedef struct map_t {
-    map_layer *layers;
-    const char *name;
-    int width;
-    int height;
+typedef struct map_tileset {
+    char name[127];
     int tile_width;
     int tile_height;
-    int rows;
-    int cols;
+    int first_gid;
+    int width;
+    int height;
+}map_tileset;
+
+
+typedef struct map_t {
+    map_layer   *layers;
+    map_tileset *tilesets;
+    char name[127];
+    int width;
+    int height;
 }map_t;
 
 
 
 int map_read_config(map_t *map, const char *filepath);
 map_t *map_init(void);
+void map_free(map_t** map_ptr);
 map_layer *alloc_layer_num(int num);
 map_layer *alloc_map_layer(int rows, int cols);
 

@@ -7,8 +7,11 @@ int ini_handler_proc(void* user, const char* section, const char* name, const ch
 
         #define INI_MATCH(section_name, val) strcmp(section, section_name) == 0 && strcmp(name, val) == 0
 
+
+
        if(INI_MATCH("map", "name")){
-           game_map->name = strdup(value);
+           //game_map->name = strdup(value);
+           strncpy(game_map->name, value, 127);
            return 0;
        }
 
@@ -25,18 +28,15 @@ int ini_handler_proc(void* user, const char* section, const char* name, const ch
 
 
        if(INI_MATCH("map", "tiles_layer")){
-           game_map->layers[LAYER_TILES].name = strdup(value);
+           //game_map->layers[LAYER_TILES].name = strdup(value);
+           strncpy(game_map->layers[LAYER_TILES].name, value, 127);
            return 0;
        }
 
        if(INI_MATCH("map", "bg_layer")){
-           game_map->layers[LAYER_BACKGROUND].name = strdup(value);
+           strncpy(game_map->layers[LAYER_BACKGROUND].name, value, 127);
            return 0;
        }
-
-
-
-
 
 
 

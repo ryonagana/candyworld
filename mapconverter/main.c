@@ -24,11 +24,17 @@ void usage(){
 }
 
 void parse_params(int argc, char **argv){
+
+    /*
     int i;
 
     for(i = 0; i < argc; i++){
         strncpy(map_folder, (char *)argv[1], strlen(argv[1]));
-    }
+    }*/
+     if(argc > 1){
+        strncpy(map_folder, (char *)argv[1], strlen(argv[1]));
+     }
+
 }
 
 
@@ -46,6 +52,7 @@ int main(int argc , char *argv[])
 
     root = map_init();
     map_read_config(root, map_folder);
+    map_free(&root);
 
     return 0;
 }

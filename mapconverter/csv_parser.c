@@ -27,8 +27,6 @@ void csv_parse_file(FILE *fp, int rows, int cols, void** data){
 
         y++;
     }
-    // send end of the map
-    result[ rows * cols + 1] = '\0';
 
     *data = result;
 
