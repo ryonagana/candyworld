@@ -68,11 +68,12 @@ int map_read_config(map_t *map, const char *filepath){
     conf = NULL;
 
 
+
 #if defined (WIN32) || defined(_WIN32) || (__WIN32__)
     const wchar_t info_path[] = L"//map_info.conf";
     wchar_t map_path[4096] = {0};
-    mbstowcs(map_path, filepath, 4096);
-    _tcsncat(map_path,info_path, 4096);
+    mbstowcs(map_path, filepath, 4096 - 1);
+    _tcsncat(map_path,info_path, 4096 - 1);
 
 
 
@@ -82,19 +83,21 @@ int map_read_config(map_t *map, const char *filepath){
     }
 
 
-#else
+#elif defined(__linux__)
 
     const char *map_info = "//map_info.conf";
     char map_path[4096] = {0};
 
 
-    strncpy(map_path, filepath, strlen(filepath));
-    strncat(map_path, map_info, strlen(map_info));
+    strncpy(map_path, filepath, strlen(filepath) - 1);
+    strncat(map_path, map_info, strlen(map_info) - 1);
 
     if((conf = fopen(map_path, "rb")) == NULL){
         MAPCONV_ERROR("filepath not found - %s", strerror(errno));
         return -1;
     }
+
+
 #endif
 
     ini_parse_file(conf, &ini_handler_proc, map);
@@ -194,7 +197,7 @@ void map_save_file(map_t *map, const char *output_filename)
 
     fclose(out);
 
-    fprintf(stdout, "map: %s is written to file", name);
+    fprintf(stdout, "map: %s is written to file\n\n", name);
 
 
 
