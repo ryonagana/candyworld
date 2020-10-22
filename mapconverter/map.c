@@ -16,6 +16,13 @@
 #error "Invalid Platform."
 #endif
 
+#if defined (WIN32) || defined(_WIN32) || (__WIN32__)
+#include <windows.h>
+#include <tchar.h>
+#include <wchar.h>
+#include <mbstring.h>
+#endif
+
 int map_load_layer(map_t *map, int layer, const char *map_path){
     char buf[4096] = {0};
     FILE *fp = NULL;
@@ -58,6 +65,25 @@ int map_load_layer(map_t *map, int layer, const char *map_path){
 int map_read_config(map_t *map, const char *filepath){
 
     FILE *conf;
+    conf = NULL;
+
+
+#if defined (WIN32) || defined(_WIN32) || (__WIN32__)
+    const wchar_t info_path[] = L"//map_info.conf";
+    wchar_t map_path[4096] = {0};
+    mbstowcs(map_path, filepath, 4096);
+    _tcsncat(map_path,info_path, 4096);
+
+
+
+    if((conf = _wfopen(map_path, L"rb+")) == NULL){
+         MAPCONV_ERROR("filepath not found - %s", strerror(errno));
+         return -1;
+    }
+
+
+#else
+
     const char *map_info = "//map_info.conf";
     char map_path[4096] = {0};
 
@@ -65,14 +91,11 @@ int map_read_config(map_t *map, const char *filepath){
     strncpy(map_path, filepath, strlen(filepath));
     strncat(map_path, map_info, strlen(map_info));
 
-    conf = NULL;
-
-
-
     if((conf = fopen(map_path, "rb")) == NULL){
         MAPCONV_ERROR("filepath not found - %s", strerror(errno));
         return -1;
     }
+#endif
 
     ini_parse_file(conf, &ini_handler_proc, map);
     fclose(conf);
@@ -91,7 +114,7 @@ int map_read_config(map_t *map, const char *filepath){
 
 
 
-    map_save_file(map, filepath);
+    //map_save_file(map, filepath);
 
 
     return 0;

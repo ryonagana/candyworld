@@ -52,6 +52,14 @@ int main(int argc , char *argv[])
 
     root = map_init();
     map_read_config(root, map_folder);
+
+    if(root == NULL){
+        usage();
+        return 0;
+    }
+
+    map_save_file(root, map_folder);
+
     map_free(&root);
 
     return 0;
