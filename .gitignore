@@ -13,3 +13,4 @@ object_script.*
 log.txt
 *.cbmap
 mapconverter/mapconv*
+!mapconverter/mapconverter.pro
