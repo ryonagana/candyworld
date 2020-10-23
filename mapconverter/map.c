@@ -62,7 +62,7 @@ int map_load_layer(map_t *map, int layer, const char *map_path){
 
 }
 
-int map_read_config(map_t *map, const char *filepath){
+int map_load_str(map_t *map, const char *filepath){
 
     FILE *conf;
     conf = NULL;
@@ -100,6 +100,8 @@ int map_read_config(map_t *map, const char *filepath){
 
 #endif
 
+
+    map->tilesets = map_tileset_alloc_mem(1);
     ini_parse_file(conf, &ini_handler_proc, map);
     fclose(conf);
 
@@ -117,12 +119,12 @@ int map_read_config(map_t *map, const char *filepath){
 
 
 
-    //map_save_file(map, filepath);
-
+    if(map->tilesets == NULL){
+        MAPCONV_ERROR("tileset not found");
+        return -1;
+    }
 
     return 0;
-
-
 }
 
 map_t *map_init(void){
@@ -134,6 +136,7 @@ map_t *map_init(void){
     //mp->name = "";
     mp->width = 0;
     mp->height = 0;
+    mp->tileset_count = 0;
     return mp;
 }
 
@@ -194,6 +197,20 @@ void map_save_file(map_t *map, const char *output_filename)
 
     }
 
+    for(i = 0;i < map->tileset_count;i++){
+        if(!map->tilesets[i].loaded) continue;
+
+         fwrite(map->tilesets[i].name, 127, 1, out);
+         fputc(map->tilesets[i].width, out);
+         fputc(map->tilesets[i].height, out);
+         fputc(map->tilesets[i].tile_width, out);
+         fputc(map->tilesets[i].tile_height, out);
+         fputc(map->tilesets[i].rows, out);
+         fputc(map->tilesets[i].cols, out);
+         fputc(map->tilesets[i].first_gid, out);
+
+    }
+
 
     fclose(out);
 
@@ -226,8 +243,7 @@ void map_free(map_t **map_ptr)
     }
 
     if(map->tilesets != NULL){
-        free(map->tilesets);
-        map->tilesets = NULL;
+        map_tileset_free(&map->tilesets);
     }
 
 
@@ -236,4 +252,25 @@ void map_free(map_t **map_ptr)
     *map_ptr = map;
 
 
+}
+
+map_tileset *map_tileset_alloc_mem(int num)
+{
+    map_tileset *tmp = NULL;
+    tmp = calloc(num + 1, sizeof (map_tileset));
+    return tmp;
+}
+
+void map_tileset_free(map_tileset **ts)
+{
+    map_tileset *tmp = NULL;
+
+    if((*ts) == NULL){
+        return;
+    }
+
+    tmp = *ts;
+    free(tmp);
+    tmp = NULL;
+    *ts = tmp;
 }

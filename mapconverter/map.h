@@ -36,6 +36,9 @@ typedef struct map_tileset {
     int first_gid;
     int width;
     int height;
+    int loaded;
+    int rows;
+    int cols;
 }map_tileset;
 
 
@@ -45,16 +48,18 @@ typedef struct map_t {
     char name[127];
     int width;
     int height;
+    int tileset_count;
 }map_t;
 
 
 
-int map_read_config(map_t *map, const char *filepath);
+int map_load_str(map_t *map, const char *filepath);
 map_t *map_init(void);
 void map_free(map_t** map_ptr);
 map_layer *alloc_layer_num(int num);
 map_layer *alloc_map_layer(int rows, int cols);
-
+map_tileset *map_tileset_alloc_mem(int num);
+void map_tileset_free(map_tileset **ts);
 
 void map_save_file(map_t *map, const char *output_filename);
 
