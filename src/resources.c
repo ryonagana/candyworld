@@ -9,6 +9,7 @@
 static struct resources_t game_resources;
 
 
+
 static void resources_release_file(file_t **f){
     free((void *)*f);
     *f = NULL;
