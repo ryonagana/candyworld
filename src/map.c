@@ -1,6 +1,12 @@
+#if !defined(MAPCONV_PROJECT)
 #include "map.h"
-#include "csv_parser.h"
-#include "ini_parser.h"
+#else
+#include "../include/map.h"
+#endif
+
+#include "../mapconverter/csv_parser.h"
+#include "../mapconverter/ini.h"
+#include "../mapconverter/ini_parser.h"
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #include <io.h>
@@ -163,7 +169,7 @@ map_layer * alloc_map_layer(int rows, int cols){
 
 }
 
-void map_save_file(map_t *map, const char *output_filename)
+void map_save_name(map_t *map, const char *output_filename)
 {
 
     char name[56] = {0};
@@ -178,45 +184,8 @@ void map_save_file(map_t *map, const char *output_filename)
         return;
     }
 
-    fwrite("CBMAP\n", 6,1,out);
-    fwrite(map->name, 127, 1, out);
-    fputc(map->width, out);
-    fputc(map->height, out);
-
-    int i,j;
-
-    for(i = 0; i < LAYERS_NUM; i++){
-
-        //layer number
-        fputc(i, out);
-
-        //layer tiles
-        for(j = 0; j < map->width * map->height; j++){
-            fputc(map->layers[i].layer[j], out);
-        }
-
-    }
-
-    for(i = 0;i < map->tileset_count;i++){
-        if(!map->tilesets[i].loaded) continue;
-
-         fwrite(map->tilesets[i].name, 127, 1, out);
-         fputc(map->tilesets[i].width, out);
-         fputc(map->tilesets[i].height, out);
-         fputc(map->tilesets[i].tile_width, out);
-         fputc(map->tilesets[i].tile_height, out);
-         fputc(map->tilesets[i].rows, out);
-         fputc(map->tilesets[i].cols, out);
-         fputc(map->tilesets[i].first_gid, out);
-
-    }
-
-
-    fclose(out);
-
-    fprintf(stdout, "map: %s is written to file\n\n", name);
-
-
+    strncpy(map->filename, name, 56 - 1);
+    map_save_file(out, map);
 
 }
 
@@ -273,4 +242,54 @@ void map_tileset_free(map_tileset **ts)
     free(tmp);
     tmp = NULL;
     *ts = tmp;
+}
+
+void map_save_file(FILE *fp, map_t *map)
+{
+
+    if(fp == NULL){
+        MAPCONV_ERROR("invalid file creation");
+        return;
+    }
+
+    fwrite("CBMAP\n", 6,1,fp);
+    fwrite(map->name, 127, 1, fp);
+    fwrite(map->filename,255,1,fp);
+    fputc(map->width, fp);
+    fputc(map->height, fp);
+
+    int i,j;
+
+    for(i = 0; i < LAYERS_NUM; i++){
+
+        //layer number
+        fputc(i, fp);
+
+        //layer tiles
+        for(j = 0; j < map->width * map->height; j++){
+            fputc(map->layers[i].layer[j], fp);
+        }
+
+    }
+
+    for(i = 0;i < map->tileset_count;i++){
+        if(!map->tilesets[i].loaded) continue;
+
+         fwrite(map->tilesets[i].name, 127, 1, fp);
+         fputc(map->tilesets[i].width, fp);
+         fputc(map->tilesets[i].height, fp);
+         fputc(map->tilesets[i].tile_width, fp);
+         fputc(map->tilesets[i].tile_height, fp);
+         fputc(map->tilesets[i].rows, fp);
+         fputc(map->tilesets[i].cols, fp);
+         fputc(map->tilesets[i].first_gid, fp);
+
+    }
+
+
+    fclose(fp);
+
+    fprintf(stdout, "map: %s is written to file\n\n", map->filename);
+
+
 }

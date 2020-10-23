@@ -1,5 +1,9 @@
 #include "ini_parser.h"
+#if !defined(MAPCONV_PROJECT)
 #include "map.h"
+#else
+#include "../include/map.h"
+#endif
 
 int ini_handler_proc(void* user, const char* section, const char* name, const char* value){
 
@@ -10,7 +14,6 @@ int ini_handler_proc(void* user, const char* section, const char* name, const ch
 
 
        if(INI_MATCH("map", "name")){
-           //game_map->name = strdup(value);
            strncpy(game_map->name, value, 127 - 1);
            return 0;
        }
@@ -28,7 +31,6 @@ int ini_handler_proc(void* user, const char* section, const char* name, const ch
 
 
        if(INI_MATCH("map", "tiles_layer")){
-           //game_map->layers[LAYER_TILES].name = strdup(value);
            strncpy(game_map->layers[LAYER_TILES].name, value, 127 - 1);
            return 0;
        }

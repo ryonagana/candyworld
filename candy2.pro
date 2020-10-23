@@ -90,6 +90,7 @@ HEADERS += \
         include/player.h \
         include/resources.h \
         #include/thread.h \
+        include/sprite.h \
         include/timer.h \
         include/window.h\
         include/sound.h \
@@ -97,7 +98,11 @@ HEADERS += \
         include/game.h \
         include/lua_vm.h \
         include/lua_hud.h \
-        include/hud.h
+        include/hud.h \
+        include/map.h \
+        $$PWD/mapconverter/ini_parser.h \
+        $$PWD/mapconverter/csv_parser.h \
+        $$PWD/mapconverter/ini.h
 
 SOURCES += \
         $$PWD/src/main.c \
@@ -108,6 +113,7 @@ SOURCES += \
         src/player.c \
         src/resources.c \
         #src/thread.c \
+        src/sprite.c \
         src/timer.c \
         src/window.c \
         src/sound.c \
@@ -115,6 +121,10 @@ SOURCES += \
         src/game.c \
         src/lua_vm.c \
         src/lua_hud.c \
-        src/hud.c
+        src/hud.c \
+        src/map.c \
+        $$PWD/mapconverter/ini_parser.c \
+        $$PWD/mapconverter/csv_parser.c \
+        $$PWD/mapconverter/ini.c
 
 

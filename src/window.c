@@ -1,6 +1,6 @@
 #include "window.h"
 #include "log.h"
-//#include "sound.h"
+#include "sound.h"
 #include "keyboard.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -113,9 +113,10 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
         goto window_error;
 
     }
-
+    sound_start(4);
     log_init();
     keyboard_init();
+
     return;
 
 window_error:

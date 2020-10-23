@@ -46,6 +46,7 @@ typedef struct map_t {
     map_layer   *layers;
     map_tileset *tilesets;
     char name[127];
+    char filename[255];
     int width;
     int height;
     int tileset_count;
@@ -61,6 +62,8 @@ map_layer *alloc_map_layer(int rows, int cols);
 map_tileset *map_tileset_alloc_mem(int num);
 void map_tileset_free(map_tileset **ts);
 
-void map_save_file(map_t *map, const char *output_filename);
+void map_save_name(map_t *map, const char *output_filename);
+void map_save_file(FILE *fp, map_t *map);
+//void map_load_file(map_t **map, )
 
 #endif // MAP_H

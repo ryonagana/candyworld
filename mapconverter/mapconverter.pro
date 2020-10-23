@@ -13,15 +13,18 @@ QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
 INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 #will be removed later
 
+
+DEFINES += MAPCONV_PROJECT
+
 HEADERS += \
     csv_parser.h \
     ini.h \
     ini_parser.h \
-    map.h
+    ../include/map.h
 
 SOURCES += \
     csv_parser.c \
     ini.c \
     ini_parser.c \
     main.c \
-    map.c
+    ../src/map.c

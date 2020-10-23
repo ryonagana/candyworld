@@ -9,7 +9,7 @@
 #endif
 
 
-#include "map.h"
+#include "../include/map.h"
 
 
 
@@ -25,12 +25,7 @@ void usage(){
 
 void parse_params(int argc, char **argv){
 
-    /*
-    int i;
 
-    for(i = 0; i < argc; i++){
-        strncpy(map_folder, (char *)argv[1], strlen(argv[1]));
-    }*/
      if(argc > 1){
         strncpy(map_folder, (char *)argv[1], strlen(argv[1]));
      }
@@ -58,7 +53,7 @@ int main(int argc , char *argv[])
         return 0;
     }
 
-    map_save_file(root, map_folder);
+    map_save_name(root, map_folder);
 
     map_free(&root);
 

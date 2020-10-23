@@ -108,7 +108,7 @@ void player_update(player_t *pl, Uint32 delta)
 
     Uint32 animTime = SDL_GetTicks();
 
-    if(animTime > pl->anim_counter + 100){
+    if(delta > pl->anim_counter + 100){
         pl->frames++;
         pl->anim_counter = animTime;
     }

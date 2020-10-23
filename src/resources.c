@@ -91,16 +91,6 @@ static void resources_free_sound(file_t **f){
     sfx_t *sfx = (*f)->block;
     sfx_destroy(sfx);
     return;
-
-    /*
-    if(sfx->instance) al_destroy_sample_instance(sfx->instance);
-    if(sfx->sample) al_destroy_sample(sfx->sample);
-
-    free((void *)*f);
-    *f = NULL;
-    return;
-    */
-
 }
 
 static void resources_list_add(file_t *f){
@@ -126,19 +116,7 @@ static void resources_list_add(file_t *f){
 
 static int resources_load_image(const char *filepath, const char *name, int extension){
 
-    /*
-    ALLEGRO_BITMAP *img  =  NULL;
-    ALLEGRO_PATH   *path =  NULL;
 
-    img = al_load_bitmap(filepath);
-    if(!img){
-        DCRITICAL("failed to load image %s", filepath);
-        return 0;
-    }
-
-    path = al_create_path(filepath);
-    const char *name = al_get_path_basename(path);
-    */
 
     SDL_Surface *surf  = resources_load_surface(filepath);
     SDL_Texture *tex   = resources_surf_to_tex(surf, 0);
