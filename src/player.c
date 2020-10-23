@@ -9,25 +9,29 @@
 static SDL_Texture* player_spritesheet = NULL;
 
 
-static void player_move_up(player_t *pl){
+static void player_move_up(player_t *pl, Uint32 delta){
     pl->direction = PLAYER_DIRECTION_UP;
-    pl->y -= 1 * PLAYER_SPEED;
+    pl->state = PLAYER_STATE_WALKING;
+    pl->y -= 1 * PLAYER_SPEED ;
 }
 
-static void player_move_dn(player_t *pl){
+static void player_move_dn(player_t *pl, Uint32 delta){
     pl->direction = PLAYER_DIRECTION_DOWN;
-    pl->y += 1 * PLAYER_SPEED;
+    pl->state = PLAYER_STATE_WALKING;
+    pl->y += 1 * PLAYER_SPEED ;
 }
 
 
-static void player_move_left(player_t *pl){
+static void player_move_left(player_t *pl, Uint32 delta){
     pl->direction = PLAYER_DIRECTION_LEFT;
-    pl->x -= 1 * PLAYER_SPEED;
+    pl->state = PLAYER_STATE_WALKING;
+    pl->x -= 1 * PLAYER_SPEED ;
 }
 
 
-static void player_move_right(player_t *pl){
+static void player_move_right(player_t *pl, Uint32 delta){
     pl->direction = PLAYER_DIRECTION_RIGHT;
+    pl->state = PLAYER_STATE_WALKING;
     pl->x += 1 * PLAYER_SPEED;
 }
 
@@ -65,8 +69,8 @@ void player_draw(player_t *pl)
 
     SDL_Rect orig, dest;
 
-    orig.x = pl->frames;
-    orig.y = pl->direction;
+    orig.x = pl->offset_x * pl->frames;
+    orig.y = pl->offset_y * pl->direction;
     orig.w = 32;
     orig.h = 32;
 
@@ -84,9 +88,13 @@ void player_draw(player_t *pl)
 void player_update(player_t *pl, Uint32 delta)
 {
 
-    SDL_QueryTexture(player_spritesheet, NULL, NULL, &pl->offset_x, &pl->offset_y);
-    //pl->offset_x = al_get_bitmap_width(player_spritesheet) / 12;
-    //pl->offset_y = al_get_bitmap_height(player_spritesheet) / 8;
+    int w,h;
+
+    UNUSED(delta);
+
+    SDL_QueryTexture(player_spritesheet, NULL, NULL, &w, &h);
+    pl->offset_x = w / 12;
+    pl->offset_y = h / 8;
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:
@@ -104,11 +112,15 @@ void player_update(player_t *pl, Uint32 delta)
         case PLAYER_DIRECTION_RIGHT:
             pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
         break;
+
+        case PLAYER_DIRECTION_NONE:
+            pl->max_frames = (pl->state != PLAYER_STATE_WALKING) ? 1 : 1;
+            break;
     }
 
     Uint32 animTime = SDL_GetTicks();
 
-    if(delta > pl->anim_counter + 100){
+    if(animTime > pl->anim_counter + 100){
         pl->frames++;
         pl->anim_counter = animTime;
     }
@@ -156,24 +168,20 @@ void player_update(player_t *pl, Uint32 delta)
 
 }
 
-void player_handle_input(player_t *pl)
+void player_handle_input(player_t *pl, Uint32 delta)
 {
 
-    if(key_pressed(SDL_SCANCODE_W)){
-        player_move_up(pl);
-    }
-
-    if(key_pressed(SDL_SCANCODE_S)){
-        player_move_dn(pl);
-    }
-
-    if(key_pressed(SDL_SCANCODE_A)){
-        player_move_left(pl);
-    }
-
-
-    if(key_pressed(SDL_SCANCODE_D)){
-        player_move_right(pl);
+    if(key_pressed(SDL_SCANCODE_W) > 0){
+        player_move_up(pl, delta);
+    }else if(key_pressed(SDL_SCANCODE_S) > 0){
+        player_move_dn(pl, delta);
+    }else if(key_pressed(SDL_SCANCODE_A) > 0){
+        player_move_left(pl, delta);
+    }else if(key_pressed(SDL_SCANCODE_D) > 0){
+        player_move_right(pl, delta);
+    }else {
+        pl->direction = PLAYER_DIRECTION_NONE;
+        pl->score = PLAYER_STATE_NONE;
     }
 
 

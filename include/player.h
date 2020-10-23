@@ -42,7 +42,7 @@ typedef struct player_t player_t;
 void player_init(player_t *pl);
 void player_draw(player_t *pl);
 void player_update(player_t *pl, Uint32 delta);
-void player_handle_input(player_t *pl);
+void player_handle_input(player_t *pl, Uint32 delta);
 
 
 void player_set_pos_screen(player_t *player, int x, int y);

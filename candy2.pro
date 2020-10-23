@@ -24,7 +24,7 @@ unix : {
 
 
     #SDL
-    LIBS += -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
+    LIBS += -L/usr/lib64 -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
     DEPENDPATH  += /usr/include
@@ -91,6 +91,7 @@ HEADERS += \
         include/resources.h \
         #include/thread.h \
         include/sprite.h \
+        include/text.h \
         include/timer.h \
         include/window.h\
         include/sound.h \
@@ -102,7 +103,8 @@ HEADERS += \
         include/map.h \
         $$PWD/mapconverter/ini_parser.h \
         $$PWD/mapconverter/csv_parser.h \
-        $$PWD/mapconverter/ini.h
+        $$PWD/mapconverter/ini.h \
+
 
 SOURCES += \
         $$PWD/src/main.c \
@@ -125,6 +127,7 @@ SOURCES += \
         src/map.c \
         $$PWD/mapconverter/ini_parser.c \
         $$PWD/mapconverter/csv_parser.c \
-        $$PWD/mapconverter/ini.c
+        $$PWD/mapconverter/ini.c \
+        src/text.c
 
 

@@ -15,6 +15,7 @@
 #define RESOURCE_TYPE_SPRITE 1
 #define RESOURCE_TYPE_SOUND  2
 #define RESOURCE_TYPE_TEXT   3
+#define RESOURCE_TYPE_FONT   4
 
 #define RESOURCE_EXTENSION_NONE 0
 #define RESOURCE_EXTENSION_PNG  1
@@ -24,6 +25,10 @@
 #define RESOURCE_EXTENSION_OGG  4
 #define RESOURCE_EXTENSION_WAV  5
 #define RESOURCE_EXTENSION_MP3  6
+
+#define RESOURCE_EXTENSION_TTF  7
+
+#define RESOURCE_EXTENSION_ANY  255
 
 typedef struct file_t {
     char name[255];
@@ -48,10 +53,11 @@ typedef struct resources_t resources_t;
 
 void resources_start(const char *dir);
 int  resources_file_add(const char *file, const char *name);
+int  resources_ttf_add(const char *file, const char *name, int size);
 
 void resources_free();
 
-
+int resource_file_exists(const char *filepath);
 
 SDL_Surface *resources_load_surface(const char *filename);
 SDL_Texture *resources_surf_to_tex(SDL_Surface *surface, int cleanup);

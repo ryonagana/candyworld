@@ -7,11 +7,8 @@ Uint8 key_list[285] = {0};
 
 void keyboard_init()
 {
-    int i;
-
-    for(i = 0; i < 285; i++){
-        key_list[i] = 0;
-    }
+    DLOG("keyboard started");
+    return;
 }
 
 

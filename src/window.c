@@ -1,10 +1,13 @@
 #include "window.h"
-#include "log.h"
-#include "sound.h"
-#include "keyboard.h"
+
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
+
+#include "log.h"
+#include "sound.h"
+#include "keyboard.h"
+#include "shared.h"
 
 #define REPORT_ERROR(...) { fprintf(stderr,  ##__VA_ARGS__); }
 
@@ -90,15 +93,26 @@ error: return -1;
 
 static void window_create(int width, int height, int fullscreen, int renderer, const char *caption){
 
+    UNUSED(renderer);
+
     if(window_init_libraries() < 0){
         fprintf(stderr, "fatal error!");
         exit(1);
     }
 
+
+
     char title_buf[255] = {0};
     strncpy(title_buf, caption, 255);
 
-    main_window.events.window = SDL_CreateWindow(title_buf, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+    int window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+
+    if(fullscreen){
+        window_flags |= SDL_WINDOW_FULLSCREEN;
+    }
+
+    main_window.events.window = SDL_CreateWindow(title_buf, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 
     if(!main_window.events.window){
         DCRITICAL("Main Window Error!");
@@ -120,7 +134,8 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
     return;
 
 window_error:
-        SDL_Quit();
+        window_end();
+        return;
 
 
 }
@@ -152,7 +167,7 @@ int window_end(void){
     Mix_Quit();
     SDL_DestroyWindow(main_window.events.window);
     main_window.events.window  = NULL;
-    SDL_DestroyRenderer(main_window.events.renderer);
+    if(main_window.events.renderer != NULL)  SDL_DestroyRenderer(main_window.events.renderer);
     main_window.events.renderer = NULL;
 
 

@@ -8,6 +8,7 @@
 #include "timer.h"
 #include "log.h"
 #include "keyboard.h"
+#include "sprite.h"
 
 static game_data_t gamedata;
 
@@ -30,6 +31,12 @@ void game_init()
     resources_file_add("resources//sprites//sprite2.png", "sprite2");
     resources_file_add("resources//sprites//debug_tiles.png", "debug_tiles");
     resources_file_add("resources//sfx//test.ogg", "test_music");
+    resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",11);
+
+     sprite_t *spr_test = NULL;
+     sprite_init_str(&spr_test, "sprite2");
+
+
 
     //resources_sprite_get("sprite2", RESOURCE_TYPE_SPRITE);
     //resources_sound_get("test", RESOURCE_EXTENSION_OGG);
@@ -91,15 +98,16 @@ void game_loop()
 
         }
 
-        keyboard_update(&ev);
 
-        player_handle_input(&gamedata.player);
 
         ticks = timer_get_ticks(&game_timer);
 
 
 
         //DLOG("ticks %d", TIMER_TICKS_TO_SECS(ticks));
+        keyboard_update(&ev);
+        player_update(&gamedata.player, ticks);
+        player_handle_input(&gamedata.player, ticks);
 
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
