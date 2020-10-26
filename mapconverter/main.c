@@ -46,6 +46,8 @@ int main(int argc , char *argv[])
     map_t* root = NULL;
 
     root = map_init();
+
+    /*
     map_load_str(root, map_folder);
 
     if(root == NULL){
@@ -53,7 +55,16 @@ int main(int argc , char *argv[])
         return 0;
     }
 
-    map_save_name(root, map_folder);
+    map_save_name(root, map_folder);*/
+
+    root = map_load_file_str("test.cbmap");
+
+    if(root == NULL){
+        MAPCONV_ERROR("map cannot be loaded");
+        return 0;
+    }
+
+
 
     map_free(&root);
 

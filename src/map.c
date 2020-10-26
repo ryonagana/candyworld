@@ -8,6 +8,9 @@
 #include "../mapconverter/ini.h"
 #include "../mapconverter/ini_parser.h"
 
+
+
+
 #if defined(__WIN32__) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #include <io.h>
 #elif __linux__
@@ -78,8 +81,8 @@ int map_load_str(map_t *map, const char *filepath){
 #if defined (WIN32) || defined(_WIN32) || (__WIN32__)
     const wchar_t info_path[] = L"//map_info.conf";
     wchar_t map_path[4096] = {0};
-    mbstowcs(map_path, filepath, 4096 - 1);
-    _tcsncat(map_path,info_path, 4096 - 1);
+    mbstowcs(map_path, filepath, 4096 + 1);
+    _tcsncat(map_path,info_path, 4096 + 1);
 
 
 
@@ -89,21 +92,26 @@ int map_load_str(map_t *map, const char *filepath){
     }
 
 
-#elif defined(__linux__)
+#elif defined(__linux__) || (__GNUC__)
 
     const char *map_info = "//map_info.conf";
     char map_path[4096] = {0};
 
 
-    strncpy(map_path, filepath, strlen(filepath) - 1);
-    strncat(map_path, map_info, strlen(map_info) - 1);
+    strncpy(map_path, filepath, strlen(filepath) + 1);
+    strncat(map_path, map_info, strlen(map_info) + 1);
 
     if((conf = fopen(map_path, "rb")) == NULL){
         MAPCONV_ERROR("filepath not found - %s", strerror(errno));
         return -1;
     }
-
-
+#elif __apple__
+#error "TODO"
+#elif __unix__
+#error "TODO"
+#else
+    //Add new platform here
+#error "Map Loader Using Wrong Platform."
 #endif
 
 
@@ -137,7 +145,7 @@ map_t *map_init(void){
     map_t *mp = NULL;
 
     mp = calloc(1, sizeof(map_t));
-    mp->layers = alloc_layer_num(LAYERS_NUM);
+    mp->layers = map_alloc_layer_num(LAYERS_NUM);
     mp->tilesets = calloc(1, sizeof(map_tileset));
     //mp->name = "";
     mp->width = 0;
@@ -146,7 +154,7 @@ map_t *map_init(void){
     return mp;
 }
 
- map_layer* alloc_layer_num(int num){
+ map_layer* map_alloc_layer_num(int num){
     map_layer *l_tmp = NULL;
 
     l_tmp = calloc(num, sizeof(map_layer));
@@ -257,6 +265,7 @@ void map_save_file(FILE *fp, map_t *map)
     fwrite(map->filename,255,1,fp);
     fputc(map->width, fp);
     fputc(map->height, fp);
+    fputc(map->tileset_count, fp);
 
     int i,j;
 
@@ -289,7 +298,114 @@ void map_save_file(FILE *fp, map_t *map)
 
     fclose(fp);
 
-    fprintf(stdout, "map: %s is written to file\n\n", map->filename);
+    MAPCONV_LOG("map: %s is written to file\n\n", map->filename);
+    return;
+
+
+}
+
+static int map_is_valid_header(char header[6]){
+
+    if(header[0] == 'C' && header[1] == 'B' && header[2] == 'M' && header[3] == 'A' && header[4] == 'P' && header[5] == '\n'){
+        return 1;
+    }
+
+    return 0;
+}
+
+int map_load_file(map_t **map, FILE *in)
+{
+    map_t *tmp_map = NULL;
+    char header[6] = {0};
+    int i,j;
+
+    if( (*(map)) == NULL){
+         MAPCONV_ERROR("map_load_file(): map need to be inited before loaded");
+        return 0;
+    }
+
+    if(in == NULL){
+        MAPCONV_ERROR("map_load_file(): file stream is NULL");
+        return 0;
+    }
+
+
+    tmp_map = *map;
+
+    fread(header, 6, 1, in);
+
+    if(!map_is_valid_header(header)){
+        MAPCONV_ERROR("map_load_file(): Invalid map header");
+        return 0;
+    }
+
+
+
+    fread(tmp_map->name, 127,1,in);
+    fread(tmp_map->filename,255,1,in);
+    tmp_map->width = fgetc(in);
+    tmp_map->height = fgetc(in);
+    tmp_map->tileset_count = fgetc(in);
+
+
+    for(i = 0; i < LAYERS_NUM; i++){
+        tmp_map->layers[i].layer = calloc(tmp_map->width * tmp_map->height, sizeof(int));
+    }
+
+
+
+    for(i = 0; i < LAYERS_NUM; i++){
+
+        int layer_id = fgetc(in);
+        (void)layer_id;
+
+        for(j = 0; j < tmp_map->width * tmp_map->height; j++){
+            tmp_map->layers[layer_id].layer[j] = fgetc(in);
+        }
+    }
+
+
+
+
+    for(i = 0;i < tmp_map->tileset_count;i++){
+
+         fread(tmp_map->tilesets[i].name, 127,1,in);
+         tmp_map->tilesets[i].width = fgetc(in);
+         tmp_map->tilesets[i].height = fgetc(in);
+         tmp_map->tilesets[i].tile_width = fgetc(in);
+         tmp_map->tilesets[i].tile_height = fgetc(in);
+         tmp_map->tilesets[i].rows = fgetc(in);
+         tmp_map->tilesets[i].cols = fgetc(in);
+         tmp_map->tilesets[i].first_gid =fgetc(in);
+
+    }
+
+    fclose(in);
+    *map = tmp_map;
+    return 1;
+}
+
+map_t *map_load_file_str(const char *filepath)
+{
+    FILE *fp = NULL;
+    map_t *map = NULL;
+    char buf[BUFSIZ] = {0};
+
+    strncpy(buf, filepath, BUFSIZ);
+
+    map = map_init();
+
+    if((fp = fopen(buf, "rb+")) == NULL){
+        MAPCONV_ERROR("map_load_file_str(): cannot find file %s", filepath);
+        return 0;
+    }
+
+    if(!map_load_file(&map, fp)){
+        MAPCONV_ERROR("map_load_file_str(): map cannot be loaded! %s", filepath);
+        return map;
+    }
+
+    return map;
 
 
 }
