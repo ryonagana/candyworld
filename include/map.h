@@ -30,8 +30,12 @@ typedef struct map_layer {
 }map_layer;
 
 
+#define MAP_NAME_BUFFER 127
+#define MAP_FILENAME_BUFFER 255
+
+
 typedef struct map_tileset {
-    char name[127];
+    char name[MAP_NAME_BUFFER];
     int tile_width;
     int tile_height;
     int first_gid;
@@ -46,8 +50,8 @@ typedef struct map_tileset {
 typedef struct map_t {
     map_layer   *layers;
     map_tileset *tilesets;
-    char name[127];
-    char filename[255];
+    char name[MAP_NAME_BUFFER];
+    char filename[MAP_FILENAME_BUFFER];
     int width;
     int height;
     int tileset_count;

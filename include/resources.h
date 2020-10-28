@@ -36,8 +36,12 @@
 
 #define RESOURCE_EXTENSION_ANY  255
 
+
+#define DIR_BUF_SIZE 2048
+#define FILENAME_BUF_SIZE 255
+
 typedef struct file_t {
-    char name[255];
+    char name[FILENAME_BUF_SIZE];
     int type;
     int extension;
     void *block;
@@ -52,7 +56,7 @@ struct resources_t
     struct file_t* head;
     int total_loaded;
     int started;
-    char dir[2048];
+    char dir[DIR_BUF_SIZE];
 };
 
 typedef struct resources_t resources_t;

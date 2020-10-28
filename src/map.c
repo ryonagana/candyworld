@@ -33,13 +33,13 @@
 #endif
 
 int map_load_layer(map_t *map, int layer, const char *map_path){
-    char buf[4096] = {0};
+    char buf[BUFSIZ] = {0};
     FILE *fp = NULL;
     int *data = NULL;
 
-    strncpy(buf, map_path, 4096);
-    strncat(buf, "//", 1);
-    strncat(buf, map->layers[layer].name, 4096);
+    strncpy(buf, map_path, BUFSIZ - 1);
+    strncat(buf, "//\0", 3);
+    strncat(buf, map->layers[layer].name, MAP_NAME_BUFFER  - strlen(map->layers[layer].name));
 
     if((fp = fopen(buf,"rb")) == NULL){
         goto map_error;
@@ -94,12 +94,13 @@ int map_load_str(map_t *map, const char *filepath){
 
 #elif defined(__linux__) || (__GNUC__)
 
-    const char *map_info = "//map_info.conf";
+    const char *map_info = "//map_info.conf\0";
     char map_path[4096] = {0};
 
 
-    strncpy(map_path, filepath, strlen(filepath) + 1);
-    strncat(map_path, map_info, strlen(map_info) + 1);
+    strncpy(map_path, filepath, 4096 -1);
+    int map_info_len = strlen(map_info);
+    strncat(map_path, map_info, 4096 -  map_info_len);
 
     if((conf = fopen(map_path, "rb")) == NULL){
         MAPCONV_ERROR("filepath not found - %s", strerror(errno));
@@ -183,7 +184,7 @@ void map_save_name(map_t *map, const char *output_filename)
     char name[56] = {0};
     FILE *out = NULL;
 
-    strncpy(name, output_filename,56);
+    strncpy(name, output_filename,56 - 1);
     strcat(name, MAP_FORMAT);
 
     if((out = fopen(name, "wb+")) == NULL){
@@ -192,7 +193,7 @@ void map_save_name(map_t *map, const char *output_filename)
         return;
     }
 
-    strncpy(map->filename, name, 56 - 1);
+    strncpy(map->filename, name, 56 - strlen(name));
     map_save_file(out, map);
 
 }
@@ -391,7 +392,7 @@ map_t *map_load_file_str(const char *filepath)
     map_t *map = NULL;
     char buf[BUFSIZ] = {0};
 
-    strncpy(buf, filepath, BUFSIZ);
+    strncpy(buf, filepath, BUFSIZ - strlen(filepath));
 
     map = map_init();
 

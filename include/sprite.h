@@ -22,6 +22,7 @@ int sprite_init_str(sprite_t **spr, const char *name);
 int sprite_set_spritesheet_offset(sprite_t *spr, int rows, int cols);
 
 void sprite_draw(sprite_t *spr, int x, int y);
+void sprite_free(sprite_t **spr);
 
 
 #endif // SPRITE_H

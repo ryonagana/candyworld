@@ -90,3 +90,20 @@ int sprite_set_spritesheet_offset(sprite_t *spr, int rows, int cols)
     return 0;
 
 }
+
+void sprite_free(sprite_t **spr)
+{
+    if((*spr) == NULL) return;
+
+    sprite_t *spr_tmp = *spr;
+
+    if(spr_tmp->texture){
+        SDL_DestroyTexture(spr_tmp->texture);
+        spr_tmp->texture = NULL;
+    }
+
+    free((void*)spr);
+    *spr = NULL;
+
+
+}

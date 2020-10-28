@@ -40,8 +40,8 @@ void resources_start(const char *dir)
         strncpy(game_resources.dir, RESOURCES_FOLDER, 2048);
     }else {
         char buf[2048] = {0};
-        strncpy(buf,dir, 2048);
-        strncpy(game_resources.dir, dir, 2048);
+        strncpy(buf,dir, DIR_BUF_SIZE - 1);
+        strncpy(game_resources.dir, dir, DIR_BUF_SIZE - 1);
 
     }
 
@@ -422,7 +422,7 @@ TTF_Font *resources_ttf_get(const char *name)
         return NULL;
     }
 
-    strncpy(buf, name, BUFSIZ);
+    strncpy(buf, name, BUFSIZ - 1);
 
     fp = resource_get_ptr(buf, RESOURCE_TYPE_FONT);
 

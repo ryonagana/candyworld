@@ -103,7 +103,7 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
 
 
     char title_buf[255] = {0};
-    strncpy(title_buf, caption, 255);
+    strncpy(title_buf, caption, 255 - 1);
 
 
     int window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
