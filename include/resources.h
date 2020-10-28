@@ -7,6 +7,12 @@
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_image.h>
 
+
+#include "log.h"
+#include "sound.h"
+#include "window.h"
+#include "text.h"
+
 #define RESOURCES_FOLDER "resources//"
 
 #define RESOURCES_FOLDER_SPRITE RESOURCES_FOLDER"sprites//"
@@ -66,7 +72,7 @@ SDL_Texture *resources_surf_to_tex(SDL_Surface *surface, int cleanup);
 struct resources_t* resources_get();
 SDL_Texture* resources_sprite_get(const char* name, int extension);
 struct sfx_t* resources_sound_get(const char *name, int extension);
-
+TTF_Font* resources_ttf_get(const char *name);
 
 
 

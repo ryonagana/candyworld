@@ -1,8 +1,5 @@
 #include "resources.h"
-#include "log.h"
-#include "sound.h"
-#include "window.h"
-#include "text.h"
+
 
 #include <SDL2/SDL_ttf.h>
 
@@ -411,5 +408,38 @@ int resource_file_exists(const char *filepath)
     }
     fclose(fp);
     return 0;
+
+}
+
+TTF_Font *resources_ttf_get(const char *name)
+{
+    file_t *fp = NULL;
+    char buf[BUFSIZ] = {0};
+    TTF_Font *font = NULL;
+
+    if(!name){
+        DCRITICAL("resources_ttf_get(): invalid function parameters");
+        return NULL;
+    }
+
+    strncpy(buf, name, BUFSIZ);
+
+    fp = resource_get_ptr(buf, RESOURCE_TYPE_FONT);
+
+    if(!fp){
+        DCRITICAL("resources_ttf_get(): font %s not found", buf);
+        return NULL;
+    }
+
+    font = (void*) fp->block;
+
+
+
+    if(!font){
+        DCRITICAL("resources_ttf_get(): resource ptr is invalid", buf);
+        return NULL;
+    }
+
+    return font;
 
 }

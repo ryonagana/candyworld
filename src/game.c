@@ -11,7 +11,7 @@
 #include "sprite.h"
 
 static game_data_t gamedata;
-
+static text_t *debug_text = NULL;
 
 
 void game_init()
@@ -31,10 +31,14 @@ void game_init()
     resources_file_add("resources//sprites//sprite2.png", "sprite2");
     resources_file_add("resources//sprites//debug_tiles.png", "debug_tiles");
     resources_file_add("resources//sfx//test.ogg", "test_music");
-    resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",11);
+    resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",26);
 
      sprite_t *spr_test = NULL;
      sprite_init_str(&spr_test, "sprite2");
+
+     text_init_font(&debug_text, "dos_ttf", 25,0);
+
+     return;
 
 
 
@@ -113,6 +117,7 @@ void game_loop()
         SDL_RenderClear(window_get()->events.renderer);
 
         player_draw(&gamedata.player);
+        text_draw_shade(debug_text, 0,0, (SDL_Color){0,0,255,255}, (SDL_Color){255,255,255,255}, "Regular Text Test");
 
         SDL_RenderPresent(window_get()->events.renderer);
 
