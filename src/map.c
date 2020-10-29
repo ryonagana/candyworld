@@ -433,7 +433,7 @@ void map_render(map_t *map, int x, int y)
 
 }
 
-int map_render_tile(map_t *map, const char tileset_name)
+int map_render_tile(map_t *map, const char *tileset_name)
 {
     if(!map->tilesets) return 0;
 
