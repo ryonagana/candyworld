@@ -83,11 +83,12 @@ win32: {
 
 HEADERS += \
         $$PWD/include/main.h \
-        #include/debug.h \
+        include/debug.h \
         include/keyboard.h \
         include/log.h \
         include/lua_shared.h \
         include/player.h \
+    include/render.h \
         include/resources.h \
         #include/thread.h \
         include/sprite.h \
@@ -108,11 +109,12 @@ HEADERS += \
 
 SOURCES += \
         $$PWD/src/main.c \
-        #src/debug.c \
+        src/debug.c \
         src/keyboard.c \
         src/log.c \
         src/lua_shared.c \
         src/player.c \
+        src/render.c \
         src/resources.c \
         #src/thread.c \
         src/sprite.c \

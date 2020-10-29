@@ -1,9 +1,11 @@
 #include "debug.h"
-#include "allegro5/allegro.h"
-#include "allegro5/allegro_primitives.h"
+#include <SDL2/SDL.h>
+#include "window.h"
 
 void debug_render_player_hitbox(player_t *pl)
 {
-        al_draw_rectangle(pl->hitbox.x,pl->hitbox.y, (pl->hitbox.x + 16) + 16 , (pl->hitbox.y + 16) + 16 , al_map_rgba(255,255,0,255), 1.0);
-        return;
+    SDL_SetRenderDrawColor(window_get()->events.renderer, 0,0,255,255);
+    SDL_Rect r = { pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE  };
+    SDL_RenderDrawRect(window_get()->events.renderer, &r);
+    return;
 }

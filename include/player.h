@@ -7,10 +7,10 @@
 #include <SDL2/SDL.h>
 
 #define PLAYER_DIRECTION_NONE  0
-#define PLAYER_DIRECTION_UP    1
-#define PLAYER_DIRECTION_DOWN  2
-#define PLAYER_DIRECTION_LEFT  3
-#define PLAYER_DIRECTION_RIGHT 4
+#define PLAYER_DIRECTION_UP    4
+#define PLAYER_DIRECTION_DOWN  1
+#define PLAYER_DIRECTION_LEFT  2
+#define PLAYER_DIRECTION_RIGHT 3
 
 #define PLAYER_STATE_NONE    0
 #define PLAYER_STATE_IDLE    1
@@ -19,6 +19,9 @@
 #define PLAYER_STATE_WAIT    4
 
 #define PLAYER_SPEED 4
+
+
+#define PLAYER_TILE_SIZE 32
 
 struct player_t {
     int x;

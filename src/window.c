@@ -162,13 +162,11 @@ int window_end(void){
 
 
 
+
     IMG_Quit();
     TTF_Quit();
     Mix_Quit();
-    SDL_DestroyWindow(main_window.events.window);
-    main_window.events.window  = NULL;
-    if(main_window.events.renderer != NULL)  SDL_DestroyRenderer(main_window.events.renderer);
-    main_window.events.renderer = NULL;
+    window_free_events(&main_window);
 
 
 
@@ -203,4 +201,16 @@ void window_resize(int width, int height)
 
     window_get()->info.width = w;
     window_get()->info.height = h;
+}
+
+void window_free_events(game_window *win)
+{
+    if(win == NULL){
+        return;
+    }
+
+    SDL_DestroyRenderer(win->events.renderer);
+    SDL_DestroyWindow(win->events.window);
+    win->events.window = NULL;
+    win->events.renderer = NULL;
 }

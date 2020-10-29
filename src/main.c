@@ -4,6 +4,8 @@
 
 int main(int argc, char *argv[])
 {
+    UNUSED(argc);
+    UNUSED(argv);
     window_init(800,600, 0, "Candy!");
 
     game_init();

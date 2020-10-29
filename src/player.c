@@ -3,7 +3,8 @@
 #include "keyboard.h"
 #include "window.h"
 #include "log.h"
-//#include "debug.h"
+#include "render.h"
+#include "debug.h"
 
 
 static SDL_Texture* player_spritesheet = NULL;
@@ -61,28 +62,11 @@ void player_init(player_t *pl){
 void player_draw(player_t *pl)
 {
 #ifdef DEBUG
-   // debug_render_player_hitbox(pl);
+    debug_render_player_hitbox(pl);
 #endif
-    int tex_width, tex_height;
 
-    SDL_QueryTexture(player_spritesheet, NULL, NULL, &tex_width, &tex_height);
+    render_texture(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->direction, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, 0, SDL_FLIP_NONE);
 
-    SDL_Rect orig, dest;
-
-    orig.x = pl->offset_x * pl->frames;
-    orig.y = pl->offset_y * pl->direction;
-    orig.w = 32;
-    orig.h = 32;
-
-    dest.x = pl->x;
-    dest.y = pl->y;
-    dest.w = 32;
-    dest.h = 32;
-
-    //SDL_RenderCopyEx(window_get()->events.renderer, player_spritesheet,&orig, &dest, 0, NULL, 0);
-    SDL_RenderCopy(window_get()->events.renderer, player_spritesheet, &orig, &dest);
-    //al_draw_bitmap_region(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->frames, 32,32, pl->x, pl->y, 0);
-    return;
 }
 
 void player_update(player_t *pl, Uint32 delta)
@@ -93,8 +77,8 @@ void player_update(player_t *pl, Uint32 delta)
     UNUSED(delta);
 
     SDL_QueryTexture(player_spritesheet, NULL, NULL, &w, &h);
-    pl->offset_x = w / 12;
-    pl->offset_y = h / 8;
+    pl->offset_x = w  /  abs((w / PLAYER_TILE_SIZE));
+    pl->offset_y = h  /  abs((h / PLAYER_TILE_SIZE));
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:

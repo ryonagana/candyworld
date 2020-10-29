@@ -387,7 +387,7 @@ int resources_ttf_add(const char *file, const char *name, int size)
     }
 
 
-    int file_ext= resource_get_ext(file);
+    int file_ext = resource_get_ext(file);
 
     switch(file_ext){
         default:

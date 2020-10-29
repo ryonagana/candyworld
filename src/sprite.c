@@ -13,9 +13,12 @@ static sprite_t *sprite_alloc_mem(size_t num){
     }
 
 
-    if((spr_tmp = malloc(sizeof (sprite_t))) == NULL){
+    spr_tmp = calloc(1,sizeof (sprite_t));
+
+    if(!spr_tmp){
         return spr_tmp;
     }
+
 
     spr_tmp->pos.x = 0;
     spr_tmp->pos.y = 0;

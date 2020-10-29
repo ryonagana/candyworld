@@ -78,7 +78,7 @@ map_t* map_load_file_str(const char *filepath);
 int map_getgid(map_t *map, int gid);
 void map_render(map_t *map, int x, int y);
 int map_get_tile(map_t *map, int layer, int x, int y);
-int map_render_tile(map_t *map, const char tileset_name);
+int map_render_tile(map_t *map, const char *tileset_name);
 
 
 #endif // MAP_H

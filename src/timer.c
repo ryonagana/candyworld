@@ -59,11 +59,8 @@ void timer_set_pause(game_timer_t *tm)
 void timer_frame_cap(Uint32 ticks)
 {
 
-
-    if( ticks < MAX_TICKS )
-    {
-        //Wait remaining time
-        SDL_Delay( MAX_TICKS - ticks );
-    }
+   if(ticks  < 1000 / FPS){
+       SDL_Delay( (1000 - FPS) - ticks);
+   }
 
 }
