@@ -303,7 +303,7 @@ SDL_Texture *resources_sprite_get(const char* name, int extension)
     file_t *tmp = resource_get_ptr(name, extension);
 
     if(!tmp){
-        DLOG("Resource %s not found");
+        DLOG("Resource %s not found", name);
         return NULL;
     }
 

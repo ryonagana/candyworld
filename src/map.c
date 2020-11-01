@@ -5,11 +5,13 @@
 #include "resources.h"
 #else
 #include "../include/map.h"
+
 #endif
 
 #include "../mapconverter/csv_parser.h"
 #include "../mapconverter/ini.h"
 #include "../mapconverter/ini_parser.h"
+
 
 
 
@@ -58,8 +60,13 @@ void map_show_info(map_t *map){
         printf(" %d ", map->layers[i].layer[layer_count]);
 
       }
+  }
 
-
+  for(i = 0; i < map->tileset_count;i++){
+      MAPCONV_LOG("\n\ntileset size:  %dx%d\n"
+                  "tileset tile width: %d\n"
+                  "tileset tile height %d\n"
+                  "tileset gid %d\n", map->tilesets[i].width,map->tilesets[i].height, map->tilesets[i].tile_width, map->tilesets[i].tile_height, map->tilesets[i].first_gid);
   }
 
 
@@ -318,11 +325,10 @@ void map_save_file(FILE *fp, map_t *map)
     }
 
     for(i = 0;i < map->tileset_count;i++){
-        if(!map->tilesets[i].loaded) continue;
 
          fwrite(map->tilesets[i].name, 127, 1, fp);
-         fputc(map->tilesets[i].width, fp);
-         fputc(map->tilesets[i].height, fp);
+         fwrite(&map->tilesets[i].width, sizeof(int), 1, fp);
+         fwrite(&map->tilesets[i].height, sizeof(int), 1, fp);
          fputc(map->tilesets[i].tile_width, fp);
          fputc(map->tilesets[i].tile_height, fp);
          fputc(map->tilesets[i].rows, fp);
@@ -349,7 +355,7 @@ static int map_is_valid_header(char header[6]){
     return 0;
 }
 
-int map_load_file(map_t **map, FILE *in)
+int map_load_stream(map_t **map, FILE *in)
 {
     map_t *tmp_map = NULL;
     char header[6] = {0};
@@ -374,9 +380,11 @@ int map_load_file(map_t **map, FILE *in)
         MAPCONV_ERROR("map_load_file(): Invalid map header");
         return 0;
     }
+    strncpy(tmp_map->header, header, strlen(header));
 
-    fread(tmp_map->name, 127,1,in);
-    fread(tmp_map->filename,255,1,in);
+
+    fread(tmp_map->name, MAP_NAME_BUFFER,1,in);
+    fread(tmp_map->filename,MAP_FILENAME_BUFFER,1,in);
     tmp_map->width = fgetc(in);
     tmp_map->height = fgetc(in);
     tmp_map->tileset_count = fgetc(in);
@@ -391,8 +399,7 @@ int map_load_file(map_t **map, FILE *in)
 
     for(i = 0; i < LAYERS_NUM; i++){
 
-        int layer_id = fgetc(in);
-        (void)layer_id;
+        int layer_id = fgetc(in); // get the layer num
 
         for(j = 0; j < tmp_map->width * tmp_map->height; j++){
             tmp_map->layers[layer_id].layer[j] = fgetc(in);
@@ -405,8 +412,10 @@ int map_load_file(map_t **map, FILE *in)
     for(i = 0;i < tmp_map->tileset_count;i++){
 
          fread(tmp_map->tilesets[i].name, 127,1,in);
-         tmp_map->tilesets[i].width = fgetc(in);
-         tmp_map->tilesets[i].height = fgetc(in);
+         //tmp_map->tilesets[i].width = fgetc(in);
+         //tmp_map->tilesets[i].height = fgetc(in);
+         fread(&tmp_map->tilesets[i].width, sizeof(int), 1, in);
+         fread(&tmp_map->tilesets[i].height, sizeof(int), 1, in);
          tmp_map->tilesets[i].tile_width = fgetc(in);
          tmp_map->tilesets[i].tile_height = fgetc(in);
          tmp_map->tilesets[i].rows = fgetc(in);
@@ -428,17 +437,22 @@ map_t *map_load_file_str(const char *filepath)
 
     strncpy(buf, filepath, BUFSIZ - strlen(filepath));
 
-    map = map_init();
+
 
     if((fp = fopen(buf, "rb+")) == NULL){
         MAPCONV_ERROR("map_load_file_str(): cannot find file %s", filepath);
         return 0;
     }
 
-    if(!map_load_file(&map, fp)){
+    map = map_init();
+
+
+
+    if(!map_load_stream(&map, fp)){
         MAPCONV_ERROR("map_load_file_str(): map cannot be loaded! %s", filepath);
         return map;
     }
+
 
     return map;
 

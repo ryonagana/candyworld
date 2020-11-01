@@ -34,7 +34,7 @@ void game_init()
     resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",26);
 
 
-     map_load_file_str("assets//")
+     gamedata.map = map_load_file_str("resources//map//test.cbmap");
 
      sprite_t *spr_test = NULL;
      sprite_init_str(&spr_test, "sprite2");
@@ -120,6 +120,7 @@ void game_loop()
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
 
+        map_render(gamedata.map, 0,0);
         player_draw(&gamedata.player);
         text_draw_shade(debug_text, 0,0, (SDL_Color){0,0,255,255}, (SDL_Color){255,255,255,255}, "Regular Text Test");
 

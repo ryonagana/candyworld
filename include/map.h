@@ -52,6 +52,7 @@ typedef struct map_tileset {
 typedef struct map_t {
     map_layer   *layers;
     map_tileset *tilesets;
+    char header[6];
     char name[MAP_NAME_BUFFER];
     char filename[MAP_FILENAME_BUFFER];
     int width;
@@ -74,7 +75,7 @@ void map_save_name(map_t *map, const char *output_filename);
 void map_save_file(FILE *fp, map_t *map);
 
 
-int map_load_file(map_t** map, FILE *in);
+int map_load_stream(map_t** map, FILE *in);
 map_t* map_load_file_str(const char *filepath);
 //void map_load_file(map_t **map, )
 
