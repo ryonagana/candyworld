@@ -114,8 +114,8 @@ int map_load_str_csv(map_t *map, const char *filepath){
 #if defined (WIN32) || defined(_WIN32) || (__WIN32__)
     const wchar_t info_path[] = L"//map_info.conf";
     wchar_t map_path[4096] = {0};
-    mbstowcs(map_path, filepath, 4096 + 1);
-    _tcsncat(map_path,info_path, 4096 + 1);
+    mbstowcs(map_path, filepath, 4096 -  strlen(filepath));
+    _tcsncat(map_path,info_path, 4096 - strlen(filepath));
 
 
 
