@@ -6,6 +6,9 @@
 #include <stdint.h>
 #include "window.h"
 #include "player.h"
+#include "map.h"
+#include "map_render.h"
+
 
 /*
 #include "hud.h"
@@ -27,6 +30,7 @@ typedef struct game_data_t {
     player_t player;
     int  transition_state;
     int redraw_frame;
+    map_t *map;
 }game_data_t;
 
 

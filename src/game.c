@@ -33,6 +33,9 @@ void game_init()
     resources_file_add("resources//sfx//test.ogg", "test_music");
     resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",26);
 
+
+     map_load_file_str("assets//")
+
      sprite_t *spr_test = NULL;
      sprite_init_str(&spr_test, "sprite2");
 

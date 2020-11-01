@@ -35,6 +35,9 @@ void parse_params(int argc, char **argv){
 
 int main(int argc , char *argv[])
 {
+    char name[BUFSIZ] = {0};
+    map_t *map = NULL;
+
     if(argc <= 1){
         usage();
         return 0;
@@ -43,30 +46,17 @@ int main(int argc , char *argv[])
     parse_params(argc, argv);
 
 
-    map_t* root = NULL;
+    strncpy(name, map_folder, BUFSIZ - strlen(map_folder));
+    strncat(name, MAP_FORMAT, BUFSIZ - strlen(MAP_FORMAT));
 
-    root = map_init();
-
-    /*
-    map_load_str(root, map_folder);
-
-    if(root == NULL){
-        usage();
-        return 0;
-    }
-
-    map_save_name(root, map_folder);*/
-
-    root = map_load_file_str("test.cbmap");
-
-    if(root == NULL){
-        MAPCONV_ERROR("map cannot be loaded");
-        return 0;
-    }
+    map = map_init();
+    map_load_str_csv(map, map_folder);
+    map_save_name(map, map_folder);
+    map_show_info(map);
+    map_free(&map);
 
 
 
-    map_free(&root);
 
     return 0;
 }

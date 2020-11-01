@@ -35,6 +35,36 @@
 #include <mbstring.h>
 #endif
 
+
+void map_show_info(map_t *map){
+    MAPCONV_LOG("[MAP]\n"
+                "map name: %s\n"
+                "map version: %d\n"
+                "map size: %dx%d\n"
+                "map tileset count: %d\n\n"
+                ,map->name, map->map_version, map->width, map->height, map->tileset_count);
+
+  int i;
+
+  int layer_count;
+
+  for (i = 0; i < LAYERS_NUM; i++){
+      MAPCONV_LOG("layer: %s\n"
+                  "layer flag :%d\n"
+                  "layer size: %d\n\n", map->layers[i].name, map->layers[i].flags, map->width * map->height);
+
+      for(layer_count = 0; layer_count < map->width * map->height; layer_count++){
+        //MAPCONV_LOG(" %d ", map->layers[i].layer[y]);
+        printf(" %d ", map->layers[i].layer[layer_count]);
+
+      }
+
+
+  }
+
+
+}
+
 int map_load_layer(map_t *map, int layer, const char *map_path){
     char buf[BUFSIZ] = {0};
     FILE *fp = NULL;
@@ -74,7 +104,7 @@ int map_load_layer(map_t *map, int layer, const char *map_path){
 
 }
 
-int map_load_str(map_t *map, const char *filepath){
+int map_load_str_csv(map_t *map, const char *filepath){
 
     FILE *conf;
     conf = NULL;
@@ -197,6 +227,7 @@ void map_save_name(map_t *map, const char *output_filename)
     }
 
     strncpy(map->filename, name, 56 - strlen(name));
+    map->map_version = MAP_VERSION;
     map_save_file(out, map);
 
 }
@@ -270,6 +301,7 @@ void map_save_file(FILE *fp, map_t *map)
     fputc(map->width, fp);
     fputc(map->height, fp);
     fputc(map->tileset_count, fp);
+    fputc(map->map_version, fp);
 
     int i,j;
 
@@ -343,13 +375,12 @@ int map_load_file(map_t **map, FILE *in)
         return 0;
     }
 
-
-
     fread(tmp_map->name, 127,1,in);
     fread(tmp_map->filename,255,1,in);
     tmp_map->width = fgetc(in);
     tmp_map->height = fgetc(in);
     tmp_map->tileset_count = fgetc(in);
+    tmp_map->map_version = fgetc(in);
 
 
     for(i = 0; i < LAYERS_NUM; i++){
@@ -414,78 +445,4 @@ map_t *map_load_file_str(const char *filepath)
 
 }
 
-void map_render(map_t *map, int x, int y)
-{
-    int tx,ty;
-    int layer;
 
-    SDL_Texture* map_asset =  NULL;
-
-    for(layer = 0; layer < LAYERS_NUM; layer++){
-        if( &(map->layers[layer]) == NULL) continue;
-
-        for(tx = 0; tx <  map->width * map->height; tx++){
-                if(map->layers[layer].layer == NULL) continue;
-
-                //map->layers[layer].layer[y * map->height + x]
-        }
-    }
-
-}
-
-int map_render_tile(map_t *map, const char *tileset_name)
-{
-    if(!map->tilesets) return 0;
-
-    int i;
-    SDL_Texture *tex = NULL;
-
-    for(i = 0; i < map->tileset_count; i++){
-        tex = resources_sprite_get(tileset_name, RESOURCE_EXTENSION_ANY);
-    }
-
-    if(!tex){
-        return 0;
-    }
-
-
-
-}
-
-/*
- * this function is needed to normalize tilesetes loaded from map
- * and find right tile before render on screen
- * based on tiled docs
- *
- * return the gid (graphic id) from tileset
- */
-
-int map_getgid(map_t *map, int gid)
-{
-
-    int cur_gid = gid;
-    int tileset_gid = -1;
-
-    int c;
-    for(c = 0; c < map->tileset_count; c++){
-
-        if(tileset_gid <= cur_gid){
-            tileset_gid = map->tilesets[c].first_gid;
-        }
-    }
-
-    if(tileset_gid == -1 ) return tileset_gid;
-
-    return cur_gid -= tileset_gid;
-}
-
-int map_get_tile(map_t *map, int layer, int x, int y)
-{
-    int is_rect = map->width > map->height ? 1 : 0;
-
-    if(is_rect){
-        return map->layers[layer].layer[y * map->height+ x];
-    }
-
-    return map->layers[layer].layer[x * map->width + y];
-}

@@ -23,6 +23,8 @@
 
 #define MAP_FORMAT ".cbmap"
 
+#define MAP_VERSION 1
+
 typedef struct map_layer {
     char name[127];
     int *layer;
@@ -55,6 +57,7 @@ typedef struct map_t {
     int width;
     int height;
     int tileset_count;
+    int map_version;
 }map_t;
 
 
@@ -75,10 +78,7 @@ int map_load_file(map_t** map, FILE *in);
 map_t* map_load_file_str(const char *filepath);
 //void map_load_file(map_t **map, )
 
-int map_getgid(map_t *map, int gid);
-void map_render(map_t *map, int x, int y);
-int map_get_tile(map_t *map, int layer, int x, int y);
-int map_render_tile(map_t *map, const char *tileset_name);
+void map_show_info(map_t *map);
 
 
 #endif // MAP_H

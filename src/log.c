@@ -58,7 +58,7 @@ void log_type(int type)
 }
 
 
-void log_write(const char *msg, ...)
+void log_write(int type, const char *msg, ...)
 {
 
     char logbuf[1024] = {0};
@@ -68,18 +68,38 @@ void log_write(const char *msg, ...)
     va_start(lst, msg);
     vsnprintf(logbuf, sizeof(logbuf), msg, lst);
     va_end(lst);
-    log_file(logbuf);
+    log_file(logbuf, type);
 }
 
 
 
-void log_file(const char *msg)
+void log_file(const char *msg, int type)
 {
 #ifdef ALLEGRO_LOG
      al_append_native_text_log(allegro_log, "\n%s: %s - Line: %d, Src: %s\n", prefix, msg, __LINE__, __FILE__);
 
 #else
-    SDL_Log("%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
+
+    switch(type){
+
+        case LOG_COMMON:
+            SDL_LogError(SDL_LOG_PRIORITY_INFO, "%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
+        break;
+        case LOG_WARN:
+            SDL_LogError(SDL_LOG_PRIORITY_WARN, "%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
+        break;
+        case LOG_INFO:
+            SDL_LogError(SDL_LOG_PRIORITY_INFO, "%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
+        break;
+
+        case LOG_CRITICAL:
+            SDL_LogError(SDL_LOG_CATEGORY_ERROR,"%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
+        break;
+
+
+    }
+
+
 #endif
 }
 

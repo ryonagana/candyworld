@@ -87,8 +87,9 @@ HEADERS += \
         include/keyboard.h \
         include/log.h \
         include/lua_shared.h \
+        include/map_render.h \
         include/player.h \
-    include/render.h \
+        include/render.h \
         include/resources.h \
         #include/thread.h \
         include/sprite.h \
@@ -109,6 +110,7 @@ HEADERS += \
 
 SOURCES += \
         $$PWD/src/main.c \
+        src/map_render.c \
         src/debug.c \
         src/keyboard.c \
         src/log.c \
