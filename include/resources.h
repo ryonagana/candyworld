@@ -40,20 +40,21 @@
 #define DIR_BUF_SIZE 2048
 #define FILENAME_BUF_SIZE 255
 
-typedef struct file_t {
+typedef struct resource_file_t {
     char name[FILENAME_BUF_SIZE];
+    char filename[FILENAME_BUF_SIZE];
     int type;
     int extension;
     void *block;
-    struct file_t *next;
-}file_t;
+    struct resource_file_t *next;
+}resource_file_t;
 
 
 
 struct resources_t
 {
-    struct file_t* tail;
-    struct file_t* head;
+    struct resource_file_t* tail;
+    struct resource_file_t* head;
     int total_loaded;
     int started;
     char dir[DIR_BUF_SIZE];
@@ -61,10 +62,15 @@ struct resources_t
 
 typedef struct resources_t resources_t;
 
+// alloc mem for a single file
+resource_file_t* resources_alloc_mem(const char *path, const char *name, int type, int extension, void *file_ptr);
+
+
 void resources_start(const char *dir);
 
 // add any file
 int  resources_file_add(const char *file, const char *name);
+
 
 //add ttf files
 int  resources_ttf_add(const char *file, const char *name, int size);
@@ -102,6 +108,9 @@ struct sfx_t* resources_sound_get(const char *name, int extension);
 TTF_Font* resources_ttf_get(const char *name);
 
 
+SDL_Texture* resources_sprite_get_by_filename(const char* name);
+struct sfx_t*  resources_sound_get_by_filename(const char* name);
+TTF_Font* resources_ttf_get_by_filename(const char *name);
 
 
 #endif // RESOURCES_H

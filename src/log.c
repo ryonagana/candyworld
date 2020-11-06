@@ -99,6 +99,7 @@ void log_file(const char *msg, int type)
 
     }
 
+    SDL_Log("%s: %s - line: %d - File: %s", prefix, msg, __LINE__, __FILE__);
 
 #endif
 }

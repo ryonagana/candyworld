@@ -2,17 +2,32 @@
 
 
 #include <SDL2/SDL_ttf.h>
+#include "std.h"
 
 static struct resources_t game_resources;
 
 
+resource_file_t* resources_alloc_mem(const char *path, const char *name, int type, int extension, void *file_ptr){
+    resource_file_t *tmp = malloc(sizeof (resource_file_t));
+    strncpy(tmp->name, name, FILENAME_BUF_SIZE - strlen(name));
+    const char *filename = BASENAME(path);
+    strncpy(tmp->filename, filename, FILENAME_BUF_SIZE - strlen(filename));
+    tmp->next = NULL;
+    tmp->type = type;
+    tmp->block = NULL;
+    tmp->block = file_ptr;
+    tmp->extension = extension;
 
-static void resources_release_file(file_t **f){
+    return tmp;
+}
+
+
+static void resources_release_file(resource_file_t **f){
     free((void *)*f);
     *f = NULL;
 }
 
-static void resources_debug_msg_add(file_t *f){
+static void resources_debug_msg_add(resource_file_t *f){
     switch(f->type){
         case RESOURCE_TYPE_SPRITE:
             DLOG("SPRITE: %s added", f->name);
@@ -86,7 +101,7 @@ static int resource_get_ext(const char *filename)
 }
 
 
-static void resources_free_sprite(file_t **f){
+static void resources_free_sprite(resource_file_t **f){
     SDL_Texture *img = (*f)->block;
     //al_destroy_bitmap(img);
     SDL_DestroyTexture(img);
@@ -97,14 +112,14 @@ static void resources_free_sprite(file_t **f){
     return;
 }
 
-static void resources_free_sound(file_t **f){
+static void resources_free_sound(resource_file_t **f){
     sfx_t *sfx = (*f)->block;
     sfx_destroy(sfx);
     resources_release_file(f);
     return;
 }
 
-static void resources_free_font(file_t **f){
+static void resources_free_font(resource_file_t **f){
     TTF_Font *font = (*f)->block;
     TTF_CloseFont(font);
     font = NULL;
@@ -112,7 +127,7 @@ static void resources_free_font(file_t **f){
 
 }
 
-static void resources_list_add(file_t *f){
+static void resources_list_add(resource_file_t *f){
 
     if(game_resources.tail == NULL || game_resources.total_loaded <= 0){
         game_resources.tail = f;
@@ -139,7 +154,8 @@ static int resources_load_image(const char *filepath, const char *name, int exte
 
     SDL_Surface *surf  = resources_load_surface(filepath);
     SDL_Texture *tex   = resources_surf_to_tex(surf, 0);
-
+    resource_file_t *tmp = resources_alloc_mem(filepath, name, RESOURCE_TYPE_SPRITE, extension, tex);
+    /*
     file_t *tmp = malloc(sizeof (file_t));
     strncpy(tmp->name,"\0", 255);
     strcpy(tmp->name, name);
@@ -148,6 +164,7 @@ static int resources_load_image(const char *filepath, const char *name, int exte
     tmp->block = NULL;
     tmp->block = tex;
     tmp->extension = extension;
+    */
     SDL_FreeSurface(surf);
     resources_list_add(tmp);
 
@@ -172,6 +189,9 @@ static int resources_load_font(const char *filepath, int size, const char *name,
         return -1;
     }
 
+    resource_file_t *tmp = resources_alloc_mem(filepath, name, RESOURCE_TYPE_FONT, extension, fnt);
+
+    /*
     file_t *tmp = calloc(1, sizeof (file_t));
     strcpy(tmp->name, name);
     tmp->next = NULL;
@@ -179,6 +199,7 @@ static int resources_load_font(const char *filepath, int size, const char *name,
     tmp->block = NULL;
     tmp->block = fnt;
     tmp->extension = extension;
+    */
     resources_list_add(tmp);
     return 0;
 }
@@ -195,7 +216,9 @@ static int resources_load_sound(const char *filepath, const char *name,  int ext
         return 0;
     }
 
+    resource_file_t *tmp = resources_alloc_mem(filepath, name, RESOURCE_TYPE_SOUND, extension, sfx);
 
+    /*
     file_t *tmp = malloc(sizeof (file_t));
     //memcpy(tmp->name, '\0', 255);
     strncpy(tmp->name,"\0", 255);
@@ -205,6 +228,8 @@ static int resources_load_sound(const char *filepath, const char *name,  int ext
     tmp->block = NULL;
     tmp->block = sfx;
     tmp->extension = extension;
+    */
+
 
     resources_list_add(tmp);
 
@@ -256,12 +281,14 @@ int resources_file_add(const char *file, const char *name)
 }
 
 
-file_t* resource_get_ptr(const char *name, int type)
+resource_file_t* resource_get_ptr(const char *name, int type)
 {
-    file_t *tmp = game_resources.head;
+    resource_file_t *tmp = game_resources.head;
+
+
 
     if(type != RESOURCE_EXTENSION_ANY){
-        while(tmp != NULL && strcmp(tmp->name, name) != 0 && tmp->type != type){
+        while( (tmp != NULL && strcmp(tmp->name, name) != 0 && tmp->type != type)){
             tmp = tmp->next;
         }
 
@@ -269,7 +296,7 @@ file_t* resource_get_ptr(const char *name, int type)
     }
 
 
-    while(tmp != NULL && strcmp(tmp->name, name) != 0){
+    while( (tmp != NULL && strcmp(tmp->name, name) != 0)){
         tmp = tmp->next;
     }
 
@@ -278,7 +305,7 @@ file_t* resource_get_ptr(const char *name, int type)
 
 
 struct sfx_t* resources_sound_get(const char *name, int extension){
-    file_t *tmp = resource_get_ptr(name, extension);
+    resource_file_t *tmp = resource_get_ptr(name, extension);
     struct sfx_t *data = NULL;
 
     if(tmp == NULL){
@@ -300,7 +327,7 @@ struct sfx_t* resources_sound_get(const char *name, int extension){
 
 SDL_Texture *resources_sprite_get(const char* name, int extension)
 {
-    file_t *tmp = resource_get_ptr(name, extension);
+    resource_file_t *tmp = resource_get_ptr(name, extension);
 
     if(!tmp){
         DLOG("Resource %s not found", name);
@@ -313,8 +340,8 @@ SDL_Texture *resources_sprite_get(const char* name, int extension)
 
 void resources_free()
 {
-    file_t *tmp = game_resources.head;
-    file_t *old = NULL;
+    resource_file_t *tmp = game_resources.head;
+    resource_file_t *old = NULL;
 
 
     while(tmp != NULL){
@@ -413,7 +440,7 @@ int resource_file_exists(const char *filepath)
 
 TTF_Font *resources_ttf_get(const char *name)
 {
-    file_t *fp = NULL;
+    resource_file_t *fp = NULL;
     char buf[BUFSIZ] = {0};
     TTF_Font *font = NULL;
 
@@ -441,5 +468,30 @@ TTF_Font *resources_ttf_get(const char *name)
     }
 
     return font;
+
+}
+
+static resource_file_t* resource_get_ptr_filename(const char *name)
+{
+    resource_file_t *tmp = game_resources.head;
+    while( (tmp != NULL && strncmp(tmp->filename, name, FILENAME_BUF_SIZE - strlen(tmp->filename)))){
+        tmp = tmp->next;
+    }
+
+    return tmp;
+}
+
+SDL_Texture *resources_sprite_get_by_filename(const char *name)
+{
+    resource_file_t *ft = NULL;
+    ft = resource_get_ptr_filename(name);
+
+    if(!ft){
+       DWARN("resource: %s not found!",name);
+       return NULL;
+    }
+
+
+    return (SDL_Texture*)ft->block;
 
 }

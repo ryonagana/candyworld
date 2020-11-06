@@ -45,6 +45,7 @@ win32: {
 
     debug: {
         DEFINES += DEBUG
+        QMAKE_CFLAGS += -O0
     }
 
     LIBS += -L$$PWD/../../../libs/SDL2-2.0.12/i686-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2.dll -lSDL2_ttf.dll -lSDL2_image.dll -lSDL2_mixer.dll
@@ -103,6 +104,7 @@ HEADERS += \
         include/lua_hud.h \
         include/hud.h \
         include/map.h \
+        include/std.h \
         $$PWD/mapconverter/ini_parser.h \
         $$PWD/mapconverter/csv_parser.h \
         $$PWD/mapconverter/ini.h \
@@ -129,6 +131,7 @@ SOURCES += \
         src/lua_hud.c \
         src/hud.c \
         src/map.c \
+        src/std.c \
         $$PWD/mapconverter/ini_parser.c \
         $$PWD/mapconverter/csv_parser.c \
         $$PWD/mapconverter/ini.c \

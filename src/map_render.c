@@ -12,7 +12,7 @@ void map_render(map_t *map, int x, int y)
     int tx,ty;
     int layer;
 
-    SDL_Texture* map_asset =   resources_sprite_get(map->tilesets[0].name, RESOURCE_EXTENSION_ANY);
+    SDL_Texture* map_asset =   resources_sprite_get_by_filename(map->tilesets[0].name);
 
     for(layer = 0; layer < LAYERS_NUM; layer++){
         if( &(map->layers[layer]) == NULL) continue;
