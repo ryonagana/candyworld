@@ -3,12 +3,12 @@
 
 #include <SDL2/SDL_ttf.h>
 #include "std.h"
-
+#include <assert.h>
 static struct resources_t game_resources;
 
 
 resource_file_t* resources_alloc_mem(const char *path, const char *name, int type, int extension, void *file_ptr){
-    resource_file_t *tmp = malloc(sizeof (resource_file_t));
+    resource_file_t *tmp = calloc(1, sizeof (resource_file_t));
     strncpy(tmp->name, name, FILENAME_BUF_SIZE - strlen(name));
     const char *filename = BASENAME(path);
     strncpy(tmp->filename, filename, FILENAME_BUF_SIZE - strlen(filename));
@@ -103,6 +103,8 @@ static int resource_get_ext(const char *filename)
 
 static void resources_free_sprite(resource_file_t **f){
     SDL_Texture *img = (*f)->block;
+
+    assert(img);
     //al_destroy_bitmap(img);
     SDL_DestroyTexture(img);
     img = NULL;
@@ -114,6 +116,9 @@ static void resources_free_sprite(resource_file_t **f){
 
 static void resources_free_sound(resource_file_t **f){
     sfx_t *sfx = (*f)->block;
+
+    assert(sfx);
+
     sfx_destroy(sfx);
     resources_release_file(f);
     return;
@@ -121,6 +126,9 @@ static void resources_free_sound(resource_file_t **f){
 
 static void resources_free_font(resource_file_t **f){
     TTF_Font *font = (*f)->block;
+
+    assert(font);
+
     TTF_CloseFont(font);
     font = NULL;
     resources_release_file(f);

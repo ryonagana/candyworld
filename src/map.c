@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include "render.h"
 #include "resources.h"
+
+
 #else
 #include "../include/map.h"
 
@@ -305,8 +307,10 @@ void map_save_file(FILE *fp, map_t *map)
     fwrite("CBMAP\n", 6,1,fp);
     fwrite(map->name, 127, 1, fp);
     fwrite(map->filename,255,1,fp);
-    fputc(map->width, fp);
-    fputc(map->height, fp);
+    fwrite(&map->width, sizeof (int32_t), 1, fp);
+    fwrite(&map->height, sizeof (int32_t), 1, fp);
+    //fputc(map->width, fp);
+    //fputc(map->height, fp);
     fputc(map->tileset_count, fp);
     fputc(map->map_version, fp);
 
@@ -380,13 +384,13 @@ int map_load_stream(map_t **map, FILE *in)
         MAPCONV_ERROR("map_load_file(): Invalid map header");
         return 0;
     }
-    strncpy(tmp_map->header, header, strlen(header));
+    strncpy(tmp_map->header, header, 6);
 
 
     fread(tmp_map->name, MAP_NAME_BUFFER,1,in);
     fread(tmp_map->filename,MAP_FILENAME_BUFFER,1,in);
-    tmp_map->width = fgetc(in);
-    tmp_map->height = fgetc(in);
+    fread(&tmp_map->width, sizeof (int32_t), 1, in);
+    fread(&tmp_map->height, sizeof (int32_t), 1, in);
     tmp_map->tileset_count = fgetc(in);
     tmp_map->map_version = fgetc(in);
 
@@ -407,15 +411,13 @@ int map_load_stream(map_t **map, FILE *in)
     }
 
 
-
-
     for(i = 0;i < tmp_map->tileset_count;i++){
 
          fread(tmp_map->tilesets[i].name, 127,1,in);
          //tmp_map->tilesets[i].width = fgetc(in);
          //tmp_map->tilesets[i].height = fgetc(in);
-         fread(&tmp_map->tilesets[i].width, sizeof(int), 1, in);
-         fread(&tmp_map->tilesets[i].height, sizeof(int), 1, in);
+         fread(&tmp_map->tilesets[i].width, sizeof(int32_t), 1, in);
+         fread(&tmp_map->tilesets[i].height, sizeof(int32_t), 1, in);
          tmp_map->tilesets[i].tile_width = fgetc(in);
          tmp_map->tilesets[i].tile_height = fgetc(in);
          tmp_map->tilesets[i].rows = fgetc(in);
@@ -423,6 +425,10 @@ int map_load_stream(map_t **map, FILE *in)
          tmp_map->tilesets[i].first_gid =fgetc(in);
 
     }
+
+
+
+    map_convert_1d_to_2d(&tmp_map);
 
     fclose(in);
     *map = tmp_map;
@@ -460,3 +466,65 @@ map_t *map_load_file_str(const char *filepath)
 }
 
 
+int map_getgid(map_t *map, int gid)
+{
+
+    int cur_gid = gid;
+    int tileset_gid = -1;
+
+    int c;
+    for(c = 0; c < map->tileset_count; c++){
+
+        if(tileset_gid <= cur_gid){
+            tileset_gid = map->tilesets[c].first_gid;
+            break;
+        }
+    }
+
+    if(tileset_gid == -1 ) return tileset_gid;
+
+    return cur_gid -= tileset_gid;
+}
+
+
+
+
+void map_convert_1d_to_2d(map_t **map)
+{
+    int x,y;
+    int layer;
+    map_t *tmp = *map;
+
+
+    for(layer = 0; layer < LAYERS_NUM; layer++){
+
+        for(y = 0; y < tmp->height; y++){
+            for(x = 0; x < tmp->width; x++){
+               //tmp->layers[layer].tiles[y][x] = tmp->layers[layer].layer[ y * tmp->height + x];
+
+                int id = tmp->layers[layer].layer[ y * (tmp->height + x)];
+                int32_t gid = map_getgid(tmp, id);
+
+                int rx = (gid % (tmp->tilesets[0].width / tmp->tilesets->tile_width)) * tmp->tilesets[0].tile_width;
+                int ry = (gid / (tmp->tilesets[0].height / tmp->tilesets->tile_height)) * tmp->tilesets[0].tile_height;
+
+
+                map_tile_t t = {
+                    id,
+                    rx,
+                    ry,
+                    0
+                };
+
+                tmp->layers[layer].tiles[y][x] = t;
+
+
+
+            }
+        }
+    }
+
+    *map = tmp;
+
+
+}

@@ -56,8 +56,8 @@ void text_draw(text_t *font, int x, int y,  const SDL_Color fg, const char *msg,
 
     dest.x = x;
     dest.y = y;
-    dest.w = orig.w;
-    dest.h = orig.h;
+    dest.w = x * 16;
+    dest.h = y * 16;
 
     SDL_RenderCopyEx(window_get()->events.renderer, texture, &orig, &dest, 0, NULL, SDL_FLIP_NONE);
 }
@@ -106,5 +106,20 @@ void text_draw_shade(text_t *font, int x, int y, const SDL_Color fg, const SDL_C
     text_draw(font,x,y+1, bg, msg);
     text_draw(font,x,y,   fg, msg);
 
+
+}
+
+void text_destroy(text_t **font)
+{
+    if(*(font) == NULL) return;
+
+    text_t *tmp = *font;
+
+    if(tmp->font != NULL) TTF_CloseFont(tmp->font);
+    tmp->font = NULL;
+
+    free(tmp);
+    tmp = NULL;
+    *font = tmp;
 
 }

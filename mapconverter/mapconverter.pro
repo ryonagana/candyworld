@@ -13,7 +13,7 @@ QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
 INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 #will be removed later
 
-
+TARGET = mapconv
 
 
 DEFINES += MAPCONV_PROJECT
