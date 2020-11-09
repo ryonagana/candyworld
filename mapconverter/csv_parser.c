@@ -6,7 +6,7 @@ void csv_parse_file(FILE *fp, int rows, int cols, void** data){
     int y = 0;
     int *result = NULL;
 
-    result = calloc( (rows * cols) + 1, sizeof (int));
+    result = calloc( (rows * cols), sizeof (int));
 
 
 

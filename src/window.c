@@ -8,6 +8,7 @@
 #include "sound.h"
 #include "keyboard.h"
 #include "shared.h"
+#include "debug.h"
 
 #define REPORT_ERROR(...) { fprintf(stderr,  ##__VA_ARGS__); }
 
@@ -127,6 +128,7 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
         goto window_error;
 
     }
+
     sound_start(4);
     log_init();
     keyboard_init();
@@ -159,8 +161,6 @@ void window_init(int w, int h, int fullscreen, const char* caption){
 
 
 int window_end(void){
-
-
 
 
     IMG_Quit();

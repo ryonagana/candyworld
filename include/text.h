@@ -11,9 +11,13 @@ typedef struct text_t {
 
 
 void text_init_font(text_t **t, const char *font_name, int size, int flags);
-void text_draw_bg(text_t *font, int x, int y, const SDL_Color fg, const SDL_Color bg, const char *msg,...);
-void text_draw(text_t *font, int x, int y,  const SDL_Color fg, const char *msg,...);
-void text_draw_shade(text_t *font, int x, int y, const SDL_Color fg, const SDL_Color bg, const char *msg,...);
+
+
+SDL_Surface * text_draw_surface(text_t *t, const SDL_Color color, const char *msg);
+void text_draw(text_t *text, int x, int y,  const SDL_Color fg, const char *msg,...);
+
+
+
 void text_destroy(text_t **font);
 
 #endif // TEXT_H

@@ -9,9 +9,10 @@
 #include "log.h"
 #include "keyboard.h"
 #include "sprite.h"
+#include "debug.h"
 
 static game_data_t gamedata;
-static text_t *debug_text = NULL;
+
 
 
 void game_init()
@@ -32,6 +33,11 @@ void game_init()
     resources_file_add("resources//sprites//debug_tiles.png", "debug_tiles");
     resources_file_add("resources//sfx//test.ogg", "test_music");
     resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",26);
+    resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "debug_ttf",11);
+
+#if defined (DEBUG)
+    debug_start();
+#endif
 
 
      map_render_init();
@@ -40,7 +46,7 @@ void game_init()
      sprite_t *spr_test = NULL;
      sprite_init_str(&spr_test, "sprite2");
 
-     text_init_font(&debug_text, "dos_ttf", 25,0);
+
 
      return;
 
@@ -69,6 +75,9 @@ void game_start()
 
 void game_end()
 {
+#if defined (DEBUG)
+    debug_end();
+#endif
     map_render_end();
     resources_free();
     window_end();
@@ -121,9 +130,11 @@ void game_loop()
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
 
-        map_render(gamedata.map, 0,0);
+        debug_player_info(&gamedata.player);
+        map_render(gamedata.map);
         player_draw(&gamedata.player);
-        text_draw_shade(debug_text, 0,0, (SDL_Color){0,0,255,255}, (SDL_Color){255,255,255,255}, "Regular Text Test");
+        //text_draw(debug_text, 0,0, (SDL_Color){255,255,255,255}, "Teste %d", 10);
+        //text_draw_shade(debug_text, 0,0, (SDL_Color){0,0,255,255}, (SDL_Color){255,255,255,255}, "Regular Text Test");
 
 
         timer_frame_cap(ticks);

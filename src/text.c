@@ -31,61 +31,49 @@ void text_init_font(text_t **t, const char *font_name, int size, int flags)
 }
 
 
-void text_draw(text_t *font, int x, int y,  const SDL_Color fg, const char *msg,...)
+
+
+void text_destroy(text_t **font)
 {
-    char buf[BUFSIZ] = {0};
-    va_list lst;
-    SDL_Surface *text_surf = NULL;
-    SDL_Texture *texture = NULL;
-    va_start(lst, msg);
-    vsnprintf(buf, BUFSIZ, msg, lst);
-    va_end(lst);
+    if(*(font) == NULL) return;
+    text_t *tmp = *font;
+    free(tmp);
+    tmp = NULL;
+    *font = tmp;
 
-
-
-    text_surf = TTF_RenderUTF8_Solid(font->font, buf, fg);
-    texture = SDL_CreateTextureFromSurface(window_get()->events.renderer, text_surf);
-    SDL_FreeSurface(text_surf);
-
-    SDL_Rect orig, dest;
-
-    orig.x = 0;
-    orig.y = 0;
-
-    TTF_SizeUTF8(font->font, msg, &orig.w, &orig.h);
-
-    dest.x = x;
-    dest.y = y;
-    dest.w = x * 16;
-    dest.h = y * 16;
-
-    SDL_RenderCopyEx(window_get()->events.renderer, texture, &orig, &dest, 0, NULL, SDL_FLIP_NONE);
 }
 
 
 
-void text_draw_bg(text_t *font, int x, int y,  const SDL_Color fg, const SDL_Color bg, const char *msg,...)
+SDL_Surface *text_draw_surface(text_t *t, const SDL_Color color, const char *msg)
 {
-    char buf[BUFSIZ] = {0};
+
+    return TTF_RenderUTF8_Solid(t->font, msg,  color);
+
+}
+
+void text_draw(text_t *text, int x, int y, const SDL_Color fg, const char *msg, ...)
+{
+
     va_list lst;
-    SDL_Surface *text_surf = NULL;
-    SDL_Texture *texture = NULL;
+    char buf[BUFSIZ] = {0};
     va_start(lst, msg);
     vsnprintf(buf, BUFSIZ, msg, lst);
     va_end(lst);
 
-
-
-    text_surf = TTF_RenderUTF8_Shaded(font->font, buf, fg,bg);
-    texture = SDL_CreateTextureFromSurface(window_get()->events.renderer, text_surf);
+    SDL_Surface *text_surf = text_draw_surface(text, fg, buf);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(window_get()->events.renderer, text_surf);
     SDL_FreeSurface(text_surf);
+
+
+
 
     SDL_Rect orig, dest;
 
     orig.x = 0;
     orig.y = 0;
 
-    TTF_SizeUTF8(font->font, msg, &orig.w, &orig.h);
+    TTF_SizeUTF8(text->font, msg, &orig.w, &orig.h);
 
     dest.x = x;
     dest.y = y;
@@ -93,33 +81,4 @@ void text_draw_bg(text_t *font, int x, int y,  const SDL_Color fg, const SDL_Col
     dest.h = orig.h;
 
     SDL_RenderCopyEx(window_get()->events.renderer, texture, &orig, &dest, 0, NULL, SDL_FLIP_NONE);
-}
-
-void text_draw_shade(text_t *font, int x, int y, const SDL_Color fg, const SDL_Color bg, const char *msg,...)
-{
-    va_list lst;
-    char buf[BUFSIZ] = {0};
-    va_start(lst, msg);
-    vsnprintf(buf, BUFSIZ, msg, lst);
-    va_end(lst);
-
-    text_draw(font,x,y+1, bg, msg);
-    text_draw(font,x,y,   fg, msg);
-
-
-}
-
-void text_destroy(text_t **font)
-{
-    if(*(font) == NULL) return;
-
-    text_t *tmp = *font;
-
-    if(tmp->font != NULL) TTF_CloseFont(tmp->font);
-    tmp->font = NULL;
-
-    free(tmp);
-    tmp = NULL;
-    *font = tmp;
-
 }

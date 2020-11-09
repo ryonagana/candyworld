@@ -1,7 +1,7 @@
 #include "map_render.h"
 #include "resources.h"
 #include "render.h"
-
+#include "window.h"
 /*
  * map_render()
  * renders the map to the screen using double buffer
@@ -9,12 +9,14 @@
  * */
 
 static text_t *debug_render_font = NULL;
+static SDL_Texture *map_tileset_texture = NULL;
 
 void map_render_init()
 {
 
 
-    text_init_font(&debug_render_font, "dos_ttf", 16, 0);
+    text_init_font(&debug_render_font, "debug_ttf", 16, 0);
+
 
 
 }
@@ -28,9 +30,49 @@ void map_render_end()
 
 
 
-void map_render(map_t *map, int x, int y)
+void map_render(map_t *map)
 {
 
+
+    int x,y;
+
+    map_tileset_texture = resources_sprite_get_by_filename(map->tilesets[0].name);
+
+    Uint32 pixelformat = 0;
+    SDL_QueryTexture(map_tileset_texture,&pixelformat, NULL, NULL, NULL);
+    SDL_Texture *map_texture = SDL_CreateTexture(window_get()->events.renderer, pixelformat, SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
+
+
+    SDL_SetRenderTarget(window_get()->events.renderer, map_texture);
+    for(x = 0;  x < map->height; x++){
+        for(y = 0; y < map->width; y++){
+                int32_t tile = map_get_tile(map, 0, x,y);
+                int gid =  map_getgid(map, tile);
+
+                int rx = (gid % (map->tilesets[0].width / map->tilesets->tile_width)) * map->tilesets[0].tile_width;
+                int ry = (gid / (map->tilesets[0].height / map->tilesets->tile_height)) * map->tilesets[0].tile_height;
+
+
+                render_texture(map_tileset_texture,
+                               rx,
+                               ry,
+                               map->tilesets[0].tile_width,
+                               map->tilesets[0].tile_height,
+                               x *  map->tilesets[0].tile_width,
+                               y *  map->tilesets[0].tile_height,
+                               map->tilesets[0].tile_width,
+                               map->tilesets[0].tile_height,
+                               0,
+                               SDL_FLIP_NONE
+                );
+        }
+    }
+
+     SDL_SetRenderTarget(window_get()->events.renderer, NULL);
+     SDL_RenderCopy(window_get()->events.renderer, map_texture, &(SDL_Rect){0,0,window_get()->info.width, window_get()->info.height }, &(SDL_Rect){0,0,window_get()->info.width, window_get()->info.height });
+
+
+/*
     int tx,ty, layer;
     SDL_Texture* map_asset =   resources_sprite_get_by_filename(map->tilesets[0].name);
 
@@ -40,7 +82,7 @@ void map_render(map_t *map, int x, int y)
                 map_tile_t tile = map_get_tile(map, layer, x,y);
 
 
-
+                //text_draw(debug_render_font, tx *  map->tilesets[0].tile_width, ty *  map->tilesets[0].tile_height, (SDL_Color) {255,255,255,255}, " %d ", tile.id);
                 render_texture(map_asset,
                              x *  map->tilesets[0].tile_width,
                              y *  map->tilesets[0].tile_height,
@@ -60,6 +102,14 @@ void map_render(map_t *map, int x, int y)
             }
         }
     }
+    */
+
+
+
+
+
+
+
 
 /*
 
@@ -146,9 +196,9 @@ int map_render_tile(map_t *map, const char *tileset_name)
 /*
  * get tile from the pointer
  * */
-map_tile_t map_get_tile(map_t *map, int layer, int x, int y)
+int32_t map_get_tile(map_t *map, int layer, int x, int y)
 {
-    return map->layers[layer].tiles[y][x];
+    return map->layers[layer].layer[y * (map->height + x)];
 }
 
 
