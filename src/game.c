@@ -43,6 +43,8 @@ void game_init()
      map_render_init();
      gamedata.map = map_load_file_str("resources//map//test.cbmap");
 
+     //map_show_info(gamedata.map);
+
      sprite_t *spr_test = NULL;
      sprite_init_str(&spr_test, "sprite2");
 

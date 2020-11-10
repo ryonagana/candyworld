@@ -39,6 +39,7 @@
 #include <mbstring.h>
 #endif
 
+#define MAP_COUNT_TILESETS(ts) (sizeof((ts)) / sizeof((ts)[0]))
 
 void map_show_info(map_t *map){
     MAPCONV_LOG("[MAP]\n"
@@ -193,7 +194,7 @@ map_t *map_init(void){
     //mp->name = "";
     mp->width = 0;
     mp->height = 0;
-    mp->tileset_count = 0;
+    mp->tileset_count = 1;
     return mp;
 }
 
@@ -314,17 +315,21 @@ void map_save_file(FILE *fp, map_t *map)
     fputc(map->tileset_count, fp);
     fputc(map->map_version, fp);
 
-    int i,j;
+    int i;
 
     for(i = 0; i < LAYERS_NUM; i++){
 
         //layer number
         fputc(i, fp);
+        fwrite(map->layers[i].layer, sizeof(int32_t), map->width * map->height , fp);
 
+        /*
         //layer tiles
         for(j = 0; j < map->width * map->height; j++){
             fputc(map->layers[i].layer[j], fp);
+
         }
+        */
 
     }
 
@@ -396,7 +401,7 @@ int map_load_stream(map_t **map, FILE *in)
 
 
     for(i = 0; i < LAYERS_NUM; i++){
-        tmp_map->layers[i].layer = calloc(tmp_map->width * tmp_map->height, sizeof(int));
+        tmp_map->layers[i].layer = calloc(tmp_map->width * tmp_map->height, sizeof(int32_t));
     }
 
 
@@ -404,10 +409,13 @@ int map_load_stream(map_t **map, FILE *in)
     for(i = 0; i < LAYERS_NUM; i++){
 
         int layer_id = fgetc(in); // get the layer num
+        fread(tmp_map->layers[layer_id].layer, sizeof (int32_t), tmp_map->width * tmp_map->height, in);
 
+        /*
         for(j = 0; j < tmp_map->width * tmp_map->height; j++){
             tmp_map->layers[layer_id].layer[j] = fgetc(in);
         }
+        */
     }
 
 
@@ -427,7 +435,7 @@ int map_load_stream(map_t **map, FILE *in)
     }
 
 
-
+    //convert map loaded 1d array to 2d tile_map_t
     map_convert_1d_to_2d(&tmp_map);
 
     fclose(in);
@@ -502,8 +510,10 @@ void map_convert_1d_to_2d(map_t **map)
             for(x = 0; x < tmp->width; x++){
                //tmp->layers[layer].tiles[y][x] = tmp->layers[layer].layer[ y * tmp->height + x];
 
-                int id = tmp->layers[layer].layer[ y * (tmp->height + x)];
+                int id = tmp->layers[layer].layer[ x + tmp->width * y];
                 int32_t gid = map_getgid(tmp, id);
+
+                if(gid == -1) continue;
 
                 int rx = (gid % (tmp->tilesets[0].width / tmp->tilesets->tile_width)) * tmp->tilesets[0].tile_width;
                 int ry = (gid / (tmp->tilesets[0].height / tmp->tilesets->tile_height)) * tmp->tilesets[0].tile_height;
@@ -513,6 +523,8 @@ void map_convert_1d_to_2d(map_t **map)
                     id,
                     rx,
                     ry,
+                    x *  tmp->tilesets->tile_width,
+                    y *  tmp->tilesets->tile_height,
                     0
                 };
 

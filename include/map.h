@@ -19,6 +19,8 @@
 #define LAYER_TILES 0
 #define LAYER_BACKGROUND 1
 #define LAYERS_NUM 2
+
+
 #define MAP_FORMAT ".cbmap"
 #define MAP_VERSION 2
 #define MAP_MAX_TILES 200
@@ -29,6 +31,8 @@ typedef struct map_tile_t {
     int32_t id;
     int32_t region_x;
     int32_t region_y;
+    int32_t x;
+    int32_t y;
     int32_t flags;
 }map_tile_t;
 

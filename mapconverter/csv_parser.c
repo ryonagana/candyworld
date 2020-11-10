@@ -20,7 +20,7 @@ void csv_parse_file(FILE *fp, int rows, int cols, void** data){
         while(token != NULL && x < cols){
 
             const char *val = (char *) token;
-            result[x * cols + y] = atoi(val);
+            result[y * rows + x] = atoi(val);
             x++;
             token = strtok(NULL, delimiter);
         }
@@ -39,9 +39,8 @@ void csv_debug_print(int *data, int rows, int cols){
 
     for(y = 0; y < rows; y++){
           for(x = 0; x < cols; x++){
-              if(data[y * rows + x] != '\0'){
-                printf("%d, ", data[x * cols + y]);
-              }
+            printf("%d, ", data[x * cols + y]);
+
           }
     }
 
