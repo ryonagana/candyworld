@@ -26,6 +26,8 @@
 #define MAP_MAX_TILES 200
 #define MAP_NAME_BUFFER 127
 #define MAP_FILENAME_BUFFER 255
+#define MAP_SCALE 2
+
 
 typedef struct map_tile_t {
     int32_t id;

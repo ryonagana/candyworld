@@ -523,8 +523,8 @@ void map_convert_1d_to_2d(map_t **map)
                     id,
                     rx,
                     ry,
-                    x *  tmp->tilesets->tile_width,
-                    y *  tmp->tilesets->tile_height,
+                    x *  tmp->tilesets->tile_width * MAP_SCALE,
+                    y *  tmp->tilesets->tile_height * MAP_SCALE,
                     0
                 };
 

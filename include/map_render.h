@@ -3,7 +3,6 @@
 #include "map.h"
 #include "SDL2/SDL.h"
 
-#define MAP_SCALE 2.0f
 
 void map_render_init();
 void map_render_end();
