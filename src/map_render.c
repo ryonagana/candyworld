@@ -36,7 +36,7 @@ void map_render(map_t *map)
 
     int x,y;
 
-    int map_render_order[2] = {
+    int map_render_order[] = {
         LAYER_BACKGROUND,
         LAYER_TILES,
     };

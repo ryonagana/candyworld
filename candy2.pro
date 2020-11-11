@@ -85,6 +85,7 @@ win32: {
 HEADERS += \
         $$PWD/include/main.h \
         include/debug.h \
+    include/gameplay.h \
         include/keyboard.h \
         include/log.h \
         include/lua_shared.h \
@@ -112,6 +113,7 @@ HEADERS += \
 
 SOURCES += \
         $$PWD/src/main.c \
+        src/gameplay.c \
         src/map_render.c \
         src/debug.c \
         src/keyboard.c \

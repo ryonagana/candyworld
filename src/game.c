@@ -11,7 +11,18 @@
 #include "sprite.h"
 #include "debug.h"
 
+
+#include "gameplay.h"
 static game_data_t gamedata;
+
+
+
+game_event_t  g_events[MAX_GAME_EVENTS] = {
+    {NULL},
+    {NULL},
+    {NULL},
+    {gameplay_event_loop}
+};
 
 
 
@@ -28,6 +39,8 @@ void game_init()
 
 
     resources_start(NULL);
+
+    //gamedata.events = g_events[0];
 
     resources_file_add("resources//sprites//sprite2.png", "sprite2");
     resources_file_add("resources//sprites//debug_tiles.png", "debug_tiles");
@@ -48,29 +61,23 @@ void game_init()
      sprite_t *spr_test = NULL;
      sprite_init_str(&spr_test, "sprite2");
 
+     gamedata.gamestate = GAME_INGAME_STATE;
+     gamedata.redraw_frame = 0;
+     gamedata.current_event = g_events[gamedata.gamestate];
 
 
      return;
-
-
-
-    //resources_sprite_get("sprite2", RESOURCE_TYPE_SPRITE);
-    //resources_sound_get("test", RESOURCE_EXTENSION_OGG);
 }
 
 
 void game_start()
 {
-    gamedata.redraw_frame = 0;
-    player_init(&gamedata.player);
-
-    player_set_pos_screen(&gamedata.player, 10,10);
-
-    switch(window_get()->gamestate){
-        case  GAMESTATE_IN_GAME:
-        game_loop();
-    break;
+    if(!gamedata.current_event.callback){
+        DCRITICAL("Current event pointer is NULL");
+        window_end();
     }
+    gamedata.current_event.callback(NULL, &gamedata);
+
 }
 
 
@@ -90,6 +97,8 @@ void game_end()
 void game_loop()
 {
 
+
+    /*
     Uint32 ticks = 0;
     game_timer_t game_timer;
 
@@ -144,7 +153,10 @@ void game_loop()
 
     }
 
+    */
 
 }
+
+
 
 
