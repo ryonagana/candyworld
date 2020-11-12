@@ -33,8 +33,9 @@ hud_t *hud_get()
     return &game_hud;
 }
 
-void hud_set(const hud_t new_hud)
+void hud_set(hud_t *new_hud)
 {
     hud_init();
-    memcpy(&game_hud, &new_hud, sizeof (hud_t));
+    memcpy(&game_hud, new_hud, sizeof (hud_t));
+    return;
 }

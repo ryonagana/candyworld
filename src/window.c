@@ -35,7 +35,7 @@ static void window_starts_main_window(void)
     main_window.events.window = NULL;
     main_window.events.renderer = NULL;
 
-    main_window.gamestate = GAMESTATE_IN_GAME;
+    //ain_window.gamestate = GAMESTATE_IN_GAME;
 }
 
 
@@ -128,6 +128,9 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
         goto window_error;
 
     }
+
+    main_window.info.width = width;
+    main_window.info.height = height;
 
     sound_start(4);
     log_init();

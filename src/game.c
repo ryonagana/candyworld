@@ -21,20 +21,18 @@ game_event_t  g_events[MAX_GAME_EVENTS] = {
     {NULL},
     {NULL},
     {NULL},
-    {gameplay_event_loop}
+    {gameplay_event_loop} // GAMESTATE_IN_GAME
 };
 
 
 
 void game_init()
 {
-    hud_t *hud = hud_get();
-
-    window_get()->gamestate = GAMESTATE_IN_GAME;
+    //window_get()->gamestate = GAMESTATE_IN_GAME;
     lua_start();
     lua_shared_register(lua_get_state());
     hud_init();
-    lua_hud_register(lua_get_state(), hud);
+    lua_hud_register(lua_get_state(), hud_get());
     lua_free();
 
 
@@ -47,6 +45,7 @@ void game_init()
     resources_file_add("resources//sfx//test.ogg", "test_music");
     resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "dos_ttf",26);
     resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "debug_ttf",11);
+    resources_file_add("resources//sprites//hud.png", "sprite_hud");
 
 #if defined (DEBUG)
     debug_start();
@@ -62,6 +61,7 @@ void game_init()
      sprite_init_str(&spr_test, "sprite2");
 
      gamedata.gamestate = GAME_INGAME_STATE;
+     window_get()->gamestate = GAME_INGAME_STATE;
      gamedata.redraw_frame = 0;
      gamedata.current_event = g_events[gamedata.gamestate];
 

@@ -66,6 +66,9 @@ int  lua_exec_script_name(lua_State *L, const char *filepath, const char *func_n
 
 int lua_exec(lua_State *L, const char *filepath, void *host)
 {
+    char path[BUFSIZ] = {0};
+    strncpy(path, filepath, BUFSIZ -  strlen(filepath));
+
     return lua_exec_script_name(L, filepath, "init", host);
 }
 
