@@ -27,6 +27,12 @@
 #define FPS 60
 #define MAX_TICKS 1000/FPS
 
+#define WINDOW_VSYNC_ON 1
+#define WINDOW_VSYNC_OFF 0
+
+#define WINDOW_FULLSCREEN_ON 1
+#define WINDOW_FULLSCREEN_OFF 0
+
 
 enum {
     GAMESTATE_LOGOS,
@@ -55,10 +61,12 @@ typedef struct game_window {
     int closed;
     int gamestate;
     char title[56];
+    int vsync;
+    int fullscreen;
 
 }game_window;
 
-void window_init(int w, int h, int fullscreen, const char* caption);
+void window_init(int w, int h, int fullscreen, int vsync, const char* caption);
 
 void window_free_events(game_window *win);
 int window_end(void);

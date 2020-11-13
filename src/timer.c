@@ -10,16 +10,22 @@ static Uint32 timer_flag_check(game_timer_t *tm, Uint32 flags){
 
 void timer_init(game_timer_t *tm)
 {
-    tm->start_time = 0;
+    tm->now = 0;
     tm->pause_ticks = 0;
-    tm->flags = TIMER_FLAG_NONE;
+    tm->flags = TIMER_FLAG_START;
 }
 
-void timer_set_start(game_timer_t *tm)
+void timer_start(game_timer_t *tm)
 {
-    tm->start_time = SDL_GetTicks();
-    tm->flags |= TIMER_FLAG_START;
+    tm->now = SDL_GetPerformanceCounter(); //SDL_GetTicks();
+    //tm->flags |= TIMER_FLAG_START;
 }
+
+void timer_end(game_timer_t *tm)
+{
+    tm->last = SDL_GetPerformanceCounter();
+}
+
 
 void timer_set_stop(game_timer_t *tm)
 {
@@ -35,19 +41,30 @@ int timer_is_started(game_timer_t *tm)
     return tm->flags;
 }
 
-Uint32 timer_get_ticks(game_timer_t *tm)
+double timer_get_ticks(game_timer_t *tm)
 {
+
+    if(timer_flag_check(tm, TIMER_PAUSED)){
+        return tm->now;
+    }
+
+    return (double)((tm->now - tm->last)  / (double) SDL_GetPerformanceFrequency()) * 1000;
+
+    /*
     Uint32 actual_time = 0;
 
     if(timer_flag_check(tm, TIMER_FLAG_START)){
        if(timer_flag_check(tm, TIMER_PAUSED)){
             actual_time = tm->pause_ticks;
        }else {
-            actual_time = SDL_GetTicks() - tm->start_time;
-            tm->last = actual_time;
+            //actual_time = SDL_GetTicks() - tm->now;
+            tm->last = tm->now;
+            tm->now = SDL_GetPerformanceCounter();
+            //tm->last = actual_time;
        }
     }
-    return actual_time;
+    return  (double)((tm->now - tm->last) * 1000) / (double) SDL_GetPerformanceFrequency();
+    */
 }
 
 void timer_set_pause(game_timer_t *tm)
@@ -56,11 +73,8 @@ void timer_set_pause(game_timer_t *tm)
 }
 
 
-void timer_frame_cap(Uint32 ticks)
+void timer_frame_cap(double ticks)
 {
-
-   if(ticks  < 1000 / FPS){
-       SDL_Delay( (1000 - FPS) - ticks);
-   }
-
+    SDL_Delay(FPS_VAL - ticks);
 }
+

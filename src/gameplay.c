@@ -32,17 +32,23 @@ void gameplay_event_loop(game_event_data *e, void* data){
 
     game_data_t *gamedata = (void*)data;
 
-    Uint32 ticks = 0;
+    double delta_time = 0;
+    Uint64 now = SDL_GetPerformanceCounter();;
+    Uint64 last = 0;
     game_timer_t game_timer;
 
     gameplay_start(gamedata);
 
     timer_init(&game_timer);
-    timer_set_start(&game_timer);
+
 
     while(!window_get()->closed){
         SDL_Event ev;
-        ticks = timer_get_ticks(&game_timer);
+        //timer_start(&game_timer);
+
+        now = SDL_GetPerformanceCounter();
+
+
 
 
 
@@ -63,15 +69,10 @@ void gameplay_event_loop(game_event_data *e, void* data){
         }
 
 
-
-        ticks = timer_get_ticks(&game_timer);
-
-
-
         //DLOG("ticks %d", TIMER_TICKS_TO_SECS(ticks));
         keyboard_update(&ev);
-        player_update(&gamedata->player, ticks);
-        player_handle_input(&gamedata->player, ticks);
+        player_update(&gamedata->player, delta_time);
+        player_handle_input(&gamedata->player, delta_time);
 
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
@@ -84,8 +85,15 @@ void gameplay_event_loop(game_event_data *e, void* data){
 
 
         SDL_RenderPresent(window_get()->events.renderer);
-        timer_frame_cap(ticks);
+        last = SDL_GetPerformanceCounter();
+        double elapsed = (double)(last - now) / SDL_GetPerformanceFrequency() * 1000.f;
 
+        SDL_Delay(floor(16.666f - elapsed));
+
+        char fps[20] = {0};
+        snprintf(fps, 20, "%.f", floor(1.0 / elapsed));
+
+        SDL_SetWindowTitle(window_get()->events.window, fps);
     }
 
 

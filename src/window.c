@@ -92,7 +92,7 @@ error: return -1;
  *
  */
 
-static void window_create(int width, int height, int fullscreen, int renderer, const char *caption){
+static void window_create(int width, int height, int fullscreen, int vsync, int renderer, const char *caption){
 
     UNUSED(renderer);
 
@@ -120,7 +120,14 @@ static void window_create(int width, int height, int fullscreen, int renderer, c
         goto window_error;
     }
 
-    main_window.events.renderer = SDL_CreateRenderer(main_window.events.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    Uint32 renderer_flags = SDL_RENDERER_ACCELERATED;
+
+    if(vsync > 0){
+        renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+    }
+
+    main_window.events.renderer = SDL_CreateRenderer(main_window.events.window, -1, renderer_flags);
 
     if(!main_window.events.renderer){
         DCRITICAL("window renderer failed to load :(");
@@ -155,8 +162,8 @@ game_window*  window_get(){
     return &main_window;
 }
 
-void window_init(int w, int h, int fullscreen, const char* caption){
-    window_create(w,h,fullscreen, 1, caption);
+void window_init(int w, int h, int fullscreen, int vsync, const char* caption){
+    window_create(w,h,fullscreen, vsync, 1, caption);
     DINFO("Window is Created! -  Width: %d Height: %d, title: %s  fullscreen: %s", w,h, caption, fullscreen ? "True" : "False");
 }
 
