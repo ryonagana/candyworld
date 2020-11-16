@@ -27,6 +27,7 @@ void gameplay_end(game_data_t *gamedata)
 
 
 
+
 void gameplay_event_loop(game_event_data *e, void* data){
 
 
@@ -43,10 +44,10 @@ void gameplay_event_loop(game_event_data *e, void* data){
 
 
 
-
     while(!window_get()->closed){
         frame_time = SDL_GetTicks();
         SDL_Event ev;
+        SDL_Texture *screen_buffer = SDL_CreateTexture(window_get()->events.renderer, SDL_GetWindowPixelFormat(window_get()->events.window) ,SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
 
 
 
@@ -67,22 +68,24 @@ void gameplay_event_loop(game_event_data *e, void* data){
         }
 
 
-        //DLOG("ticks %d", TIMER_TICKS_TO_SECS(ticks));
         keyboard_update(&ev);
         player_update(&gamedata->player, delta_time);
         player_handle_input(&gamedata->player, delta_time);
 
+
+        SDL_SetRenderTarget(window_get()->events.renderer, screen_buffer);
+
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
-
         map_render(gamedata->map);
-        debug_player_info(&gamedata->player);
         player_draw(&gamedata->player);
-        //text_draw(debug_text, 0,0, (SDL_Color){255,255,255,255}, "Teste %d", 10);
-        //text_draw_shade(debug_text, 0,0, (SDL_Color){0,0,255,255}, (SDL_Color){255,255,255,255}, "Regular Text Test");
+        SDL_SetRenderTarget(window_get()->events.renderer, NULL);
 
 
+
+        SDL_RenderCopy(window_get()->events.renderer, screen_buffer, &(SDL_Rect){0,0, window_get()->info.width, window_get()->info.height}, &(SDL_Rect){0,0, window_get()->info.width, window_get()->info.height});
         SDL_RenderPresent(window_get()->events.renderer);
+        SDL_DestroyTexture(screen_buffer);
 
 
         if(SDL_GetTicks() - 1000 >= fps_time){

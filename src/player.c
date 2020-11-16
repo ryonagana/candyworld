@@ -13,6 +13,15 @@
 static sprite_t *player_spr = NULL;
 
 
+const int movement_order[] = {
+        PLAYER_DIRECTION_DOWN,
+        PLAYER_DIRECTION_LEFT,
+        PLAYER_DIRECTION_RIGHT,
+        PLAYER_DIRECTION_UP
+};
+
+
+
 static int anim_delay[8] = {
     100,
     100,
@@ -43,9 +52,7 @@ void player_init(player_t *pl){
 
 
 
-    static SDL_Texture* player_spritesheet = NULL;
-    player_spritesheet = resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG);
-    sprite_init(&player_spr, player_spritesheet);
+    sprite_init(&player_spr, resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
     sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
     sprite_set_delay(player_spr, anim_delay, 8);
 
@@ -85,7 +92,7 @@ static void player_move_right(player_t *pl, Uint32 delta){
 void player_draw(player_t *pl)
 {
 #ifdef DEBUG
-    debug_render_player_hitbox(pl);
+    debug_player_info(pl);
 #endif
 
     sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
@@ -94,44 +101,45 @@ void player_draw(player_t *pl)
 
 }
 
+
+
+static void player_direction_none(player_t *pl, sprite_t *spr){
+        int dir = pl->direction;
+        int old = movement_order[dir];
+
+        spr->end_frame = old * pl->direction;
+}
+
 void player_update(player_t *pl, Uint32 delta)
 {
 
-    int w,h;
 
-    UNUSED(delta);
+    sprite_update(player_spr);
 
-    SDL_QueryTexture(player_spr->texture, NULL, NULL, &w, &h);
-    pl->offset_x = w  /  abs((w / PLAYER_TILE_SIZE));
-    pl->offset_y = h  /  abs((h / PLAYER_TILE_SIZE));
-
-
-
-    switch(pl->direction){
+    switch(movement_order[pl->direction]){
         case PLAYER_DIRECTION_UP:
-            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
+            sprite_set_animation(player_spr, PLAYER_DIRECTION_UP);
         break;
 
         case PLAYER_DIRECTION_DOWN:
-           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
+           sprite_set_animation(player_spr, PLAYER_DIRECTION_DOWN);
         break;
 
         case PLAYER_DIRECTION_LEFT:
-            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
+            sprite_set_animation(player_spr, PLAYER_DIRECTION_LEFT);
         break;
 
         case PLAYER_DIRECTION_RIGHT:
-           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
+           sprite_set_animation(player_spr, PLAYER_DIRECTION_RIGHT);
         break;
-
-        case PLAYER_DIRECTION_NONE:
-            player_spr->end_frame = (pl->state != PLAYER_STATE_WALKING) ? 1 : 1;
-            break;
     }
 
 
 
-       sprite_update(player_spr);
 
 
 
@@ -149,42 +157,10 @@ void player_handle_input(player_t *pl, Uint32 delta)
     }else if(key_pressed(SDL_SCANCODE_D) > 0){
         player_move_right(pl, delta);
     }else {
-        pl->direction = PLAYER_DIRECTION_NONE;
-        pl->state = PLAYER_STATE_IDLE;
+         player_direction_none(pl, player_spr);
     }
 
 
-    /*
-    UNUSED((ev));
-
-    if(key_is_pressed(ALLEGRO_KEY_A)){
-        player_move_left(pl);
-    }else  if(key_is_pressed(ALLEGRO_KEY_D)){
-        player_move_right(pl);
-    }else  if(key_is_pressed(ALLEGRO_KEY_W)){
-        player_move_up(pl);
-    }else  if(key_is_pressed(ALLEGRO_KEY_S)){
-        player_move_dn(pl);
-    }else {
-        pl->direction = PLAYER_DIRECTION_NONE;
-    }
-    */
-
-/*
-    if(key_is_pressed(ALLEGRO_KEY_W)){
-        player_move_up(pl);
-        DLOG("pressed W");
-    }else if(key_is_pressed(ALLEGRO_KEY_S)){
-        player_move_dn(pl);
-    }else if(key_is_pressed(ALLEGRO_KEY_A)){
-        player_move_left(pl);
-    }else  if(key_is_pressed(ALLEGRO_KEY_D)){
-        player_move_right(pl);
-    }else {
-        pl->direction = PLAYER_DIRECTION_NONE;
-        pl->state = PLAYER_STATE_IDLE;
-    }
-*/
 }
 
 void player_set_pos_screen(player_t *player, int x, int y)

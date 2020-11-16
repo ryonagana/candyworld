@@ -143,3 +143,8 @@ int sprite_set_delay(sprite_t *spr, int *delay, size_t size)
     return 1;
 
 }
+
+void sprite_set_animation(sprite_t *spr, int anim)
+{
+     spr->current_animation = anim;
+}

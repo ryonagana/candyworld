@@ -45,11 +45,11 @@ void map_render(map_t *map)
 
     Uint32 pixelformat = 0;
     SDL_QueryTexture(map_tileset_texture,&pixelformat, NULL, NULL, NULL);
-    SDL_Texture *map_texture = SDL_CreateTexture(window_get()->events.renderer, pixelformat, SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
+    //SDL_Texture *map_texture = SDL_CreateTexture(window_get()->events.renderer, pixelformat, SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
 
 
 
-    SDL_SetRenderTarget(window_get()->events.renderer, map_texture);
+    //SDL_SetRenderTarget(window_get()->events.renderer, map_texture);
     int layer_count;
 
     for(layer_count = 0; layer_count < LAYERS_NUM; layer_count++){
@@ -81,9 +81,9 @@ void map_render(map_t *map)
         }
     }
 
-     SDL_SetRenderTarget(window_get()->events.renderer, NULL);
-     SDL_RenderCopy(window_get()->events.renderer, map_texture, &(SDL_Rect){0,0,window_get()->info.width, window_get()->info.height }, &(SDL_Rect){0,0,window_get()->info.width, window_get()->info.height });
-     SDL_DestroyTexture(map_texture);
+     //SDL_SetRenderTarget(window_get()->events.renderer, NULL);
+     //SDL_RenderCopy(window_get()->events.renderer, map_texture, &(SDL_Rect){0,0,window_get()->info.width, window_get()->info.height }, &(SDL_Rect){0,0,window_get()->info.width, window_get()->info.height });
+     //SDL_DestroyTexture(map_texture);
 }
 
 

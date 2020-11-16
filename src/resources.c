@@ -163,16 +163,6 @@ static int resources_load_image(const char *filepath, const char *name, int exte
     SDL_Surface *surf  = resources_load_surface(filepath);
     SDL_Texture *tex   = resources_surf_to_tex(surf, 0);
     resource_file_t *tmp = resources_alloc_mem(filepath, name, RESOURCE_TYPE_SPRITE, extension, tex);
-    /*
-    file_t *tmp = malloc(sizeof (file_t));
-    strncpy(tmp->name,"\0", 255);
-    strcpy(tmp->name, name);
-    tmp->next = NULL;
-    tmp->type = RESOURCE_TYPE_SPRITE;
-    tmp->block = NULL;
-    tmp->block = tex;
-    tmp->extension = extension;
-    */
     SDL_FreeSurface(surf);
     resources_list_add(tmp);
 
@@ -193,21 +183,11 @@ static int resources_load_font(const char *filepath, int size, const char *name,
 
 
     if(fnt == NULL){
-        DWARN("cannot load font %s on memory");
+        DWARN("cannot load font %s on memory", filepath);
         return -1;
     }
 
     resource_file_t *tmp = resources_alloc_mem(filepath, name, RESOURCE_TYPE_FONT, extension, fnt);
-
-    /*
-    file_t *tmp = calloc(1, sizeof (file_t));
-    strcpy(tmp->name, name);
-    tmp->next = NULL;
-    tmp->type = RESOURCE_TYPE_FONT;
-    tmp->block = NULL;
-    tmp->block = fnt;
-    tmp->extension = extension;
-    */
     resources_list_add(tmp);
     return 0;
 }
@@ -225,20 +205,6 @@ static int resources_load_sound(const char *filepath, const char *name,  int ext
     }
 
     resource_file_t *tmp = resources_alloc_mem(filepath, name, RESOURCE_TYPE_SOUND, extension, sfx);
-
-    /*
-    file_t *tmp = malloc(sizeof (file_t));
-    //memcpy(tmp->name, '\0', 255);
-    strncpy(tmp->name,"\0", 255);
-    strcpy(tmp->name, name);
-    tmp->next = NULL;
-    tmp->type = RESOURCE_TYPE_SOUND;
-    tmp->block = NULL;
-    tmp->block = sfx;
-    tmp->extension = extension;
-    */
-
-
     resources_list_add(tmp);
 
     return 1;
