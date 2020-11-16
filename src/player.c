@@ -5,10 +5,53 @@
 #include "log.h"
 #include "render.h"
 #include "debug.h"
+#include "sprite.h"
 
 
-static SDL_Texture* player_spritesheet = NULL;
 
+
+static sprite_t *player_spr = NULL;
+
+
+static int anim_delay[8] = {
+    100,
+    100,
+    100,
+    100,
+    50,
+    50,
+    50,
+    50
+};
+
+void player_init(player_t *pl){
+    pl->x = 0;
+    pl->y = 0;
+    pl->lives = 3;
+    pl->score = 0;
+    pl->state = PLAYER_STATE_NONE;
+    pl->direction = PLAYER_DIRECTION_NONE;
+    pl->offset_x =  0;
+    pl->offset_y  = 0;
+    pl->flags = 0;
+    pl->anim_counter = 0;
+    pl->max_frames = 0;
+    pl->frames = 0;
+    //rect_init(&pl->hitbox);
+    SDL_RectEmpty(&pl->hitbox);
+
+
+
+
+    static SDL_Texture* player_spritesheet = NULL;
+    player_spritesheet = resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG);
+    sprite_init(&player_spr, player_spritesheet);
+    sprite_set_spritesheet_offset(player_spr, 8, 12);
+    sprite_set_delay(player_spr, anim_delay, 8);
+
+    return;
+
+}
 
 static void player_move_up(player_t *pl, Uint32 delta){
     pl->direction = PLAYER_DIRECTION_UP;
@@ -37,27 +80,7 @@ static void player_move_right(player_t *pl, Uint32 delta){
 }
 
 
-void player_init(player_t *pl){
-    pl->x = 0;
-    pl->y = 0;
-    pl->lives = 3;
-    pl->score = 0;
-    pl->state = PLAYER_STATE_NONE;
-    pl->direction = PLAYER_DIRECTION_NONE;
-    pl->offset_x =  0;
-    pl->offset_y  = 0;
-    pl->flags = 0;
-    pl->anim_counter = 0;
-    pl->max_frames = 0;
-    pl->frames = 0;
-    //rect_init(&pl->hitbox);
-    SDL_RectEmpty(&pl->hitbox);
 
-    player_spritesheet = resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG);
-
-    return;
-
-}
 
 void player_draw(player_t *pl)
 {
@@ -65,7 +88,9 @@ void player_draw(player_t *pl)
     debug_render_player_hitbox(pl);
 #endif
 
-    render_texture(player_spritesheet, pl->offset_x * pl->frames, pl->offset_y * pl->direction, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, 0, SDL_FLIP_NONE);
+    sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+
+    //render_texture(player_spr->texture, pl->offset_x * pl->frames, pl->offset_y * pl->direction, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, 0, SDL_FLIP_NONE);
 
 }
 
@@ -76,9 +101,11 @@ void player_update(player_t *pl, Uint32 delta)
 
     UNUSED(delta);
 
-    SDL_QueryTexture(player_spritesheet, NULL, NULL, &w, &h);
+    SDL_QueryTexture(player_spr->texture, NULL, NULL, &w, &h);
     pl->offset_x = w  /  abs((w / PLAYER_TILE_SIZE));
     pl->offset_y = h  /  abs((h / PLAYER_TILE_SIZE));
+
+
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:
@@ -102,53 +129,23 @@ void player_update(player_t *pl, Uint32 delta)
             break;
     }
 
-    Uint32 animTime = SDL_GetTicks();
 
-    if(animTime > pl->anim_counter + 100){
+
+       sprite_update(player_spr);
+/*
+    if(SDL_GetTicks() > pl->anim_counter + player_spr->delay[pl->frames]){
         pl->frames++;
-        pl->anim_counter = animTime;
+        pl->anim_counter = SDL_GetTicks();
+
     }
 
-    if(pl->frames >= pl->max_frames){
+    if(pl->frames == pl->max_frames){
         pl->frames = 0;
     }
+*/
 
 
-    /*
 
-    rect_set(&pl->hitbox, pl->x, pl->y, 32,32);
-
-    pl->offset_x = al_get_bitmap_width(player_spritesheet) / 12;
-    pl->offset_y = al_get_bitmap_height(player_spritesheet) / 8;
-
-    switch(pl->direction){
-        case PLAYER_DIRECTION_UP:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
-        break;
-
-        case PLAYER_DIRECTION_DOWN:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
-        break;
-
-        case PLAYER_DIRECTION_LEFT:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
-        break;
-
-        case PLAYER_DIRECTION_RIGHT:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
-        break;
-    }
-
-    if(pl->anim_counter++ >= 10){
-        pl->anim_counter = 0;
-        pl->frames++;
-    }
-
-    if(pl->frames >= pl->max_frames){
-        pl->frames = 0;
-    }
-
-    */
 
 }
 

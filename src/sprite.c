@@ -2,6 +2,7 @@
 #include "resources.h"
 #include "shared.h"
 #include "log.h"
+#include "render.h"
 
 static sprite_t *sprite_alloc_mem(size_t num){
 
@@ -14,25 +15,12 @@ static sprite_t *sprite_alloc_mem(size_t num){
 
 
     spr_tmp = calloc(1,sizeof (sprite_t));
+    spr_tmp->delay = NULL;
 
     if(!spr_tmp){
         return spr_tmp;
     }
 
-
-    spr_tmp->pos.x = 0;
-    spr_tmp->pos.y = 0;
-    spr_tmp->pos.w = 0;
-    spr_tmp->pos.h = 0;
-    spr_tmp->hotspot.x = 0;
-    spr_tmp->hotspot.y = 0;
-    spr_tmp->hotspot.w = 0;
-    spr_tmp->hotspot.h = 0;
-    spr_tmp->offset_x = 0;
-    spr_tmp->offset_y = 0;
-    spr_tmp->frame_time = 0;
-    spr_tmp->is_animated = 0;
-    spr_tmp->actual_frame = 0;
 
     return spr_tmp;
 }
@@ -88,8 +76,10 @@ int sprite_set_spritesheet_offset(sprite_t *spr, int rows, int cols)
     rx = abs((w / cols));
     ry = abs((h / rows));
 
-    spr->offset_x = rx;
-    spr->offset_y = ry;
+    spr->delay = calloc(rx, sizeof(int));
+
+    spr->rows = ry;
+    spr->cols = rx;
     return 0;
 
 }
@@ -105,8 +95,48 @@ void sprite_free(sprite_t **spr)
         spr_tmp->texture = NULL;
     }
 
+    if(spr_tmp->delay) free(spr_tmp->delay);
+
     free((void*)spr);
     *spr = NULL;
 
+
+}
+
+void sprite_draw(sprite_t *spr, int x, int y, int orig_w, int orig_h, int dst_w, int dst_h)
+{
+    render_texture(spr->texture, spr->cols * spr->current_frame, spr->rows * spr->current_animation,
+                   orig_w,orig_h, x,y, dst_w,dst_h, 0, SDL_FLIP_NONE);
+}
+
+void sprite_update(sprite_t *spr)
+{
+    if((int64_t)SDL_GetTicks() - spr->delay[spr->current_animation] > spr->time_passed){
+        spr->time_passed = SDL_GetTicks();
+
+        if(spr->current_frame == spr->end_frame){
+            spr->current_frame = 0;
+        }else {
+            ++spr->current_frame;
+        }
+    }
+}
+
+#define DELAY_FREE(x) if(x) free(x); x = NULL
+
+int sprite_set_delay(sprite_t *spr, int *delay, size_t size)
+{
+    if(spr->delay){
+        DELAY_FREE(spr->delay);
+        spr->delay = delay;
+        return 1;
+    }
+
+
+    spr->delay = calloc(size, sizeof(int));
+    memcpy(spr->delay, delay, sizeof(int) * size);
+    free(delay);
+    delay = NULL;
+    return 1;
 
 }
