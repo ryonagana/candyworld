@@ -46,7 +46,7 @@ void player_init(player_t *pl){
     static SDL_Texture* player_spritesheet = NULL;
     player_spritesheet = resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG);
     sprite_init(&player_spr, player_spritesheet);
-    sprite_set_spritesheet_offset(player_spr, 8, 12);
+    sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
     sprite_set_delay(player_spr, anim_delay, 8);
 
     return;
@@ -109,41 +109,29 @@ void player_update(player_t *pl, Uint32 delta)
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
         break;
 
         case PLAYER_DIRECTION_DOWN:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
         break;
 
         case PLAYER_DIRECTION_LEFT:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
         break;
 
         case PLAYER_DIRECTION_RIGHT:
-            pl->max_frames = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
+           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 6 : 1;
         break;
 
         case PLAYER_DIRECTION_NONE:
-            pl->max_frames = (pl->state != PLAYER_STATE_WALKING) ? 1 : 1;
+            player_spr->end_frame = (pl->state != PLAYER_STATE_WALKING) ? 1 : 1;
             break;
     }
 
 
 
        sprite_update(player_spr);
-/*
-    if(SDL_GetTicks() > pl->anim_counter + player_spr->delay[pl->frames]){
-        pl->frames++;
-        pl->anim_counter = SDL_GetTicks();
-
-    }
-
-    if(pl->frames == pl->max_frames){
-        pl->frames = 0;
-    }
-*/
-
 
 
 

@@ -62,7 +62,7 @@ int sprite_init_str(sprite_t **spr, const char *name)
 
 }
 
-int sprite_set_spritesheet_offset(sprite_t *spr, int rows, int cols)
+int sprite_set_spritesheet_offset(sprite_t *spr, int frame_width, int frame_height)
 {
     int rx,ry;
     int w,h;
@@ -73,8 +73,8 @@ int sprite_set_spritesheet_offset(sprite_t *spr, int rows, int cols)
 
 
     SDL_QueryTexture(spr->texture, NULL, NULL, &w, &h);
-    rx = abs((w / cols));
-    ry = abs((h / rows));
+    rx = w / abs(w / frame_width);
+    ry = h / abs(h / frame_height);
 
     spr->delay = calloc(rx, sizeof(int));
 
@@ -114,12 +114,15 @@ void sprite_update(sprite_t *spr)
     if((int64_t)SDL_GetTicks() - spr->delay[spr->current_animation] > spr->time_passed){
         spr->time_passed = SDL_GetTicks();
 
-        if(spr->current_frame == spr->end_frame){
+        if(spr->current_frame >= spr->end_frame){
             spr->current_frame = 0;
         }else {
             ++spr->current_frame;
         }
+
     }
+
+
 }
 
 #define DELAY_FREE(x) if(x) free(x); x = NULL

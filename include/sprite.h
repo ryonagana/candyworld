@@ -20,7 +20,7 @@ typedef struct {
 
 int sprite_init(sprite_t **spr, SDL_Texture *tex);
 int sprite_init_str(sprite_t **spr, const char *name);
-int sprite_set_spritesheet_offset(sprite_t *spr, int rows, int cols);
+int sprite_set_spritesheet_offset(sprite_t *spr, int frame_width, int frame_height);
 
 int sprite_set_delay(sprite_t *spr, int *delay, size_t size);
 
