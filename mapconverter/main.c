@@ -42,14 +42,14 @@ void parse_params(int argc, char **argv){
                     case 'i':
                     show_map_info = 1;
                     break;
-
-                default:
-                    map_convert = 1;
-                    break;
                 }
                 return;
+        }else {
+             map_convert = 1;
+             return;
         }
        }
+
 
 }
 

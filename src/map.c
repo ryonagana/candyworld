@@ -312,15 +312,19 @@ void map_save_file(FILE *fp, map_t *map)
     fwrite(&map->height, sizeof (int32_t), 1, fp);
     //fputc(map->width, fp);
     //fputc(map->height, fp);
-    fputc(map->tileset_count, fp);
-    fputc(map->map_version, fp);
+
+    fwrite(&map->tileset_count, sizeof (int32_t), 1, fp);
+    fwrite(&map->map_version, sizeof (int32_t), 1, fp);
+    //fputc(map->tileset_count, fp);
+    //fputc(map->map_version, fp);
 
     int i;
 
     for(i = 0; i < LAYERS_NUM; i++){
 
         //layer number
-        fputc(i, fp);
+        //fputc(i, fp);
+        fwrite(&i,sizeof (int32_t), 1, fp);
         fwrite(map->layers[i].layer, sizeof(int32_t), map->width * map->height , fp);
 
         /*
@@ -336,13 +340,22 @@ void map_save_file(FILE *fp, map_t *map)
     for(i = 0;i < map->tileset_count;i++){
 
          fwrite(map->tilesets[i].name, 127, 1, fp);
-         fwrite(&map->tilesets[i].width, sizeof(int), 1, fp);
-         fwrite(&map->tilesets[i].height, sizeof(int), 1, fp);
+         fwrite(&map->tilesets[i].width, sizeof(int32_t), 1, fp);
+         fwrite(&map->tilesets[i].height, sizeof(int32_t), 1, fp);
+
+         fwrite(&map->tilesets[i].tile_width, sizeof(int32_t), 1, fp);
+         fwrite(&map->tilesets[i].tile_height, sizeof(int32_t), 1, fp);
+         fwrite(&map->tilesets[i].rows, sizeof(int32_t), 1, fp);
+         fwrite(&map->tilesets[i].cols, sizeof(int32_t), 1, fp);
+         fwrite(&map->tilesets[i].first_gid, sizeof(int32_t), 1, fp);
+
+         /*
          fputc(map->tilesets[i].tile_width, fp);
          fputc(map->tilesets[i].tile_height, fp);
          fputc(map->tilesets[i].rows, fp);
          fputc(map->tilesets[i].cols, fp);
          fputc(map->tilesets[i].first_gid, fp);
+         */
 
     }
 
@@ -368,7 +381,7 @@ int map_load_stream(map_t **map, FILE *in)
 {
     map_t *tmp_map = NULL;
     char header[6] = {0};
-    int i,j;
+    int i;
 
     if( (*(map)) == NULL){
          MAPCONV_ERROR("map_load_file(): map need to be inited before loaded");
@@ -396,8 +409,10 @@ int map_load_stream(map_t **map, FILE *in)
     fread(tmp_map->filename,MAP_FILENAME_BUFFER,1,in);
     fread(&tmp_map->width, sizeof (int32_t), 1, in);
     fread(&tmp_map->height, sizeof (int32_t), 1, in);
-    tmp_map->tileset_count = fgetc(in);
-    tmp_map->map_version = fgetc(in);
+    fread(&tmp_map->tileset_count, sizeof (int32_t), 1, in);
+    fread(&tmp_map->map_version, sizeof (int32_t), 1, in);
+    //tmp_map->tileset_count = fgetc(in);
+    //tmp_map->map_version = fgetc(in);
 
 
     for(i = 0; i < LAYERS_NUM; i++){
@@ -408,29 +423,28 @@ int map_load_stream(map_t **map, FILE *in)
 
     for(i = 0; i < LAYERS_NUM; i++){
 
-        int layer_id = fgetc(in); // get the layer num
+        //int layer_id = fgetc(in); // get the layer num
+        int layer_id = 0;
+        fread(&layer_id, sizeof(int32_t), 1, in);
         fread(tmp_map->layers[layer_id].layer, sizeof (int32_t), tmp_map->width * tmp_map->height, in);
 
-        /*
-        for(j = 0; j < tmp_map->width * tmp_map->height; j++){
-            tmp_map->layers[layer_id].layer[j] = fgetc(in);
-        }
-        */
+
     }
 
 
     for(i = 0;i < tmp_map->tileset_count;i++){
 
          fread(tmp_map->tilesets[i].name, 127,1,in);
-         //tmp_map->tilesets[i].width = fgetc(in);
-         //tmp_map->tilesets[i].height = fgetc(in);
          fread(&tmp_map->tilesets[i].width, sizeof(int32_t), 1, in);
          fread(&tmp_map->tilesets[i].height, sizeof(int32_t), 1, in);
-         tmp_map->tilesets[i].tile_width = fgetc(in);
-         tmp_map->tilesets[i].tile_height = fgetc(in);
-         tmp_map->tilesets[i].rows = fgetc(in);
-         tmp_map->tilesets[i].cols = fgetc(in);
-         tmp_map->tilesets[i].first_gid =fgetc(in);
+
+         fread(&tmp_map->tilesets[i].tile_width, sizeof(int32_t), 1, in);
+         fread(&tmp_map->tilesets[i].tile_height, sizeof(int32_t), 1, in);
+         fread(&tmp_map->tilesets[i].rows, sizeof(int32_t), 1, in);
+         fread(&tmp_map->tilesets[i].cols, sizeof(int32_t), 1, in);
+         fread(&tmp_map->tilesets[i].first_gid, sizeof(int32_t), 1, in);
+
+
 
     }
 

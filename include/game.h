@@ -56,8 +56,7 @@ typedef struct game_data_t {
 void game_init();
 void game_end();
 void game_start();
-
-
+int game_event_switch(int event);
 
 
 

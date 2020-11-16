@@ -103,17 +103,18 @@ static void window_create(int width, int height, int fullscreen, int vsync, int 
 
 
 
-    char title_buf[255] = {0};
-    strncpy(title_buf, caption, 255 - 1);
+
+    strncpy(main_window.title, caption, 56 - strlen(caption));
 
 
     int window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
     if(fullscreen){
-        window_flags |= SDL_WINDOW_FULLSCREEN;
+        window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     }
 
-    main_window.events.window = SDL_CreateWindow(title_buf, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
+    main_window.events.window = SDL_CreateWindow(main_window.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 
     if(!main_window.events.window){
         DCRITICAL("Main Window Error!");

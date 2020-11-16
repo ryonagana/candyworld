@@ -24,7 +24,7 @@ unix : {
 
 
     #SDL
-    LIBS += -L/usr/lib64 -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
+    LIBS += -L/usr/lib64 -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lm
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
     DEPENDPATH  += /usr/include

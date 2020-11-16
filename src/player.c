@@ -165,7 +165,7 @@ void player_handle_input(player_t *pl, Uint32 delta)
         player_move_right(pl, delta);
     }else {
         pl->direction = PLAYER_DIRECTION_NONE;
-        pl->score = PLAYER_STATE_NONE;
+        pl->state = PLAYER_STATE_IDLE;
     }
 
 
@@ -211,4 +211,21 @@ void player_set_pos_screen(player_t *player, int x, int y)
 
         player->x = tx;
         player->y = ty;
+}
+
+int player_screen_bound(player_t *player)
+{
+    SDL_Rect win, pl;
+
+    win.w = window_get()->info.width;
+    win.h = window_get()->info.height;
+    win.x = 0;
+    win.y = 0;
+
+    pl.w = player->hitbox.w - 1;
+    pl.h = player->hitbox.h - 1;
+    pl.x = player->x;
+    pl.y = player->y;
+
+    return SDL_HasIntersection(&win, &pl);
 }

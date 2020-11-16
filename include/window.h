@@ -32,6 +32,7 @@
 
 #define WINDOW_FULLSCREEN_ON 1
 #define WINDOW_FULLSCREEN_OFF 0
+#define FPS_MIN 16
 
 
 enum {

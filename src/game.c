@@ -98,3 +98,14 @@ void game_end()
 
 
 
+
+int game_event_switch(int event)
+{
+    if(&g_events[event] == NULL){
+        DCRITICAL("invalid event. critical error");
+        window_end();
+    }
+
+    gamedata.current_event = g_events[event];
+    return event;
+}

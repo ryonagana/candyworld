@@ -46,8 +46,8 @@ void player_init(player_t *pl);
 void player_draw(player_t *pl);
 void player_update(player_t *pl, Uint32 delta);
 void player_handle_input(player_t *pl, Uint32 delta);
-
-
 void player_set_pos_screen(player_t *player, int x, int y);
+
+int player_screen_bound(player_t *player);
 
 #endif // PLAYER_H
