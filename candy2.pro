@@ -6,7 +6,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
 
-PKGCONFIG += sdl2 SDL2_mixer SDL2_ttf SDL2_image
+PKGCONFIG += sdl2 SDL2_mixer SDL2_gfx SDL2_ttf SDL2_image
 
 
 QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
