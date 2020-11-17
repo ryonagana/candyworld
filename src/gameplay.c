@@ -92,7 +92,7 @@ void gameplay_event_loop(game_event_data *e, void* data){
             fps_time = SDL_GetTicks();
             fps_total = fps;
             char fps_str[60] = {0};
-            snprintf(fps_str, 60, "%s  - FPS: %lld", window_get()->title, fps);
+            snprintf(fps_str, 60, "%s  - FPS: %ld", window_get()->title, fps);
             SDL_SetWindowTitle(window_get()->events.window, fps_str);
             fps = 0;
 

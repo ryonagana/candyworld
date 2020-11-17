@@ -13,7 +13,7 @@
 
 
 
-static char map_folder[4096] = {0};
+static char map_folder[BUFSIZ] = {0};
 
 static int  map_convert = 0;
 static int  show_map_info = 0;
@@ -53,6 +53,22 @@ void parse_params(int argc, char **argv){
 
 }
 
+static void opt_map_convert_file(char **argv){
+
+    char name[BUFSIZ] = {0};
+    map_t *map = NULL;
+
+    strncpy(map_folder, argv[1], BUFSIZ - strlen(argv[1]));
+    strncpy(name, map_folder, BUFSIZ - strlen(map_folder));
+    strncat(name, MAP_FORMAT, BUFSIZ - strlen(MAP_FORMAT));
+
+    map = map_init();
+    map_load_str_csv(map, map_folder);
+    map_save_name(map, map_folder);
+    map_show_info(map);
+    map_free(&map);
+}
+
 
 void opt_show_map_info(const char *filename){
     map_t *map = map_load_file_str(filename);
@@ -66,8 +82,7 @@ void opt_show_map_info(const char *filename){
 
 int main(int argc , char *argv[])
 {
-    char name[BUFSIZ] = {0};
-    map_t *map = NULL;
+
 
     if(argc <= 1){
         usage();
@@ -78,16 +93,7 @@ int main(int argc , char *argv[])
 
 
     if(map_convert){
-
-        strncpy(map_folder, (char *)argv[1], BUFSIZ - strlen(argv[1]));
-        strncpy(name, map_folder, BUFSIZ - strlen(map_folder));
-        strncat(name, MAP_FORMAT, BUFSIZ - strlen(MAP_FORMAT));
-
-        map = map_init();
-        map_load_str_csv(map, map_folder);
-        map_save_name(map, map_folder);
-        map_show_info(map);
-        map_free(&map);
+        opt_map_convert_file(argv);
         return 0;
 
     }else if(show_map_info){
