@@ -1,8 +1,12 @@
 TEMPLATE = app
 CONFIG += console c11 use_c_linker
+QT_CONFIG -= no-pkg-config
+CONFIG += link_pkgconfig
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
+
+PKGCONFIG += sdl2 SDL2_mixer SDL2_ttf SDL2_image
 
 
 QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
@@ -10,21 +14,18 @@ QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
 #so i hardcorded my gcc include path just to shut up compiler
-INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
+#INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 #will be removed later
 
 
 unix : {
     debug: {
         DEFINES += DEBUG
-        #DEFINES += ALLEGRO_LOG
-
-        QMAKE_CFLAGS += -O0
     }
 
 
     #SDL
-    LIBS += -L/usr/lib64 -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lm
+
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
     DEPENDPATH  += /usr/include
