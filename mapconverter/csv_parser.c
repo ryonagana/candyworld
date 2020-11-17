@@ -1,4 +1,5 @@
 #include "csv_parser.h"
+#include <inttypes.h>
 
 void csv_parse_file(FILE *fp, int rows, int cols, void** data){
 
@@ -6,18 +7,18 @@ void csv_parse_file(FILE *fp, int rows, int cols, void** data){
     int y = 0;
     int *result = NULL;
 
-    result = calloc( (rows * cols), sizeof (int));
+    result = calloc( (rows * cols), sizeof (int32_t));
 
 
 
-    while(fgets(linebuf, 4096, fp) &&  y < rows  ){
+    while(fgets(linebuf, 4096, fp)){
 
         char *token = NULL;
         int x = 0;
         const char delimiter[2] = ",";
         token = strtok(linebuf, delimiter);
 
-        while(token != NULL && x < cols){
+        while(token != NULL){
 
             const char *val = (char *) token;
             result[y * rows + x] = atoi(val);

@@ -53,7 +53,37 @@ void map_render(map_t *map)
     int layer_count;
 
     for(layer_count = 0; layer_count < LAYERS_NUM; layer_count++){
+
+        for(y = 0;  y < map->height; y++){
+            for(x = 0; x < map->width; x++){
+                int32_t t = map_get_tile_1d(map, map_render_order[layer_count], map->width, x,y);
+                int gid = map_getgid(map, t);
+
+                //if(gid == -1) continue;
+
+
+                int rx = (gid % (map->tilesets[0].width / map->tilesets->tile_width)) * map->tilesets[0].tile_width;
+                int ry = (gid / (map->tilesets[0].height / map->tilesets->tile_height)) * map->tilesets[0].tile_height;
+
+                render_texture(map_tileset_texture,
+                               rx,
+                               ry,
+                               map->tilesets[0].tile_width,
+                               map->tilesets[0].tile_height,
+                               x *  map->tilesets->tile_width * MAP_SCALE,
+                               y *  map->tilesets->tile_width * MAP_SCALE,
+                               map->tilesets[0].tile_width * MAP_SCALE ,
+                               map->tilesets[0].tile_height * MAP_SCALE,
+                               0,
+                               SDL_FLIP_NONE
+                );
+            }
+        }
+
         //if(map_render_order[layer_count] == 0) continue;
+
+
+        /*
         for(y = 0;  y < map->height; y++){
             for(x = 0; x < map->width; x++){
                     map_tile_t tile = map_get_tile(map, map_render_order[layer_count] , x,y);
@@ -79,6 +109,7 @@ void map_render(map_t *map)
 
             }
         }
+        */
     }
 
      //SDL_SetRenderTarget(window_get()->events.renderer, NULL);
@@ -132,3 +163,8 @@ map_tile_t map_get_tile(map_t *map, int layer, int x, int y)
 }
 
 
+
+int map_get_tile_1d(map_t *map, int layer, int width, int x, int y)
+{
+    return map->layers[layer].layer[x + width * y];
+}
