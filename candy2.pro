@@ -6,7 +6,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
 
-PKGCONFIG += sdl2 SDL2_mixer SDL2_gfx SDL2_ttf SDL2_image
+PKGCONFIG += sdl2 SDL2_mixer SDL2_ttf SDL2_image
 
 
 QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
@@ -25,14 +25,13 @@ unix : {
 
 
     #SDL
+    LIBS += -L/usr/lib64
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
     DEPENDPATH  += /usr/include
 
     #allegro
-
-    #LIBS += -L/usr/local/lib -lallegro -lallegro_main -lallegro_audio -lallegro_acodec -lallegro_image -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_dialog -lallegro_physfs
 
     LIBS += -L/usr/lib64 -llua
     LIBS += -lm

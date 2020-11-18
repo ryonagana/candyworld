@@ -49,7 +49,7 @@ static int window_init_libraries(void){
     window_starts_main_window();
 
 
-    if(SDL_Init(SDL_INIT_NOPARACHUTE | SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_AUDIO) != 0){
+    if(SDL_Init(SDL_INIT_VIDEO) != 0){
         goto error;
     }
 
@@ -164,6 +164,7 @@ game_window*  window_get(){
 }
 
 void window_init(int w, int h, int fullscreen, int vsync, const char* caption){
+
     window_create(w,h,fullscreen, vsync, 1, caption);
     DINFO("Window is Created! -  Width: %d Height: %d, title: %s  fullscreen: %s", w,h, caption, fullscreen ? "True" : "False");
 }
