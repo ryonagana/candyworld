@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "shared.h"
+#include "camera.h"
 #include <SDL2/SDL.h>
 
 #define PLAYER_DIRECTION_NONE  0
@@ -37,6 +38,7 @@ struct player_t {
     int max_frames;
     int frames;
     Uint32 flags;
+    camera player_camera;
 };
 
 typedef struct player_t player_t;
@@ -48,6 +50,6 @@ void player_update(player_t *pl, Uint32 delta);
 void player_handle_input(player_t *pl, Uint32 delta);
 void player_set_pos_screen(player_t *player, int x, int y);
 
-int player_screen_bound(player_t *player);
+SDL_bool player_screen_bound(player_t *player);
 
 #endif // PLAYER_H

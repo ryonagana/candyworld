@@ -82,6 +82,7 @@ win32: {
 
 HEADERS += \
         $$PWD/include/main.h \
+    include/camera.h \
         include/debug.h \
     include/gameplay.h \
         include/keyboard.h \
@@ -111,6 +112,7 @@ HEADERS += \
 
 SOURCES += \
         $$PWD/src/main.c \
+        src/camera.c \
         src/gameplay.c \
         src/map_render.c \
         src/debug.c \

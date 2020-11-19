@@ -174,7 +174,7 @@ void window_init(int w, int h, int fullscreen, int vsync, const char* caption){
 
 int window_end(void){
 
-
+    sound_end();
     IMG_Quit();
     TTF_Quit();
     Mix_Quit();
@@ -195,10 +195,12 @@ int window_end(void){
 void window_exit(void){
     if(window_end() < 0){
         DINFO("Main Window Closed with error!");
+        SDL_Quit();
         return;
     }
 
    DINFO("Main Window closed successfully");
+   SDL_Quit();
    return;
 }
 

@@ -56,6 +56,9 @@ void player_init(player_t *pl){
     sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
     sprite_set_delay(player_spr, anim_delay, 8);
 
+    camera_init(&pl->player_camera,0,0, pl->hitbox.w, pl->hitbox.h);
+    camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
+
     return;
 
 }
@@ -93,6 +96,7 @@ void player_draw(player_t *pl)
 {
 #ifdef DEBUG
     debug_player_info(pl);
+    debug_camera_render(&pl->player_camera);
 #endif
 
     sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
@@ -114,7 +118,9 @@ void player_update(player_t *pl, Uint32 delta)
 {
 
 
+    camera_update(&pl->player_camera, pl->x, pl->y);
     sprite_update(player_spr);
+
 
     switch(movement_order[pl->direction]){
         case PLAYER_DIRECTION_UP:
@@ -148,13 +154,13 @@ void player_update(player_t *pl, Uint32 delta)
 void player_handle_input(player_t *pl, Uint32 delta)
 {
 
-    if(key_pressed(SDL_SCANCODE_W) > 0){
+    if(key_pressed(KEY_W) > 0){
         player_move_up(pl, delta);
-    }else if(key_pressed(SDL_SCANCODE_S) > 0){
+    }else if(key_pressed(KEY_S) > 0){
         player_move_dn(pl, delta);
-    }else if(key_pressed(SDL_SCANCODE_A) > 0){
+    }else if(key_pressed(KEY_A) > 0){
         player_move_left(pl, delta);
-    }else if(key_pressed(SDL_SCANCODE_D) > 0){
+    }else if(key_pressed(KEY_D) > 0){
         player_move_right(pl, delta);
     }else {
          player_direction_none(pl, player_spr);
@@ -174,7 +180,7 @@ void player_set_pos_screen(player_t *player, int x, int y)
         player->y = ty;
 }
 
-int player_screen_bound(player_t *player)
+SDL_bool player_screen_bound(player_t *player)
 {
     SDL_Rect win, pl;
 

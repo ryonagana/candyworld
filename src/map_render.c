@@ -30,11 +30,11 @@ void map_render_end()
 
 
 
-void map_render(map_t *map)
+void map_render(map_t *map, int x, int y)
 {
 
 
-    int x,y;
+    int map_x,map_y;
 
     const int map_render_order[] = {
         LAYER_BACKGROUND,
@@ -54,9 +54,9 @@ void map_render(map_t *map)
 
     for(layer_count = 0; layer_count < LAYERS_NUM; layer_count++){
 
-        for(y = 0;  y < map->height; y++){
-            for(x = 0; x < map->width; x++){
-                int32_t t = map_get_tile_1d(map, map_render_order[layer_count], map->width, x,y);
+        for(map_y = 0;  map_y < map->height; map_y++){
+            for(map_x = 0; map_x < map->width; map_x++){
+                int32_t t = map_get_tile_1d(map, map_render_order[layer_count], map->width, map_x,map_y);
                 int gid = map_getgid(map, t);
 
                 //if(gid == -1) continue;
@@ -70,8 +70,8 @@ void map_render(map_t *map)
                                ry,
                                map->tilesets[0].tile_width,
                                map->tilesets[0].tile_height,
-                               x *  map->tilesets->tile_width * MAP_SCALE,
-                               y *  map->tilesets->tile_width * MAP_SCALE,
+                               map_x *  map->tilesets->tile_width * MAP_SCALE,
+                               map_y *  map->tilesets->tile_width * MAP_SCALE,
                                map->tilesets[0].tile_width * MAP_SCALE ,
                                map->tilesets[0].tile_height * MAP_SCALE,
                                0,

@@ -14,9 +14,13 @@
 game_event_t  main_game_event;
 
 
+
+
 void gameplay_start(game_data_t *gamedata)
 {
     player_init(&gamedata->player);
+
+
     player_set_pos_screen(&gamedata->player, 10,10);
 }
 
@@ -77,8 +81,14 @@ void gameplay_event_loop(game_event_data *e, void* data){
 
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
-        map_render(gamedata->map);
+        map_render(gamedata->map, 0,0);
         player_draw(&gamedata->player);
+
+
+
+
+
+
         SDL_SetRenderTarget(window_get()->events.renderer, NULL);
 
 

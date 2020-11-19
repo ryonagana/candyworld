@@ -93,6 +93,7 @@ void game_end()
 #endif
     map_render_end();
     resources_free();
+    window_free_events(window_get());
     window_end();
 
 }
