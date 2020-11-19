@@ -41,6 +41,18 @@
 
 #define MAP_COUNT_TILESETS(ts) (sizeof((ts)) / sizeof((ts)[0]))
 
+int map_file_exists(const char* filename){
+        FILE *fp = NULL;
+
+        if((fp = fopen(filename,"rb")) == NULL){
+            return 0;
+        }
+
+        fclose(fp);
+        return 1;
+
+}
+
 void map_show_info(map_t *map){
     MAPCONV_LOG("[MAP]\n"
                 "map name: %s\n"
@@ -118,6 +130,11 @@ int map_load_str_csv(map_t *map, const char *filepath){
 
     FILE *conf;
     conf = NULL;
+
+    if(!map_file_exists(filepath)){
+        DCRITICAL("map %s not found!", filepath);
+        return 0;
+    }
 
 
 

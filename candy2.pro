@@ -6,9 +6,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
 
-PKGCONFIG += sdl2 SDL2_mixer SDL2_ttf SDL2_image
-
-
+PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
 QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
 
 
@@ -25,7 +23,7 @@ unix : {
 
 
     #SDL
-    LIBS += -L/usr/lib64
+    #LIBS += -L/usr/local/lib -lSDL2  -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
