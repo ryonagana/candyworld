@@ -148,3 +148,8 @@ void sprite_set_animation(sprite_t *spr, int anim)
 {
      spr->current_animation = anim;
 }
+
+void sprite_draw_rect(sprite_t *spr, int screen_x, int screen_y, int rect_x, int rect_y, int rect_w, int rect_h)
+{
+    render_texture(spr->texture, rect_x, rect_y, rect_w, rect_h, screen_x, screen_y, rect_w, rect_h, 0, SDL_FLIP_NONE);
+}

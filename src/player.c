@@ -6,11 +6,20 @@
 #include "render.h"
 #include "debug.h"
 #include "sprite.h"
+#include "sprite_animation.h"
+
+
 
 
 
 
 static sprite_t *player_spr = NULL;
+
+
+static sprite_animation_frame_t  player_animation_up;
+static sprite_animation_frame_t  player_animation_down;
+static sprite_animation_frame_t  player_animation_left;
+static sprite_animation_frame_t  player_animation_right;
 
 
 const int movement_order[] = {

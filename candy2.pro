@@ -94,6 +94,7 @@ HEADERS += \
         include/resources.h \
         #include/thread.h \
         include/sprite.h \
+    include/sprite_animation.h \
         include/text.h \
         include/timer.h \
         include/window.h\
@@ -124,6 +125,7 @@ SOURCES += \
         src/resources.c \
         #src/thread.c \
         src/sprite.c \
+        src/sprite_animation.c \
         src/timer.c \
         src/window.c \
         src/sound.c \
