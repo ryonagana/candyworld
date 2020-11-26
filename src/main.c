@@ -9,5 +9,6 @@ int main(int argc, char *argv[])
     game_init();
     game_start();
     game_end();
+    SDL_Quit();
     return 0;
 }

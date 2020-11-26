@@ -26,7 +26,7 @@ void sprite_set_animation(sprite_t *spr, int anim);
 int sprite_set_delay(sprite_t *spr, int *delay, size_t size);
 
 void sprite_draw(sprite_t *spr, int x, int y, int orig_w, int orig_h, int dst_w, int dst_h);
-void sprite_draw_rect(sprite_t *spr, int x, int y, int orig_w, int orig_h, int dst_w, int dst_h);
+void sprite_draw_rect(sprite_t *spr, int screen_x, int screen_y, int rect_x, int rect_y, int rect_w, int rect_h);
 void sprite_update(sprite_t *spr);
 void sprite_free(sprite_t **spr);
 

@@ -16,10 +16,11 @@
 static sprite_t *player_spr = NULL;
 
 
-static sprite_animation_frame_t  player_animation_up;
-static sprite_animation_frame_t  player_animation_down;
-static sprite_animation_frame_t  player_animation_left;
-static sprite_animation_frame_t  player_animation_right;
+static sprite_animation_t  player_animation_up;
+static sprite_animation_t  player_animation_down;
+static sprite_animation_t  player_animation_left;
+static sprite_animation_t  player_animation_right;
+
 
 
 const int movement_order[] = {
@@ -67,6 +68,19 @@ void player_init(player_t *pl){
 
     camera_init(&pl->player_camera,0,0, pl->hitbox.w, pl->hitbox.h);
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
+
+
+    sprite_animation_start(&player_animation_up, player_spr);
+    sprite_animation_start(&player_animation_down, player_spr);
+    sprite_animation_start(&player_animation_left, player_spr);
+    sprite_animation_start(&player_animation_right, player_spr);
+
+
+
+
+    sprite_animation_load(&player_animation_up, 0, 32,32, 12, anim_delay);
+
+
 
     return;
 

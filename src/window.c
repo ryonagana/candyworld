@@ -49,23 +49,24 @@ static int window_init_libraries(void){
     window_starts_main_window();
 
 
-    if(SDL_Init(SDL_INIT_VIDEO) != 0){
-        goto error;
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
+        DCRITICAL("SDL_CANNOT START!");
+        return -1;
     }
 
-    int img_flags = IMG_INIT_JPG | IMG_INIT_PNG;
+    int img_flags =  IMG_INIT_JPG | IMG_INIT_PNG;
     int img_init = IMG_Init(img_flags);
     if( (img_init & img_flags) != img_flags){
-        DCRITICAL("IMG_Init() error !");
-        goto error;
+        DCRITICAL("IMG_Init() error ! - %s", SDL_GetError());
+        return -1;
     }
 
 
-    int mix_flags = MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG;
+    int mix_flags = MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_OGG;
 
     if( (mix_flags & Mix_Init(mix_flags)) != mix_flags){
-         DCRITICAL("MIX_Init() error !");
-         goto error;
+         DCRITICAL("MIX_Init() error ! - %s", SDL_GetError());
+         return -1;
     }
 
 
@@ -73,13 +74,13 @@ static int window_init_libraries(void){
 
     if(TTF_Init() < 0){
          DCRITICAL("TTF_Init() error ! - %s", TTF_GetError());
-         goto error;
+         return -1;
     }
 
 
 
     return 0;
-error: return -1;
+
 }
 /** \brief
  *
@@ -174,11 +175,11 @@ void window_init(int w, int h, int fullscreen, int vsync, const char* caption){
 
 int window_end(void){
 
+    window_free_events(&main_window);
     sound_end();
     IMG_Quit();
     TTF_Quit();
     Mix_Quit();
-    window_free_events(&main_window);
 
 
 
@@ -195,12 +196,10 @@ int window_end(void){
 void window_exit(void){
     if(window_end() < 0){
         DINFO("Main Window Closed with error!");
-        SDL_Quit();
         return;
     }
 
    DINFO("Main Window closed successfully");
-   SDL_Quit();
    return;
 }
 

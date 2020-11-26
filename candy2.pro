@@ -5,9 +5,11 @@ CONFIG += link_pkgconfig
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
+@CONFIG += debug_and_release@
 
-PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
-QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
+#PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
+QMAKE_CFLAGS += -std=c11
+
 
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
@@ -17,13 +19,19 @@ QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
 
 
 unix : {
+    QMAKE_CFLAGS += -D_REENTRANT
+
     debug: {
         DEFINES += DEBUG
+        QMAKE_CFLAGS_DEBUG += -O0
+        QMAKE_CFLAGS_DEBUG += -Wall -Wextra -pedantic
+
     }
 
 
     #SDL
-    #LIBS += -L/usr/local/lib -lSDL2  -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+    INCLUDEPATH += /usr/local/include
+    LIBS += -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2  -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
@@ -44,6 +52,7 @@ win32: {
     debug: {
         DEFINES += DEBUG
         QMAKE_CFLAGS += -O0
+        QMAKE_CXXFLAGS += -O0
     }
 
     LIBS += -L$$PWD/../../../libs/SDL2-2.0.12/i686-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2.dll -lSDL2_ttf.dll -lSDL2_image.dll -lSDL2_mixer.dll
