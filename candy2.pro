@@ -25,6 +25,7 @@ unix : {
         DEFINES += DEBUG
         QMAKE_CFLAGS_DEBUG += -O0
         QMAKE_CFLAGS_DEBUG += -Wall -Wextra -pedantic
+        QMAKE_CFLAGS -= -g
 
     }
 
