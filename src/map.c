@@ -132,7 +132,7 @@ int map_load_str_csv(map_t *map, const char *filepath){
     conf = NULL;
 
     if(!map_file_exists(filepath)){
-        DCRITICAL("map %s not found!", filepath);
+        MAPCONV_LOG("map %s not found!", filepath);
         return 0;
     }
 

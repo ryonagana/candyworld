@@ -36,6 +36,7 @@ static void window_starts_main_window(void)
     main_window.events.renderer = NULL;
 
     //ain_window.gamestate = GAMESTATE_IN_GAME;
+    return;
 }
 
 
@@ -49,7 +50,7 @@ static int window_init_libraries(void){
     window_starts_main_window();
 
 
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0){
         DCRITICAL("SDL_CANNOT START!");
         return -1;
     }

@@ -14,12 +14,12 @@ QMAKE_CFLAGS += -std=c11
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
 #so i hardcorded my gcc include path just to shut up compiler
-#INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
+INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 #will be removed later
 
 
 unix : {
-    QMAKE_CFLAGS += -D_REENTRANT
+    #QMAKE_CFLAGS += -D_REENTRANT
 
     debug: {
         DEFINES += DEBUG
@@ -32,7 +32,7 @@ unix : {
 
     #SDL
     INCLUDEPATH += /usr/local/include
-    LIBS += -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2  -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+    LIBS += -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/lua5.3
@@ -104,7 +104,7 @@ HEADERS += \
         include/resources.h \
         #include/thread.h \
         include/sprite.h \
-    include/sprite_animation.h \
+        include/sprite_animation.h \
         include/text.h \
         include/timer.h \
         include/window.h\
