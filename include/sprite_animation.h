@@ -14,17 +14,20 @@ typedef struct sprite_animation_frame_t {
     int width;
     int height;
     Uint32 delay;
-    struct sprite_animation_frame_t *next;
 }sprite_animation_frame_t;
 
 typedef struct sprite_animation_t {
     sprite_t *sprite;
-    sprite_animation_frame_t *frames;
-    sprite_animation_frame_t *head;
+    //sprite_animation_frame_t *frames;
     int frame_count;
     int actual_frame;
     int max_frames;
+    int current_animation;
     int repeat;
+    int rows;
+    int cols;
+    int x;
+    int y;
     int play;
 
 }sprite_animation_t;
@@ -39,10 +42,12 @@ int sprite_animation_load(sprite_animation_t *anim, int row, int tile_width, int
 sprite_animation_frame_t* sprite_animation_frame_set(int id, int x, int y, int w, int h, int delay);
 
 
-void sprite_animation_add_frame(sprite_animation_t *anim, sprite_animation_frame_t* frame);
+//void sprite_animation_add_frame(sprite_animation_t *anim, sprite_animation_frame_t* frame);
 
 
 
+void sprite_animation_draw(sprite_animation_t *anim, int x, int y, int w, int h, int flipmode);
 void sprite_animation_update(sprite_animation_t *anim);
+void sprite_animation_set_anim(sprite_animation_t *anim, int anim_id);
 
 #endif // SPRITE_ANIMATION_H

@@ -78,7 +78,7 @@ void player_init(player_t *pl){
 
 
 
-    sprite_animation_load(&player_animation_up, 0, 32,32, 12, anim_delay);
+    sprite_animation_load(&player_animation_up, 0, 32,32, 5, anim_delay);
 
 
 
@@ -122,7 +122,21 @@ void player_draw(player_t *pl)
     debug_camera_render(&pl->player_camera);
 #endif
 
-    sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+
+    switch(pl->direction){
+        case PLAYER_DIRECTION_UP:
+        sprite_animation_draw(&player_animation_up, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, SDL_FLIP_NONE);
+
+        //sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+        break;
+
+        default:
+            sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+        break;
+    }
+
+
+
 
     //render_texture(player_spr->texture, pl->offset_x * pl->frames, pl->offset_y * pl->direction, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, 0, SDL_FLIP_NONE);
 
@@ -142,6 +156,17 @@ void player_update(player_t *pl, Uint32 delta)
 
 
     camera_update(&pl->player_camera, pl->x, pl->y);
+
+
+    switch(pl->direction){
+        case PLAYER_DIRECTION_UP:
+        player_animation_up.max_frames = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
+        sprite_animation_set_anim(&player_animation_up, PLAYER_DIRECTION_UP);
+        sprite_animation_update(&player_animation_up);
+        break;
+    }
+
+    /*
     sprite_update(player_spr);
 
 
@@ -166,7 +191,7 @@ void player_update(player_t *pl, Uint32 delta)
            sprite_set_animation(player_spr, PLAYER_DIRECTION_RIGHT);
         break;
     }
-
+    */
 
 
 

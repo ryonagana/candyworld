@@ -31,7 +31,7 @@ struct player_t {
     int lives;
     Sint64 score;
     int direction;
-    int state;
+    int32_t state;
     int offset_x;
     int offset_y;
     Uint32 anim_counter;

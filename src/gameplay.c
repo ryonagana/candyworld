@@ -101,8 +101,8 @@ void gameplay_event_loop(game_event_data *e, void* data){
         if(SDL_GetTicks() - 1000 >= fps_time){
             fps_time = SDL_GetTicks();
             fps_total = fps;
-            char fps_str[60] = {0};
-            snprintf(fps_str, 60, "%s  - FPS: %ld", window_get()->title, fps);
+            char fps_str[120] = {0};
+            snprintf(fps_str, 120 , "%s  - FPS: %ld", window_get()->title, fps);
             SDL_SetWindowTitle(window_get()->events.window, fps_str);
             fps = 0;
 

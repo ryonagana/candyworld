@@ -1,11 +1,12 @@
 #include "sprite_animation.h"
 #include "log.h"
+#include "render.h"
 #include <string.h>
+#include <assert.h>
 
 static sprite_animation_frame_t* sprite_animation_alloc_frames(int frame_count){
     sprite_animation_frame_t *tmp = NULL;
     tmp = calloc(frame_count, sizeof(sprite_animation_frame_t));
-    tmp->next = NULL;
     return tmp;
 }
 
@@ -27,57 +28,47 @@ sprite_animation_frame_t* sprite_animation_frame_set(int id, int x, int y, int w
 
 
 
-void sprite_animation_add_frame(sprite_animation_t *anim, sprite_animation_frame_t* frame){
-        if(anim->frames == NULL){
-            anim->frames = frame;
-            anim->head = anim->frames;
-            anim->frame_count++;
-            return;
-        }
-
-
-         anim->frames->next = frame;
-         anim->frames = anim->frames->next;
-         anim->frame_count++;
-}
 
 void sprite_animation_start(sprite_animation_t *anim, sprite_t *spritesheet)
 {
     anim->actual_frame = 0;
     anim->frame_count = 0;
-    anim->frames = NULL;
+    //anim->frames = NULL;
     anim->play = 0;
     anim->repeat = 0;
     anim->max_frames = spritesheet->cols;
     anim->sprite =  spritesheet;
+    anim->x = 0;
+    anim->y = 0;
 }
 
 int sprite_animation_load(sprite_animation_t *anim, int row, int tile_width, int tile_height,  int max_cols, int delay[]){
 
 
-    int i;
 
-    sprite_animation_frame_t *ret_frame = NULL;
-    ret_frame = sprite_animation_alloc_frames(1);
+    //sprite_animation_frame_t *tmp_frame = sprite_animation_alloc_frames(max_cols);
+    int w,h;
 
-    if(!ret_frame){
-        DCRITICAL("failed to load sprite animation");
-        return 0;
-    }
+    SDL_QueryTexture(anim->sprite->texture,NULL, NULL, &w,&h);
 
+    anim->rows = abs(h / tile_width);
+    anim->cols = abs(w / tile_height);
+    anim->max_frames = max_cols;
+
+    /*
     for(i = 0; i < max_cols; i++){
-         sprite_animation_frame_t *frame = NULL;
-
-          frame =  sprite_animation_alloc_frames(1);
+         sprite_animation_frame_t *frame = &tmp_frame[i];
           frame->delay = delay[i];
           frame->frame_id = i;
           frame->x = i * tile_width;
           frame->y = row;
           frame->width = tile_width;
           frame->height = tile_height;
-          frame->next = NULL;
-          sprite_animation_add_frame(anim, frame);
     }
+
+    anim->frames = tmp_frame;
+    */
+
 
     return 1;
 }
@@ -87,6 +78,38 @@ int sprite_animation_load(sprite_animation_t *anim, int row, int tile_width, int
 void sprite_animation_update(sprite_animation_t *anim)
 {
 
+
+
+    static Uint32 time = 0;
+    //sprite_animation_frame_t *frame = &anim->frames[anim->actual_frame];
+
+    int w,h;
+
+    SDL_QueryTexture(anim->sprite->texture,NULL, NULL, &w,&h);
+
+    anim->rows = h / abs(h / 32);
+    anim->cols = w / abs(w / 32);
+
+    if(time == 0) time = SDL_GetTicks();
+
+
+    if(SDL_GetTicks() -  500 > time){
+        time = SDL_GetTicks();
+
+            if(anim->actual_frame >= anim->max_frames){
+                if(!anim->repeat) anim->actual_frame = anim->max_frames;
+
+                anim->actual_frame = 0;
+
+            }else {
+                anim->actual_frame++;
+            }
+
+
+
+    }
+
+    /*
     sprite_animation_frame_t *start = anim->head;
     static Uint32  time = 0;
 
@@ -110,9 +133,26 @@ void sprite_animation_update(sprite_animation_t *anim)
                 anim->actual_frame++;
             }
 
+            start = start->next;
+            anim->frame_ptr = start;
         }
 
-        start = start->next;
     }
 
+    */
+
+}
+
+
+
+void sprite_animation_draw(sprite_animation_t *anim, int x, int y, int w, int h, int flipmode)
+{
+    render_texture(anim->sprite->texture,  anim->cols * anim->actual_frame, anim->rows * anim->current_animation, anim->sprite->pos.w, anim->sprite->pos.h, x,y, w,h,0, flipmode);
+    return;
+}
+
+
+void sprite_animation_set_anim(sprite_animation_t *anim, int anim_id)
+{
+    anim->current_animation = anim_id;
 }
