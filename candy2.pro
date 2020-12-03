@@ -10,6 +10,7 @@ CONFIG += c11
 #PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
 QMAKE_CFLAGS += -std=c11
 
+PKGCONFIG += lua physfs sdl2 SDL2_image SDL2_ttf SDL2_mixer
 
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
@@ -29,21 +30,6 @@ unix : {
 
     }
 
-
-    #SDL
-    INCLUDEPATH += /usr/local/include
-    LIBS += -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf
-
-    INCLUDEPATH += /usr/include
-    INCLUDEPATH += /usr/include/lua5.3
-    DEPENDPATH  += /usr/include
-
-    #allegro
-
-    LIBS += -L/usr/lib64 -llua
-    LIBS += -lm
-    LIBS += -L/usr/lib64 -lphysfs
-    INCLUDEPATH += /usr/local/include /usr/include
     INCLUDEPATH += $$PWD
     INCLUDEPATH += $$PWD/include
 }
