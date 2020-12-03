@@ -19,14 +19,14 @@
 #define PLAYER_STATE_JUMPING 3
 #define PLAYER_STATE_WAIT    4
 
-#define PLAYER_SPEED 4
+#define PLAYER_SPEED 250.0f
 
 
 #define PLAYER_TILE_SIZE 32
 
 struct player_t {
-    int x;
-    int y;
+    float x;
+    float y;
     SDL_Rect hitbox;
     int lives;
     Sint64 score;
@@ -46,8 +46,8 @@ typedef struct player_t player_t;
 
 void player_init(player_t *pl);
 void player_draw(player_t *pl);
-void player_update(player_t *pl, Uint32 delta);
-void player_handle_input(player_t *pl, Uint32 delta);
+void player_update(player_t *pl, float delta);
+void player_handle_input(player_t *pl, float delta);
 void player_set_pos_screen(player_t *player, int x, int y);
 
 SDL_bool player_screen_bound(player_t *player);

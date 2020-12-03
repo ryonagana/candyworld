@@ -86,30 +86,30 @@ void player_init(player_t *pl){
 
 }
 
-static void player_move_up(player_t *pl, Uint32 delta){
+static void player_move_up(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_UP;
     pl->state = PLAYER_STATE_WALKING;
-    pl->y -= 1 * PLAYER_SPEED ;
+    pl->y -= PLAYER_SPEED * delta * 0.01;
 }
 
-static void player_move_dn(player_t *pl, Uint32 delta){
+static void player_move_dn(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_DOWN;
     pl->state = PLAYER_STATE_WALKING;
-    pl->y += 1 * PLAYER_SPEED ;
+     pl->y += PLAYER_SPEED * delta * 0.01;
 }
 
 
-static void player_move_left(player_t *pl, Uint32 delta){
+static void player_move_left(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_LEFT;
     pl->state = PLAYER_STATE_WALKING;
-    pl->x -= 1 * PLAYER_SPEED ;
+    pl->x -= PLAYER_SPEED * delta * 0.01;
 }
 
 
-static void player_move_right(player_t *pl, Uint32 delta){
+static void player_move_right(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_RIGHT;
     pl->state = PLAYER_STATE_WALKING;
-    pl->x += 1 * PLAYER_SPEED;
+    pl->x += PLAYER_SPEED * delta * 0.01;
 }
 
 
@@ -151,12 +151,12 @@ static void player_direction_none(player_t *pl, sprite_t *spr){
         spr->end_frame = old * pl->direction;
 }
 
-void player_update(player_t *pl, Uint32 delta)
+void player_update(player_t *pl, float delta)
 {
 
 
     camera_update(&pl->player_camera, pl->x, pl->y);
-
+    player_handle_input(pl, delta);
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:
@@ -166,40 +166,11 @@ void player_update(player_t *pl, Uint32 delta)
         break;
     }
 
-    /*
-    sprite_update(player_spr);
-
-
-    switch(movement_order[pl->direction]){
-        case PLAYER_DIRECTION_UP:
-            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
-            sprite_set_animation(player_spr, PLAYER_DIRECTION_UP);
-        break;
-
-        case PLAYER_DIRECTION_DOWN:
-           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
-           sprite_set_animation(player_spr, PLAYER_DIRECTION_DOWN);
-        break;
-
-        case PLAYER_DIRECTION_LEFT:
-            player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
-            sprite_set_animation(player_spr, PLAYER_DIRECTION_LEFT);
-        break;
-
-        case PLAYER_DIRECTION_RIGHT:
-           player_spr->end_frame = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
-           sprite_set_animation(player_spr, PLAYER_DIRECTION_RIGHT);
-        break;
-    }
-    */
-
-
-
-
+    //pl->y += 80.0 * delta * 0.01;
 
 }
 
-void player_handle_input(player_t *pl, Uint32 delta)
+void player_handle_input(player_t *pl, float delta)
 {
 
     if(key_pressed(KEY_W) > 0){

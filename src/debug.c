@@ -42,7 +42,7 @@ void debug_player_info(player_t *pl)
     };
     debug_render_player_hitbox(pl);
     text_draw(debug_text, 10,0, (SDL_Color){0,0,255,255}, "Dir: %s\n",states_pos[pl->direction]);
-    text_draw(debug_text, 10,50, (SDL_Color){0,0,255,255}, "X:%d Y: %d\n",pl->x, pl->y);
+    text_draw(debug_text, 10,50, (SDL_Color){0,0,255,255}, "X:%.2f Y: %.2f\n",pl->x, pl->y);
     return;
 }
 
