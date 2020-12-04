@@ -2,6 +2,8 @@
 
 A Simple Platform game using C11 and SDL2 - no more details cause still indev
 
+![](candy2.gif)
+
 This project needs [SDL 2](https://www.libsdl.org) and need also:
 > [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
 > [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
