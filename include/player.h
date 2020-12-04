@@ -19,7 +19,7 @@
 #define PLAYER_STATE_JUMPING 3
 #define PLAYER_STATE_WAIT    4
 
-#define PLAYER_SPEED 250.0f
+#define PLAYER_SPEED 350.0f
 
 
 #define PLAYER_TILE_SIZE 32
