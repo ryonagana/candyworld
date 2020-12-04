@@ -47,6 +47,8 @@ void game_init()
     resources_ttf_add("resources//fonts//ModernDOS9x16.ttf", "debug_ttf",11);
     resources_file_add("resources//sprites//hud.png", "sprite_hud");
 
+    text_start();
+
 #if defined (DEBUG)
     debug_start();
 #endif

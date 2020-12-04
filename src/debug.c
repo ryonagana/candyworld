@@ -7,7 +7,8 @@ static text_t *debug_text = NULL;
 
 void debug_start()
 {
-    text_init_font(&debug_text, "debug_ttf", 12,0);
+    //text_create()
+   // text_init_font(&debug_text, "debug_ttf", 12,0);
 }
 
 void debug_end()
@@ -41,8 +42,21 @@ void debug_player_info(player_t *pl)
         NULL
     };
     debug_render_player_hitbox(pl);
-    text_draw(debug_text, 10,0, (SDL_Color){0,0,255,255}, "Dir: %s\n",states_pos[pl->direction]);
-    text_draw(debug_text, 10,50, (SDL_Color){0,0,255,255}, "X:%.2f Y: %.2f\n",pl->x, pl->y);
+
+    char dbg_text[TEXT_MAX_ENTRY] = {0};
+    snprintf(dbg_text, TEXT_MAX_ENTRY,  "Dir: %s\n",states_pos[pl->direction]);
+
+    text_t* states = text_create(dbg_text, (SDL_Color){0,0,255,255});
+    text_draw(states, 10,0);
+    text_destroy(states);
+
+
+    snprintf(dbg_text, TEXT_MAX_ENTRY, "X:%.2f Y: %.2f\n",pl->x, pl->y);
+
+    states = text_create(dbg_text, (SDL_Color){0,0,255,255});
+    text_draw(states, 10,40);
+    text_destroy(states);
+
     return;
 }
 
@@ -50,6 +64,9 @@ void debug_player_info(player_t *pl)
 void debug_camera_render(camera *c)
 {
     SDL_SetRenderDrawColor(window_get()->events.renderer, 0,0,255,255);
-    text_draw(debug_text, c->area.x, c->area.y, (SDL_Color){255,0,0,255}, "AREA");
+
+     text_t* states = text_create("CAMERA AREA:", (SDL_Color){255,0,0,255});
+
+    text_draw(states, 0,50);
     SDL_RenderDrawRect(window_get()->events.renderer, &c->area);
 }

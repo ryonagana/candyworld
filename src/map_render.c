@@ -15,7 +15,7 @@ void map_render_init()
 {
 
 
-    text_init_font(&debug_render_font, "debug_ttf", 16, 0);
+    //text_init_font(&debug_render_font, "debug_ttf", 16, 0);
 
 
 
@@ -24,7 +24,7 @@ void map_render_init()
 void map_render_end()
 {
 
-    text_destroy(&debug_render_font);
+    //text_destroy(&debug_render_font);
 
 }
 

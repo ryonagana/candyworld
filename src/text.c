@@ -3,82 +3,77 @@
 #include <stdarg.h>
 
 
-void text_init_font(text_t **t, const char *font_name, int size, int flags)
-{
-    TTF_Font *font = NULL;
-    text_t *tmp = NULL;
+TTF_Font *debug_font;
 
-    if(!font_name){
-        DWARN("text_init_font(): font name %s invalid ", font_name);
-        return;
+
+void text_start()
+{
+    debug_font = resources_ttf_get("debug_ttf");
+}
+
+
+text_t *text_create(const char *str, SDL_Color color)
+{
+    text_t *self = malloc(sizeof(text_t));
+    text_init(self, str, color);
+    return self;
+}
+
+
+
+int text_init(text_t *text, const char *str, SDL_Color color)
+{
+    SDL_Surface *text_surf = NULL;
+    SDL_Texture *texture_font = NULL;
+
+    text->color = color;
+    strncpy(text->text,str, TEXT_MAX_ENTRY - strlen(str));
+    text_surf = TTF_RenderText_Solid(debug_font, text->text, text->color);
+
+    if(!text_surf){
+        DCRITICAL("text_init(): invalid surface surface");
+        return 0;
+    }
+
+    texture_font = SDL_CreateTextureFromSurface(window_get()->events.renderer, text_surf);
+
+    if(!texture_font){
+        DCRITICAL("text_init(): invalid texture surface");
+        return 0;
     }
 
 
-    font = resources_ttf_get(font_name);
+    text->texture = texture_font;
+    return 1;
 
-    if(!font){
-        DWARN("text_init_font(): resource not found");
-        return;
-    }
-
-
-    tmp = calloc(1, sizeof(text_t));
-    tmp->font = font;
-    tmp->size = size;
-    tmp->flags = flags;
-    *t = tmp;
-    return;
-}
-
-
-
-
-void text_destroy(text_t **font)
-{
-    if(*(font) == NULL) return;
-    text_t *tmp = *font;
-    free(tmp);
-    tmp = NULL;
-    *font = tmp;
 
 }
 
 
 
-SDL_Surface *text_draw_surface(text_t *t, const SDL_Color color, const char *msg)
+void text_destroy(text_t *text)
 {
-
-    return TTF_RenderUTF8_Solid(t->font, msg,  color);
-
+    SDL_DestroyTexture(text->texture);
+    free(text);
+    text = 0x0;
 }
 
-void text_draw(text_t *text, int x, int y, const SDL_Color fg, const char *msg, ...)
+void text_draw(text_t *text, int x, int y)
 {
-
-    va_list lst;
-    char buf[BUFSIZ] = {0};
-    va_start(lst, msg);
-    vsnprintf(buf, BUFSIZ, msg, lst);
-    va_end(lst);
-
-    SDL_Surface *text_surf = text_draw_surface(text, fg, buf);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(window_get()->events.renderer, text_surf);
-    SDL_FreeSurface(text_surf);
-
-
-
-
-    SDL_Rect orig, dest;
+    SDL_Rect orig, dst;
+    int w,h;
+    SDL_QueryTexture(text->texture, NULL, NULL, &w, &h);
 
     orig.x = 0;
     orig.y = 0;
+    orig.w = w;
+    orig.h = h;
 
-    TTF_SizeUTF8(text->font, msg, &orig.w, &orig.h);
+    dst.x = x;
+    dst.y = y;
+    dst.w = w;
+    dst.h = h;
 
-    dest.x = x;
-    dest.y = y;
-    dest.w = orig.w;
-    dest.h = orig.h;
 
-    SDL_RenderCopyEx(window_get()->events.renderer, texture, &orig, &dest, 0, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopy(window_get()->events.renderer, text->texture, &orig, &dst);
 }

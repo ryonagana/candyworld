@@ -17,6 +17,9 @@ static game_window main_window;
 /* END STATIC */
 
 
+
+
+
 /** \brief init main_window with default values
  *
  * \return nothing

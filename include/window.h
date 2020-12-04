@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 /*
 #include <allegro5/allegro5.h>
@@ -33,6 +35,7 @@
 #define WINDOW_FULLSCREEN_ON 1
 #define WINDOW_FULLSCREEN_OFF 0
 #define FPS_MIN 16
+
 
 
 enum {

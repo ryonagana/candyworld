@@ -3,21 +3,21 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#define TEXT_MAX_ENTRY 1024
+
 typedef struct text_t {
-    TTF_Font *font;
-    int size;
-    int flags;
+    char text[TEXT_MAX_ENTRY];
+    SDL_Texture * texture;
+    SDL_Color color;
 }text_t;
 
+extern TTF_Font *debug_font;
 
-void text_init_font(text_t **t, const char *font_name, int size, int flags);
-
-
-SDL_Surface * text_draw_surface(text_t *t, const SDL_Color color, const char *msg);
-void text_draw(text_t *text, int x, int y,  const SDL_Color fg, const char *msg,...);
-
-
-
-void text_destroy(text_t **font);
+void text_start();
+text_t *text_create(const char *str, SDL_Color color);
+int text_init(text_t *text, const char *str, SDL_Color color);
+text_t *text_edit(text_t *text, const char *str);
+void text_destroy(text_t *text);
+void text_draw(text_t *text, int x, int y);
 
 #endif // TEXT_H
