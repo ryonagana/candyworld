@@ -4,7 +4,7 @@ A Simple Platform game using C11 and SDL2 - no more details cause still indev
 
 ![](candy2.gif)
 
-This project needs [SDL 2](https://www.libsdl.org) and need also:
+This project needs [SDL 2](https://www.libsdl.org) and you need also:
 > [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
 > [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 > [SDL2_image](https://www.libsdl.org/projects/SDL_image/)
@@ -37,7 +37,7 @@ $ sudo zypper in SDL2-devel SDL2_mixer-devel SDL2_ttf-devel SDL2_image-devel phy
 
 ## Development:
 
-Opening the project  file needs [Qt Creator](https://www.qt.io/product/development-tools) installed but iof you just want to build you just need  qmake-qt5 installed for generating the Makefile 
+Opening the project  file needs [Qt Creator](https://www.qt.io/product/development-tools) installed but if you just want to build the game, you just need  qmake-qt5 installed for generating the Makefile (No Qt Dependencies)
 
 ##### Installing QT Creator
 
