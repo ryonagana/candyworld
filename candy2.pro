@@ -82,6 +82,7 @@ HEADERS += \
         include/debug.h \
     include/gameplay.h \
         include/keyboard.h \
+    include/list.h \
         include/log.h \
         include/lua_shared.h \
         include/map_render.h \
@@ -111,6 +112,7 @@ SOURCES += \
         $$PWD/src/main.c \
         src/camera.c \
         src/gameplay.c \
+        src/list.c \
         src/map_render.c \
         src/debug.c \
         src/keyboard.c \

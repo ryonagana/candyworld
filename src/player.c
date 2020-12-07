@@ -7,19 +7,22 @@
 #include "debug.h"
 #include "sprite.h"
 #include "sprite_animation.h"
+#include "list.h"
 
 
-
-
+#define MAX_PLAYER_ANIMATION 32
 
 
 static sprite_t *player_spr = NULL;
 
-
+/*
 static sprite_animation_t  player_animation_up;
 static sprite_animation_t  player_animation_down;
 static sprite_animation_t  player_animation_left;
 static sprite_animation_t  player_animation_right;
+*/
+
+link_list_t player_animation[MAX_PLAYER_ANIMATION];
 
 
 
@@ -70,15 +73,11 @@ void player_init(player_t *pl){
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
 
 
-    sprite_animation_start(&player_animation_up, player_spr);
-    sprite_animation_start(&player_animation_down, player_spr);
-    sprite_animation_start(&player_animation_left, player_spr);
-    sprite_animation_start(&player_animation_right, player_spr);
 
 
 
 
-    sprite_animation_load(&player_animation_up, 0, 32,32, 5, anim_delay);
+
 
 
 
@@ -125,7 +124,7 @@ void player_draw(player_t *pl)
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:
-        sprite_animation_draw(&player_animation_up, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, SDL_FLIP_NONE);
+
 
         //sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
         break;
@@ -160,9 +159,6 @@ void player_update(player_t *pl, float delta)
 
     switch(pl->direction){
         case PLAYER_DIRECTION_UP:
-        player_animation_up.max_frames = (pl->state == PLAYER_STATE_WALKING) ? 12 : 1;
-        sprite_animation_set_anim(&player_animation_up, PLAYER_DIRECTION_UP);
-        sprite_animation_update(&player_animation_up);
         break;
     }
 

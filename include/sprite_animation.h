@@ -2,52 +2,28 @@
 #define SPRITE_ANIMATION_H
 
 #include "sprite.h"
+#include "list.h"
 #include <stdio.h>
 
+typedef enum {
+    LOOP_NONE,
+    LOOP_INFINITE
+}loop_type;
 
-#define MAX_ANIMATION_COLS 64
-
-typedef struct sprite_animation_frame_t {
-    int frame_id;
-    int x;
-    int y;
-    int width;
-    int height;
-    Uint32 delay;
-}sprite_animation_frame_t;
-
-typedef struct sprite_animation_t {
+typedef struct _sprite_animation {
     sprite_t *sprite;
-    //sprite_animation_frame_t *frames;
-    int frame_count;
-    int actual_frame;
-    int max_frames;
-    int current_animation;
-    int repeat;
-    int rows;
-    int cols;
+    int current_frame;
+    int frames;
+    float angle;
+    loop_type loop;
     int x;
     int y;
-    int play;
+
 
 }sprite_animation_t;
 
-//init the sprite animation struct
-void sprite_animation_start(sprite_animation_t *anim, sprite_t *spritesheet);
-
-//load sprites
-int sprite_animation_load(sprite_animation_t *anim, int row, int tile_width, int tile_height,  int max_cols, int delay[]);
-
-
-sprite_animation_frame_t* sprite_animation_frame_set(int id, int x, int y, int w, int h, int delay);
-
-
-//void sprite_animation_add_frame(sprite_animation_t *anim, sprite_animation_frame_t* frame);
-
-
-
-void sprite_animation_draw(sprite_animation_t *anim, int x, int y, int w, int h, int flipmode);
-void sprite_animation_update(sprite_animation_t *anim);
-void sprite_animation_set_anim(sprite_animation_t *anim, int anim_id);
+void animation_init(sprite_animation_t *self);
+sprite_animation_t *animation_create(sprite_t *sprite, int x, int y, int frames, float angle, loop_type loop);
+void animation_render(sprite_animation_t *self);
 
 #endif // SPRITE_ANIMATION_H
