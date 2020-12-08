@@ -13,6 +13,7 @@ typedef struct _link_node_t link_node_t;
 
 struct _link_list_t {
     link_node_t *head, *tail;
+    int frame_count;
 };
 
 typedef struct _link_list_t link_list_t;

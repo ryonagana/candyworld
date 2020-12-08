@@ -4,20 +4,20 @@
 #include <SDL2/SDL_image.h>
 
 typedef struct {
-    SDL_Rect pos;
-    SDL_Rect hotspot;
+    int width;
+    int height;
     SDL_Texture *texture;
-    int *delay;
-    int rows;
-    int cols;
-    int current_frame;
-    int current_animation;
-    int end_frame;
-    int time_passed;
-
+    int x;
+    int y;
 }sprite_t;
 
 
+void sprite_init(sprite_t *self);
+sprite_t *sprite_create(SDL_Texture *texture, int x, int y, int width, int height);
+void sprite_free(sprite_t *sprite);
+void sprite_draw(sprite_t *self, int x, int y, int width, int height, float angle, SDL_RendererFlip flip);
+
+/*
 int sprite_init(sprite_t **spr, SDL_Texture *tex);
 int sprite_init_str(sprite_t **spr, const char *name);
 int sprite_set_spritesheet_offset(sprite_t *spr, int frame_width, int frame_height);
@@ -29,6 +29,7 @@ void sprite_draw(sprite_t *spr, int x, int y, int orig_w, int orig_h, int dst_w,
 void sprite_draw_rect(sprite_t *spr, int src_x, int src_y, int dest_x, int dest_y, int w, int h, int flip);
 void sprite_update(sprite_t *spr);
 void sprite_free(sprite_t **spr);
+*/
 
 
 #endif // SPRITE_H

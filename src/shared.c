@@ -1,26 +1,24 @@
 #include "shared.h"
+#include "log.h"
 
-void rect_init(rect_t *r){
+void read_sprite_list(FILE *fp, SDL_Texture *texture,  link_list_t **animation)
+{
+    if(fp == NULL){
+        DCRITICAL("sprite_list is NULL");
+        return;
+    }
 
-    r->x = 0;
-    r->y = 0;
-    r->width = 0;
-    r->height = 0;
-    r->top = 0;
-    r->bottom = 0;
-    r->left = 0;
-    r->right = 0;
-    return;
+    static int frame_counter = 0;
+    link_list_t *anim_tmp = *animation;
 
-}
-void rect_set(rect_t *r, int x, int y, int w, int h){
-    r->x = x;
-    r->y = y;
-    r->width = w;
-    r->height = h;
-    r->top = y;
-    r->bottom = y + h;
-    r->left = x;
-    r->right = x + w;
-    return;
+    char buf[1024] = {0};
+    int x, y;
+    int width, height;
+    int flip;
+
+    x = y = width = height = flip = 0;
+
+    while(fscanf(fp, "%s %d %d %d %d %d", buf, &x, &y, &width, &height, &flip) == 6){
+
+    }
 }

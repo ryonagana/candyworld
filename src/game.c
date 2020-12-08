@@ -63,8 +63,8 @@ void game_init()
 
      //map_show_info(gamedata.map);
 
-     sprite_t *spr_test = NULL;
-     sprite_init_str(&spr_test, "sprite2");
+     //sprite_t *spr_test = NULL;
+     //sprite_init_str(&spr_test, "sprite2");
 
      gamedata.gamestate = GAME_INGAME_STATE;
      window_get()->gamestate = GAME_INGAME_STATE;

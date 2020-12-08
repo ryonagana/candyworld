@@ -64,10 +64,10 @@ void player_init(player_t *pl){
 
 
 
-
-    sprite_init(&player_spr, resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
-    sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
-    sprite_set_delay(player_spr, anim_delay, 8);
+      player_spr = sprite_create(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG),0,0,32,32);  //sprite_init(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
+    //sprite_init(&player_spr, resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
+    //sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+   // sprite_set_delay(player_spr, anim_delay, 8);
 
     camera_init(&pl->player_camera,0,0, pl->hitbox.w, pl->hitbox.h);
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
@@ -130,7 +130,7 @@ void player_draw(player_t *pl)
         break;
 
         default:
-            sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+            sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE,45.0f, SDL_FLIP_NONE);
         break;
     }
 
@@ -144,10 +144,10 @@ void player_draw(player_t *pl)
 
 
 static void player_direction_none(player_t *pl, sprite_t *spr){
-        int dir = pl->direction;
-        int old = movement_order[dir];
+        //int dir = pl->direction;
+        //int old = movement_order[dir];
 
-        spr->end_frame = old * pl->direction;
+        //spr->end_frame = old * pl->direction;
 }
 
 void player_update(player_t *pl, float delta)

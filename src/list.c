@@ -32,6 +32,7 @@ void list_node_init(link_list_t *lst)
 {
     lst->head = NULL;
     lst->tail = NULL;
+    lst->frame_count = 0;
 }
 
 link_list_t *list_create()

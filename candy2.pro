@@ -5,17 +5,15 @@ CONFIG += link_pkgconfig
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
-@CONFIG += debug_and_release@
 
 #PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
 QMAKE_CFLAGS += -std=c11
-
 PKGCONFIG += lua physfs sdl2 SDL2_image SDL2_ttf SDL2_mixer
 
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
 #so i hardcorded my gcc include path just to shut up compiler
-INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
+#INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
 #will be removed later
 
 
