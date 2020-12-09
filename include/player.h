@@ -49,7 +49,7 @@ void player_draw(player_t *pl);
 void player_update(player_t *pl, float delta);
 void player_handle_input(player_t *pl, float delta);
 void player_set_pos_screen(player_t *player, int x, int y);
-
+void player_end(player_t *pl);
 SDL_bool player_screen_bound(player_t *player);
 
 #endif // PLAYER_H

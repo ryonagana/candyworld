@@ -1,15 +1,17 @@
 TEMPLATE = app
-CONFIG += console c11 use_c_linker
-QT_CONFIG -= no-pkg-config
+CONFIG += console use_c_linker c11
 CONFIG += link_pkgconfig
 CONFIG -= app_bundle
 CONFIG -= qt
-CONFIG += c11
 
 #PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
 QMAKE_CFLAGS += -std=c11
 PKGCONFIG += lua physfs sdl2 SDL2_image SDL2_ttf SDL2_mixer
 
+
+QMAKE_CFLAGS_DEBUG += -O0
+QMAKE_CFLAGS_DEBUG += -Wall -Wextra -pedantic
+QMAKE_CFLAGS_DEBUG -= -ggdb
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
 #so i hardcorded my gcc include path just to shut up compiler
@@ -22,9 +24,7 @@ unix : {
 
     debug: {
         DEFINES += DEBUG
-        QMAKE_CFLAGS_DEBUG += -O0
-        QMAKE_CFLAGS_DEBUG += -Wall -Wextra -pedantic
-        QMAKE_CFLAGS -= -g
+
 
     }
 
@@ -91,6 +91,7 @@ HEADERS += \
         include/sprite.h \
         include/sprite_animation.h \
         include/text.h \
+    include/texture.h \
         include/timer.h \
         include/window.h\
         include/sound.h \
@@ -122,6 +123,7 @@ SOURCES += \
         #src/thread.c \
         src/sprite.c \
         src/sprite_animation.c \
+        src/texture.c \
         src/timer.c \
         src/window.c \
         src/sound.c \

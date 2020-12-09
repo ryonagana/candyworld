@@ -35,16 +35,6 @@ const int movement_order[] = {
 
 
 
-static int anim_delay[8] = {
-    100,
-    100,
-    100,
-    100,
-    50,
-    50,
-    50,
-    50
-};
 
 void player_init(player_t *pl){
     pl->x = 0;
@@ -210,4 +200,9 @@ SDL_bool player_screen_bound(player_t *player)
     pl.y = player->y;
 
     return SDL_HasIntersection(&win, &pl);
+}
+
+void player_end(player_t *pl)
+{
+
 }

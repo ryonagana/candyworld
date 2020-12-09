@@ -2,11 +2,12 @@
 #define SPRITE_H
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "texture.h"
 
 typedef struct {
     int width;
     int height;
-    SDL_Texture *texture;
+    texture_t *spritesheet;
     int x;
     int y;
 }sprite_t;

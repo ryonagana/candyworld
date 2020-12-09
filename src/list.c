@@ -1,11 +1,7 @@
 #include "list.h"
 
 
-#define  LIST_DELETE_NODE(l,n) \
-                if(n->prev){ n->prev->next = n->next;}\
-                else { l->head = n->next; }\
-                if(n->next){ n->next->prev = n->prev;}\
-                else { l->tail = n->prev ; }
+
 
 void link_node_init(link_node_t *node)
 {
@@ -76,5 +72,19 @@ int list_push_node(link_list_t *lst, link_node_t *node)
 
 void list_remove_node(link_list_t *lst, link_node_t *node)
 {
-    LIST_DELETE_NODE(lst,node);
+
+    if(node->prev){
+        node->prev->next = node->next;
+        return;
+    }
+    else {
+        lst->head = node->next;
+    }
+    if(node->next){
+        node->next->prev = node->prev;
+    }
+    else {
+        lst->tail = node->prev;
+    }
+    free(node);
 }

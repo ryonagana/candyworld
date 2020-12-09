@@ -9,7 +9,7 @@ void sprite_init(sprite_t *self)
 {
     self->width = 0;
     self->height = 0;
-    self->texture = NULL;
+    self->spritesheet = NULL;
     self->x = 0;
     self->y = 0;
 }
@@ -25,7 +25,7 @@ sprite_t *sprite_create(SDL_Texture *texture, int x, int y, int width, int heigh
 
     sprite_init(tmp);
 
-    tmp->texture = texture;
+    tmp->spritesheet = texture_load_from_SDL(texture);
     tmp->x = x;
     tmp->y = y;
     tmp->width = width;
@@ -38,7 +38,7 @@ void sprite_free(sprite_t *sprite)
 {
     if(!sprite) return;
 
-    sprite->texture = NULL;
+    sprite->spritesheet = NULL;
     free(sprite);
 }
 
@@ -46,5 +46,5 @@ void sprite_draw(sprite_t *self, int x, int y, int width, int height, float angl
 {
     if(!self) return;
 
-    render_texture(self->texture, self->x, self->y, self->width, self->height, x,y, width, height, angle, flip );
+    render_texture(self->spritesheet->texture, self->x, self->y, self->width, self->height, x,y, width, height, angle, flip );
 }
