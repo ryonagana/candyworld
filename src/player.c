@@ -15,6 +15,17 @@
 
 static sprite_t *player_spr = NULL;
 
+static sprite_animation *player_anim_movement_up;
+
+
+animation_frame_t frames_animation_up[4] = {
+ {{0,32,32,32},100,1},
+ {{0,32,32,32},100,1},
+ {{0,32,32,32},100,1},
+ {{},0,0}
+};
+
+
 /*
 static sprite_animation_t  player_animation_up;
 static sprite_animation_t  player_animation_down;
@@ -58,6 +69,18 @@ void player_init(player_t *pl){
     //sprite_init(&player_spr, resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
     //sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
    // sprite_set_delay(player_spr, anim_delay, 8);
+
+
+    //player_anim_movement_up = sprite_animation_create(6);
+   // animation_resize_array(player_anim_movement_up, 3);
+
+
+
+
+   player_anim_movement_up = sprite_animation_create_empty();
+   sprite_animation_load(&player_anim_movement_up, "resources/sprites/player_up.anim");
+   //animation_add_frame_data(player_anim_movement_up, test, 3);
+
 
     camera_init(&pl->player_camera,0,0, pl->hitbox.w, pl->hitbox.h);
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);

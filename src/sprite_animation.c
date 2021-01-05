@@ -1,133 +1,236 @@
 #include "sprite_animation.h"
 #include "log.h"
 #include "render.h"
+#include "std.h"
 #include <string.h>
 #include <assert.h>
 
+static sprite_animation* sprite_animation_alloc(){
+    sprite_animation *anim = NULL;
+    anim = mem_alloc(sizeof(sprite_animation)); //malloc(sizeof (sprite_animation));
 
+    if(!anim){
+        DCRITICAL("sprite_animation_create(): Critical Error: cannot allocate sprite animation");
+        return NULL;
+    }
 
-void animation_init(sprite_animation_t *self)
-{
-    self->sprite = NULL;
-    self->angle = 0;
-    self->frames = 0;
-    self->current_frame = 0;
-    self->loop = LOOP_NONE;
-    self->x = 0;
-    self->y = 0;
-    self->width = 0;
-    self->height = 0;
-    self->delay = 0;
+    anim->frame_count = 0;
+    anim->frames = NULL;
+    anim->index = 0;
+
+    return anim;
 }
 
 
-
-sprite_animation_t *animation_create(sprite_t *sprite, int x, int y, int frames, float angle, loop_type loop)
+sprite_animation *sprite_animation_create(int animation_num)
 {
-    sprite_animation_t *self = NULL;
-    self = malloc(sizeof(sprite_animation_t));
 
-    if(!self) return self;
-    animation_init(self);
-    self->x = x;
-    self->y = y;
-    self->frames = frames;
-    self->angle = angle;
-    self->sprite = sprite;
-    self->loop = loop;
-    self->width = sprite->width;
-    self->height = sprite->height;
+    sprite_animation* self = NULL;
+    self = sprite_animation_alloc();
+
+
+    self->frames = animation_create_array(animation_num);
+    self->frame_count = animation_num;
+    self->index = 0;
 
 
     return self;
 
 }
 
-
-void animation_render(sprite_animation_t *self, int x, int y)
+sprite_animation *sprite_animation_create_empty()
 {
-    sprite_t *sprite = self->sprite;
-    int tex_w, tex_h;
-    tex_w = tex_h = 0;
+    sprite_animation* self = NULL;
+    self = sprite_animation_alloc();
 
-    SDL_QueryTexture(sprite->spritesheet->texture, NULL, NULL, &tex_w, &tex_h);
 
-    render_texture(sprite->spritesheet->texture,
-                   sprite->x,
-                   sprite->y,
-                   tex_w,
-                   tex_h,
-                   x,
-                   y,
-                   sprite->width,
-                   sprite->height,
-                   0.0f,
-                   self->flipmode);
+    self->frames = animation_create_array(ANIMATION_MAX);
+    self->frame_count = 0;
+    self->index = 0;
+
+
+    return self;
+}
+
+
+animation_frame_t *animation_frame_init()
+{
+    animation_frame_t *frame = NULL;
+
+    frame = mem_alloc(sizeof(animation_frame_t));
+    frame->delay = 0;
+    frame->pos = (SDL_Rect){0,0,0,0};
+    frame->use = 0;
+    return frame;
+}
+
+animation_frame_t *animation_create_array(int size)
+{
+    animation_frame_t *frame = NULL;
+    frame = mem_calloc(size, sizeof (animation_frame_t));
+
+    if(!frame){
+        DCRITICAL("animation_create_array(): failed to create animation");
+        return NULL;
+    }
+
+    return frame;
+
+}
+
+void animation_free(animation_frame_t *f)
+{
+    mem_free((void*)f);
+}
+
+void sprite_animation_free(sprite_animation *spr)
+{
+    if(!spr) return;
+
+    if(spr->frames){
+        animation_free(spr->frames);
+    }
+
+    mem_free((void*)spr);
+}
+
+void animation_resize_array(sprite_animation *spr, int size)
+{
+    if(size < spr->frame_count){
+        DLOG("animation_resize_array resizing failed");
+        return;
+    }
+
+    void *blk = NULL;
+    blk = mem_realloc(spr->frames, sizeof(animation_frame_t) * size);
+    spr->frames = blk;
+    spr->frame_count = size;
+
+    return;
+}
+
+void animation_add_frame(sprite_animation *spr, int x, int y, int width, int height, int delay)
+{
+    animation_frame_t *frame  = NULL;
+    frame = animation_frame_init();
+
+    if(!frame){
+        return;
+    }
+
+    frame->pos = (SDL_Rect){x,y,width,height};
+    frame->delay = delay;
+    frame-> use = 1;
+
+    if(!spr->frames){
+        DCRITICAL("animation_add_frame():  frame array is NULL");
+        return;
+    }
+
+    spr->frames[spr->num_frames_added] = *frame;
+    spr->num_frames_added++;
+}
+
+void animation_add_frame2(sprite_animation *spr, SDL_Rect pos, int delay)
+{
+    animation_add_frame(spr, pos.x, pos.y, pos.w, pos.h, delay);
+    return;
+}
+
+size_t animation_count(animation_frame_t frames[ANIMATION_MAX]){
+    int counter = 0;
+    int i;
+
+    for(i = 0; i < ANIMATION_MAX; i++){
+        if(!frames[i].use) continue;
+        counter++;
+    }
+
+    return counter;
+}
+
+void animation_add_frame_data(sprite_animation *spr, animation_frame_t *frames, int size)
+{
+
+    memcpy(spr->frames, frames, sizeof(animation_frame_t) * size);
+    spr->frame_count = size;
     return;
 
-
-
 }
 
 
-int animation_add_list(link_list_t *list, sprite_animation_t *spr)
+void sprite_animation_update_size(sprite_animation *spr)
 {
-    if(spr == NULL){
-        return 0;
-    }
-
-    if(list->head == NULL){
-        list_push_node_head(list, (void *)spr);
-        return 1;
-    }
-
-    list_push_node(list, (void*) spr);
-    return 1;
+    int c = animation_count(spr->frames);
+    spr->frame_count = c;
 }
 
-void animation_render_frames(link_list_t *animation_list)
+void sprite_animation_load(sprite_animation **spr, const char *filename)
 {
-    link_node_t *node = animation_list->head;
-    static Uint32  timer = 0;
+    sprite_animation *self = NULL;
+    FILE *in = NULL;
+    int sprite_found = 0;
+    int line_counter = 1;
+    in = fopen(filename, "rb+");
 
-    if(!timer)  timer = SDL_GetTicks();
+    if(!in){
+        DCRITICAL("sprite_animation_load(): %s not found");
+        return;
+    }
 
-    while(node != NULL){
-        sprite_animation_t* frame = node->data;
+    char spritesheet[255] = {0};
+    char line[255] = {0};
+    animation_frame_t *frame = animation_create_array(ANIMATION_MAX);
+    const char delim[2] = ",";
 
-        if(SDL_GetTicks() - frame->delay >= timer){
-            timer = SDL_GetTicks();
-
-            if(!node && frame->loop == LOOP_INFINITE){
-                node = animation_list->head;
-                continue;
-            }
-
-            if(!node && frame->loop == LOOP_NONE){
-                node = animation_list->tail;
-                continue;
-            }
-            node = node->next;
+    /*
+    while(fgets(line, 255, in) != NULL){
+        if(!sprite_found){
+            strncpy(spritesheet, line, 255 - strlen(line));
+            sprite_found = 1;
+            continue;
         }
+
+        char *token = strtok(line, delim);
+        int i = 0;
+
+        for(i = 0; i < 4; i++){
+
+            if(i == 0){
+                frame[line_counter].pos.x = atoi(token);
+            }
+
+            if(i == 1){
+                frame[line_counter].pos.y = atoi(token);
+            }
+
+            if(i == 2){
+                frame[line_counter].pos.w = atoi(token);
+            }
+
+            if(i == 3){
+                frame[line_counter].pos.h = atoi(token);
+            }
+
+            if(i == 4){
+                frame[line_counter].delay = atoi(token);
+            }
+
+            token = strtok(NULL, delim);
+
+        }
+
+
+
+
     }
-}
 
-void animation_destroy(link_list_t *l)
-{
-    link_node_t *n = l->head;
 
-    while(n){
-        sprite_animation_t *anim = n->data;
-        animation_frame_destroy(anim);
-        anim = NULL;
-        list_remove_node(l, n);
-        n = n->next;
-    }
-}
+    mem_free((void *)line);
+    */
 
-void animation_frame_destroy(sprite_animation_t *anim)
-{
-    if(!anim) return;
-    sprite_free(anim->sprite);
-    free(anim);
+    fclose(in);
+
+
+    *spr = self;
 }
