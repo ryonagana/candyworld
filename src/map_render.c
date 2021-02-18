@@ -38,10 +38,12 @@ void map_render(map_t *map, int x, int y)
 
     const int map_render_order[] = {
         LAYER_BACKGROUND,
-        LAYER_TILES
+        LAYER_TILES,
+        LAYER_COLLISION
     };
 
     map_tileset_texture = resources_sprite_get_by_filename(map->tilesets[0].name);
+
 
     Uint32 pixelformat = 0;
     SDL_QueryTexture(map_tileset_texture,&pixelformat, NULL, NULL, NULL);
@@ -56,6 +58,10 @@ void map_render(map_t *map, int x, int y)
 
         for(map_y = 0;  map_y < map->height; map_y++){
             for(map_x = 0; map_x < map->width; map_x++){
+
+
+
+
                 int32_t t = map_get_tile_1d(map, map_render_order[layer_count], map->width, map_x,map_y);
                 int gid = map_getgid(map, t);
 
@@ -64,6 +70,12 @@ void map_render(map_t *map, int x, int y)
 
                 int rx = (gid % (map->tilesets[0].width / map->tilesets->tile_width)) * map->tilesets[0].tile_width;
                 int ry = (gid / (map->tilesets[0].height / map->tilesets->tile_height)) * map->tilesets[0].tile_height;
+
+
+                if(map_render_order[layer_count] == LAYER_COLLISION){
+                        SDL_SetTextureBlendMode(map_tileset_texture, SDL_BLENDMODE_BLEND);
+                        SDL_SetTextureAlphaMod(map_tileset_texture, 128);
+                }
 
                 render_texture(map_tileset_texture,
                                rx,

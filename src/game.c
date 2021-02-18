@@ -55,7 +55,7 @@ void game_init()
 
 
      map_render_init();
-     gamedata.map = map_load_file_str("resources//map//test.cbmap");
+     gamedata.map = map_load_file_str("resources//map//test2.cbmap");
 
      if(!gamedata.map){
          window_end();

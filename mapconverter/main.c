@@ -55,18 +55,69 @@ void parse_params(int argc, char **argv){
 
 static void opt_map_convert_file(char **argv){
 
-    char name[BUFSIZ] = {0};
+    char converted_map_output[BUFSIZ]= {0};
     map_t *map = NULL;
 
+
+
     strncpy(map_folder, argv[1], BUFSIZ - strlen(argv[1]));
-    strncpy(name, map_folder, BUFSIZ - strlen(map_folder));
-    strncat(name, MAP_FORMAT, BUFSIZ - strlen(MAP_FORMAT));
+    strncpy(converted_map_output, map_folder, BUFSIZ - strlen(map_folder));
+    strncat(converted_map_output,"//",1);
+    strncat(converted_map_output, map_folder ,BUFSIZ - strlen(map_folder));
+
+
 
     map = map_init();
     map_load_str_csv(map, map_folder);
-    map_save_name(map, map_folder);
+    map_save_name(map, converted_map_output);
+    map_free(&map);
+
+
+    FILE *in_map = NULL;
+
+
+     strncat(converted_map_output, MAP_FORMAT ,BUFSIZ - strlen(MAP_FORMAT));
+
+    in_map = fopen(converted_map_output, "rb+");
+
+    if(!in_map){
+        MAPCONV_ERROR("erorr %s not found", map_folder);
+        return;
+    }
+    map = map_load_file_str(converted_map_output);
+    //map_load_stream(&map, in_map);
+    map_show_info(map);
+    fclose(in_map);
+
+
+
+
+    //strncpy(map_folder, argv[1], BUFSIZ - strlen(argv[1]));
+    //strncpy(map_output_name, map_folder, BUFSIZ - strlen(map_folder));
+    //strncat(map_output_name, MAP_FORMAT, BUFSIZ - strlen(MAP_FORMAT));
+
+    //map = map_init();
+    //map_load_str_csv(map, map_folder);
+    //map_save_name(map, map_folder);
+
+
+    /*
+    strncat(map_folder, "//", 1);
+    strncat(map_folder, map_output_name, strlen(map_output_name) + 1);
+
+    FILE *updated_map = NULL;
+
+    updated_map = fopen(map_folder, "rb+");
+
+    if(!updated_map){
+        MAPCONV_ERROR("erorr %s not found", map_folder);
+        return;
+    }
+
+    map_load_stream(&map, updated_map);
     map_show_info(map);
     map_free(&map);
+    */
 }
 
 

@@ -130,5 +130,7 @@ void map_convert_1d_to_2d(map_t **map);
 // show map information (for debug only or mapconverter tool)
 void map_show_info(map_t *map);
 
+int64_t map_size_bytes(FILE *fp);
+
 
 #endif // MAP_H

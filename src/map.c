@@ -338,6 +338,7 @@ void map_save_file(FILE *fp, map_t *map)
 
     fwrite(&map->tileset_count, sizeof (int32_t), 1, fp);
     fwrite(&map->map_version, sizeof (int32_t), 1, fp);
+    fwrite(&map->map_size, sizeof(int32_t), 1, fp);
     //fputc(map->tileset_count, fp);
     //fputc(map->map_version, fp);
 
@@ -391,8 +392,15 @@ void map_save_file(FILE *fp, map_t *map)
 
     }
 
+    int64_t map_size = map_size_bytes(fp);
+    map->map_size = map_size;
+
+    fseek(fp, 6+127+255+16, SEEK_SET);
+    fwrite(&map->map_size, sizeof(int32_t), 1, fp);
+
 
     fclose(fp);
+
 
     MAPCONV_LOG("map: %s is written to file\n\n", map->filename);
     return;
@@ -445,6 +453,15 @@ int map_load_stream(map_t **map, FILE *in)
     fread(&tmp_map->height, sizeof (int32_t), 1, in);
     fread(&tmp_map->tileset_count, sizeof (int32_t), 1, in);
     fread(&tmp_map->map_version, sizeof (int32_t), 1, in);
+
+    if(tmp_map->map_version < MAP_VERSION){
+        MAPCONV_ERROR("Invalid map version: this map is in VERSION %d, needs VERSION %d", tmp_map->map_version, MAP_VERSION);
+        window_exit();
+        return 0;
+    }
+
+
+    fread(&tmp_map->map_size, sizeof (int32_t), 1, in);
     //tmp_map->tileset_count = fgetc(in);
     //tmp_map->map_version = fgetc(in);
 
@@ -486,7 +503,7 @@ int map_load_stream(map_t **map, FILE *in)
     //convert map loaded 1d array to 2d tile_map_t
     map_convert_1d_to_2d(&tmp_map);
 
-    fclose(in);
+    //fclose(in);
     *map = tmp_map;
     return 1;
 }
@@ -587,4 +604,18 @@ void map_convert_1d_to_2d(map_t **map)
     *map = tmp;
 
 
+}
+
+int64_t map_size_bytes(FILE *fp)
+{
+    if(fp == NULL){
+        return -1;
+    }
+
+    rewind(fp);
+    fseek(fp,0L, SEEK_END);
+    int64_t size = ftell(fp);
+    rewind(fp);
+
+    return size;
 }

@@ -51,3 +51,13 @@ void texture_destroy(texture_t *self)
     if(!self) return;
     free(self);
 }
+
+void texture_set_blending(texture_t *self, SDL_BlendMode blend)
+{
+    SDL_SetTextureBlendMode(self->texture, blend);
+}
+
+void texture_set_alpha(texture_t *self, Uint8 alpha)
+{
+    SDL_SetTextureAlphaMod(self->texture, alpha);
+}
