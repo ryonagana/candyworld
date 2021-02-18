@@ -58,7 +58,7 @@ void game_init()
      gamedata.map = map_load_file_str("resources//map//test2.cbmap");
 
      if(!gamedata.map){
-         window_end();
+         window_end(-1);
      }
 
      //map_show_info(gamedata.map);
@@ -80,7 +80,7 @@ void game_start()
 {
     if(!gamedata.current_event.callback){
         DCRITICAL("Current event pointer is NULL");
-        window_end();
+        window_end(-1);
     }
     gamedata.current_event.callback(NULL, &gamedata);
 
@@ -96,7 +96,7 @@ void game_end()
     map_render_end();
     resources_free();
     window_free_events(window_get());
-    window_end();
+    window_end(0);
 
 }
 
@@ -110,7 +110,7 @@ int game_event_switch(int event)
 {
     if(&g_events[event] == NULL){
         DCRITICAL("invalid event. critical error");
-        window_end();
+        window_end(-1);
     }
 
     gamedata.current_event = g_events[event];
