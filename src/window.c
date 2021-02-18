@@ -152,7 +152,7 @@ static void window_create(int width, int height, int fullscreen, int vsync, int 
     return;
 
 window_error:
-        window_end();
+        window_end(1);
         return;
 
 
@@ -177,7 +177,7 @@ void window_init(int w, int h, int fullscreen, int vsync, const char* caption){
 
 
 
-int window_end(void){
+int window_end(int code){
 
     window_free_events(&main_window);
     sound_end();
@@ -193,17 +193,19 @@ int window_end(void){
     }
 
     DLOG("Window Closed with Error!");
-    return -1;
+
+    return code;
 
 }
 
-void window_exit(void){
-    if(window_end() < 0){
+void window_exit(int code){
+    if(window_end(code) < 0){
         DINFO("Main Window Closed with error!");
         return;
     }
 
    DINFO("Main Window closed successfully");
+   exit(code);
    return;
 }
 

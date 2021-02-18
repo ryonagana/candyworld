@@ -73,8 +73,8 @@ typedef struct game_window {
 void window_init(int w, int h, int fullscreen, int vsync, const char* caption);
 
 void window_free_events(game_window *win);
-int window_end(void);
-void window_exit(void);
+int window_end(int code);
+void window_exit(int code);
 
 void window_resize(int width, int height);
 

@@ -15,7 +15,11 @@
 #include "../mapconverter/ini_parser.h"
 
 
-
+#if defined(MAPCONV_PROJECT)
+    #define EXIT_MODE(code) (exit(code))
+#else
+    #define EXIT_MODE(code) (window_exit(code))
+#endif
 
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -456,7 +460,7 @@ int map_load_stream(map_t **map, FILE *in)
 
     if(tmp_map->map_version < MAP_VERSION){
         MAPCONV_ERROR("Invalid map version: this map is in VERSION %d, needs VERSION %d", tmp_map->map_version, MAP_VERSION);
-        window_exit();
+        EXIT_MODE(1);
         return 0;
     }
 

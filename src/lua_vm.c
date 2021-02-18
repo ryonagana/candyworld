@@ -12,7 +12,7 @@ int lua_start(){
 
         if(!lua_state){
             DWARN("Lua Interpreter Failed to Load!");
-            window_exit();
+            window_exit(-1);
             return 0;
         }
     }
