@@ -18,11 +18,16 @@
 
 #define LAYER_TILES 0
 #define LAYER_BACKGROUND 1
-#define LAYERS_NUM 2
+#define LAYER_COLLISION  2
+
+
+
+
+#define LAYERS_NUM 3
 
 
 #define MAP_FORMAT ".cbmap"
-#define MAP_VERSION 2
+#define MAP_VERSION 3
 #define MAP_MAX_TILES 200
 #define MAP_NAME_BUFFER 127
 #define MAP_FILENAME_BUFFER 255
@@ -44,6 +49,7 @@ typedef struct map_layer {
     int *layer;
     map_tile_t tiles[MAP_MAX_TILES][MAP_MAX_TILES];
     int flags;
+
 }map_layer;
 
 
@@ -72,6 +78,7 @@ typedef struct map_t {
     int32_t height;
     int tileset_count;
     int map_version;
+    int64_t map_size;
 }map_t;
 
 

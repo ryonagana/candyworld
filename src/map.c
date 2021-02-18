@@ -192,6 +192,11 @@ int map_load_str_csv(map_t *map, const char *filepath){
         return -1;
     }
 
+    if(map_load_layer(map, LAYER_COLLISION, filepath) < 0){
+        MAPCONV_ERROR("Collision tiles not found");
+        return -1;
+    }
+
 
 
     if(map->tilesets == NULL){
@@ -212,6 +217,7 @@ map_t *map_init(void){
     mp->width = 0;
     mp->height = 0;
     mp->tileset_count = 1;
+    mp->map_size = 0;
     return mp;
 }
 
@@ -342,8 +348,17 @@ void map_save_file(FILE *fp, map_t *map)
         //layer number
         //fputc(i, fp);
         fwrite(&i,sizeof (int32_t), 1, fp);
-        fwrite(map->layers[i].layer, sizeof(int32_t), map->width * map->height , fp);
 
+        if(!map->layers[i].layer){
+            MAPCONV_ERROR("Ignoring layer %d", i);
+            continue;
+        }
+
+        if(!map->layers[i].layer){
+            continue;
+        }
+
+        fwrite(map->layers[i].layer, sizeof(int32_t), map->width * map->height , fp);
         /*
         //layer tiles
         for(j = 0; j < map->width * map->height; j++){
@@ -393,6 +408,8 @@ static int map_is_valid_header(char header[6]){
 
     return 0;
 }
+
+
 
 int map_load_stream(map_t **map, FILE *in)
 {

@@ -22,7 +22,7 @@ animation_frame_t frames_animation_up[4] = {
  {{0,32,32,32},100,1},
  {{0,32,32,32},100,1},
  {{0,32,32,32},100,1},
- {{},0,0}
+ {{}}
 };
 
 
@@ -60,12 +60,14 @@ void player_init(player_t *pl){
     pl->anim_counter = 0;
     pl->max_frames = 0;
     pl->frames = 0;
+    pl->speed_x = 0.0f;
+    pl->speed_y = 0.0f;
     //rect_init(&pl->hitbox);
     SDL_RectEmpty(&pl->hitbox);
 
 
 
-      player_spr = sprite_create(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG),0,0,32,32);  //sprite_init(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
+    player_spr = sprite_create(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG),0,0,32,32);  //sprite_init(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
     //sprite_init(&player_spr, resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
     //sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
    // sprite_set_delay(player_spr, anim_delay, 8);
@@ -73,9 +75,6 @@ void player_init(player_t *pl){
 
     //player_anim_movement_up = sprite_animation_create(6);
    // animation_resize_array(player_anim_movement_up, 3);
-
-
-
 
    player_anim_movement_up = sprite_animation_create_empty();
    sprite_animation_load(&player_anim_movement_up, "resources/sprites/player_up.anim");
@@ -85,15 +84,6 @@ void player_init(player_t *pl){
     camera_init(&pl->player_camera,0,0, pl->hitbox.w, pl->hitbox.h);
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
 
-
-
-
-
-
-
-
-
-
     return;
 
 }
@@ -101,27 +91,27 @@ void player_init(player_t *pl){
 static void player_move_up(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_UP;
     pl->state = PLAYER_STATE_WALKING;
-    pl->y -= PLAYER_SPEED * delta * 0.01;
+    pl->y -= pl->speed_y * delta * 0.001;
 }
 
 static void player_move_dn(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_DOWN;
     pl->state = PLAYER_STATE_WALKING;
-     pl->y += PLAYER_SPEED * delta * 0.01;
+     pl->y += pl->speed_y * delta * 0.001;
 }
 
 
 static void player_move_left(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_LEFT;
     pl->state = PLAYER_STATE_WALKING;
-    pl->x -= PLAYER_SPEED * delta * 0.01;
+    pl->x += pl->speed_x * delta * 0.001;
 }
 
 
 static void player_move_right(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_RIGHT;
     pl->state = PLAYER_STATE_WALKING;
-    pl->x += PLAYER_SPEED * delta * 0.01;
+    pl->x += pl->speed_x * delta * 0.001;
 }
 
 
@@ -156,12 +146,6 @@ void player_draw(player_t *pl)
 
 
 
-static void player_direction_none(player_t *pl, sprite_t *spr){
-        //int dir = pl->direction;
-        //int old = movement_order[dir];
-
-        //spr->end_frame = old * pl->direction;
-}
 
 void player_update(player_t *pl, float delta)
 {
@@ -170,10 +154,8 @@ void player_update(player_t *pl, float delta)
     camera_update(&pl->player_camera, pl->x, pl->y);
     player_handle_input(pl, delta);
 
-    switch(pl->direction){
-        case PLAYER_DIRECTION_UP:
-        break;
-    }
+    player_apply_gravity(pl, delta);
+
 
     //pl->y += 80.0 * delta * 0.01;
 
@@ -182,17 +164,27 @@ void player_update(player_t *pl, float delta)
 void player_handle_input(player_t *pl, float delta)
 {
 
-    if(key_pressed(KEY_W) > 0){
-        player_move_up(pl, delta);
-    }else if(key_pressed(KEY_S) > 0){
-        player_move_dn(pl, delta);
-    }else if(key_pressed(KEY_A) > 0){
+    if(key_pressed(KEY_A) > 0){
+        printf("PRESSED A\n");
+        pl->speed_x = 30.0f;
         player_move_left(pl, delta);
-    }else if(key_pressed(KEY_D) > 0){
+    }else {
+        pl->speed_x = 0.0f;
+    }
+
+    if(key_pressed(KEY_D) > 0){
+        printf("PRESSED D\n");
+        pl->speed_x = -30.0f;
         player_move_right(pl, delta);
     }else {
-         player_direction_none(pl, player_spr);
+        pl->speed_x = 0.0f;
     }
+
+    //player_move_up(pl, delta);
+    //player_move_dn(pl, delta);
+
+
+
 
 
 }
@@ -227,5 +219,13 @@ SDL_bool player_screen_bound(player_t *player)
 
 void player_end(player_t *pl)
 {
+    free(pl);
+    pl = NULL;
 
+}
+
+void player_apply_gravity(player_t *pl, float delta)
+{
+    pl->speed_y = 30.0f;
+    pl->y += pl->speed_y * delta * 0.001;
 }

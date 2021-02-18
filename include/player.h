@@ -27,6 +27,8 @@
 struct player_t {
     float x;
     float y;
+    float speed_y;
+    float speed_x;
     SDL_Rect hitbox;
     int lives;
     Sint64 score;
@@ -51,5 +53,7 @@ void player_handle_input(player_t *pl, float delta);
 void player_set_pos_screen(player_t *player, int x, int y);
 void player_end(player_t *pl);
 SDL_bool player_screen_bound(player_t *player);
+
+void player_apply_gravity(player_t *pl, float delta);
 
 #endif // PLAYER_H

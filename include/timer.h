@@ -7,12 +7,13 @@
 #define TIMER_DELTATIME 1.5f
 
 typedef struct gametimer_t {
-    float delta;
-    float last_time;
+      Uint64 now;
+      Uint64 last;
 }gametimer_t;
 
 void timer_init(gametimer_t *tm);
-void timer_do_tick(gametimer_t *tm);
+void timer_update(gametimer_t *tm);
+float timer_do_tick(gametimer_t *tm);
 
 
 

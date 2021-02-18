@@ -31,12 +31,17 @@ int ini_handler_proc(void* user, const char* section, const char* name, const ch
 
 
        if(INI_MATCH("map", "tiles_layer")){
-           strncpy(game_map->layers[LAYER_TILES].name, value, 127 - 1);
+           strncpy(game_map->layers[LAYER_TILES].name, value, 255 - 1);
            return 0;
        }
 
        if(INI_MATCH("map", "bg_layer")){
-           strncpy(game_map->layers[LAYER_BACKGROUND].name, value, 127 - 1);
+           strncpy(game_map->layers[LAYER_BACKGROUND].name, value, 255 - 1);
+           return 0;
+       }
+
+       if(INI_MATCH("map", "collision_layer")){
+           strncpy(game_map->layers[LAYER_COLLISION].name, value, 255 - 1);
            return 0;
        }
 
