@@ -87,6 +87,7 @@ static void opt_map_convert_file(char **argv){
     map = map_load_file_str(converted_map_output);
     //map_load_stream(&map, in_map);
     map_show_info(map);
+    map_generate_tilesets(&map->tilesets[0], NULL);
     fclose(in_map);
 
 

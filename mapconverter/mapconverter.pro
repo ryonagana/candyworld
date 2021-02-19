@@ -7,6 +7,15 @@ CONFIG += c11
 
 QMAKE_CFLAGS += -std=c11 -Wall -Wextra -pedantic
 
+QMAKE_CFLAGS += -std=c11
+PKGCONFIG += sdl2 SDL2_image
+
+
+QMAKE_CFLAGS_DEBUG += -O0
+QMAKE_CFLAGS_DEBUG += -Wall -Wextra -pedantic
+QMAKE_CFLAGS_DEBUG -= -ggdb
+
+
 
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
 #so i hardcorded my gcc include path just to shut up compiler

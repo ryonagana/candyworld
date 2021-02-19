@@ -34,6 +34,7 @@
 #define MAP_SCALE 2.0f
 
 
+
 typedef struct map_tile_t {
     int32_t id;
     int32_t region_x;
@@ -131,6 +132,12 @@ void map_convert_1d_to_2d(map_t **map);
 void map_show_info(map_t *map);
 
 int64_t map_size_bytes(FILE *fp);
+
+
+
+// generate tilesed ID
+void  map_generate_tilesets(map_tileset *ts, const char *file_ref);
+
 
 
 #endif // MAP_H

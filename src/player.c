@@ -165,16 +165,14 @@ void player_handle_input(player_t *pl, float delta)
 {
 
     if(key_pressed(KEY_A) > 0){
-        printf("PRESSED A\n");
-        pl->speed_x = 30.0f;
+        pl->speed_x = -30.0f;
         player_move_left(pl, delta);
     }else {
         pl->speed_x = 0.0f;
     }
 
     if(key_pressed(KEY_D) > 0){
-        printf("PRESSED D\n");
-        pl->speed_x = -30.0f;
+        pl->speed_x = 30.0f;
         player_move_right(pl, delta);
     }else {
         pl->speed_x = 0.0f;

@@ -1,6 +1,5 @@
 #if !defined(MAPCONV_PROJECT)
 #include "map.h"
-#include <SDL2/SDL.h>
 #include "render.h"
 #include "resources.h"
 
@@ -13,7 +12,6 @@
 #include "../mapconverter/csv_parser.h"
 #include "../mapconverter/ini.h"
 #include "../mapconverter/ini_parser.h"
-
 
 #if defined(MAPCONV_PROJECT)
     #define EXIT_MODE(code) (exit(code))
@@ -258,7 +256,9 @@ void map_save_name(map_t *map, const char *output_filename)
     strcat(name, MAP_FORMAT);
 
     if((out = fopen(name, "wb+")) == NULL){
-        fclose(out);
+        if(out){
+            fclose(out);
+        }
         MAPCONV_ERROR("invalid file creation");
         return;
     }
@@ -622,4 +622,24 @@ int64_t map_size_bytes(FILE *fp)
     rewind(fp);
 
     return size;
+}
+
+void map_generate_tilesets(map_tileset *ts, const char *file_ref)
+{
+    int x,y;
+
+
+    for(y = 0; y <  ts->height / ts->tile_height; y++){
+        for(x = 0; x < ts->width / ts->tile_width; x++){
+
+
+            int tile_w = x;
+            int tile_h = y;
+
+        }
+    }
+
+
+
+
 }
