@@ -624,20 +624,37 @@ int64_t map_size_bytes(FILE *fp)
     return size;
 }
 
-void map_generate_tilesets(map_tileset *ts, const char *file_ref)
+void map_generate_tilesets(map_t *t, const char *output)
 {
-    int x,y;
+    int x,layer_num;
+    FILE *out = NULL;
+    char name[127] = {0};
 
+    strncpy(name, output, 127 - 1);
 
-    for(y = 0; y <  ts->height / ts->tile_height; y++){
-        for(x = 0; x < ts->width / ts->tile_width; x++){
+    out = fopen(name, "wb+");
 
-
-            int tile_w = x;
-            int tile_h = y;
-
-        }
+    if(!out){
+        MAPCONV_ERROR("file %s cannot be created", name);
+        return;
     }
+
+
+    map_tileset *ts = t->tilesets;
+
+    fprintf(out, "// This file is automatic Generated\n\n");
+    fprintf(out, "\n");
+
+    for(layer_num = 0; layer_num < t->tileset_count; layer_num++){
+        fprintf(out, "// tileset %s\n\n", ts[layer_num].name);
+
+        for(x = 0; x < ((ts->width * ts->height) / ts->tile_width) / ts->tile_width;x++){
+            fprintf(out,"#define TILESET_%d %d\n",x,x);
+        }
+
+    }
+
+    fclose(out);
 
 
 

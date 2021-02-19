@@ -136,7 +136,7 @@ int64_t map_size_bytes(FILE *fp);
 
 
 // generate tilesed ID
-void  map_generate_tilesets(map_tileset *ts, const char *file_ref);
+void  map_generate_tilesets(map_t *t, const char *output);
 
 
 
