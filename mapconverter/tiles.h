@@ -3,7 +3,7 @@
 
 // tileset debug_tiles.png
 
-#define TILESET_0 0
+#define  0
 #define TILESET_1 1
 #define TILESET_2 2
 #define TILESET_3 3
@@ -74,7 +74,7 @@
 #define TILESET_68 68
 #define TILESET_69 69
 #define TILESET_70 70
-#define TILESET_71 71
+#define COLLISION_TILE 71
 #define TILESET_72 72
 #define TILESET_73 73
 #define TILESET_74 74

@@ -624,13 +624,65 @@ int64_t map_size_bytes(FILE *fp)
     return size;
 }
 
+
+typedef struct {
+    int id;
+    char name[127];
+}tile_name;
+
+
+static void map_get_id_file(tile_name **names, map_t *map, const char *input_name){
+    FILE *in = NULL;
+    tile_name *tmp_name = *names;
+
+    in = fopen(input_name, "rb+");
+
+    if(!in){
+        MAPCONV_ERROR("error trying to read %s", input_name);
+    }
+
+    char *bufline = NULL;
+    size_t line_size = 0;
+
+    int count = 0;
+
+    //strncpy(fmt, "%d\t%s\n", 127);
+
+    while(getline(&bufline, &line_size, in) != -1){
+        printf("%s", bufline);
+        int id = 0;
+        char name[127] = {0};
+        sscanf(bufline, "%d\t%s", &id, name);
+
+        tmp_name[id].id = id;
+        strncpy(tmp_name[id].name, name, 127);
+        count++;
+    }
+
+    *names = tmp_name;
+
+}
+
 void map_generate_tilesets(map_t *t, const char *output)
 {
     int x,layer_num;
     FILE *out = NULL;
     char name[127] = {0};
+    map_tileset *ts = t->tilesets;
+    tile_name *tiles = NULL;
 
     strncpy(name, output, 127 - 1);
+
+    tiles = calloc(t->width * t->height, sizeof (tile_name));
+
+    if(!tiles){
+        MAPCONV_ERROR("cannot allocate tiles");
+        return;
+    }
+
+
+
+    map_get_id_file(&tiles,t, "tiles_id.txt");
 
     out = fopen(name, "wb+");
 
@@ -640,7 +692,7 @@ void map_generate_tilesets(map_t *t, const char *output)
     }
 
 
-    map_tileset *ts = t->tilesets;
+
 
     fprintf(out, "// This file is automatic Generated\n\n");
     fprintf(out, "\n");
@@ -649,7 +701,12 @@ void map_generate_tilesets(map_t *t, const char *output)
         fprintf(out, "// tileset %s\n\n", ts[layer_num].name);
 
         for(x = 0; x < ((ts->width * ts->height) / ts->tile_width) / ts->tile_width;x++){
-            fprintf(out,"#define TILESET_%d %d\n",x,x);
+
+            if(tiles[x].id == x){
+                fprintf(out,"#define %s %d\n",tiles[x].name,tiles[x].id);
+            }else{
+                fprintf(out,"#define TILESET_%d %d\n",x,x);
+            }
         }
 
     }
