@@ -8,9 +8,11 @@
 #include "sprite.h"
 #include "sprite_animation.h"
 #include "list.h"
+#include "game.h"
+#include "tiles.h"
+#include "collision.h"
 
 
-#define MAX_PLAYER_ANIMATION 32
 
 
 static sprite_t *player_spr = NULL;
@@ -22,7 +24,7 @@ animation_frame_t frames_animation_up[4] = {
  {{0,32,32,32},100,1},
  {{0,32,32,32},100,1},
  {{0,32,32,32},100,1},
- {{}}
+ {{0,0,0,0},0,0}
 };
 
 
@@ -54,8 +56,6 @@ void player_init(player_t *pl){
     pl->score = 0;
     pl->state = PLAYER_STATE_NONE;
     pl->direction = PLAYER_DIRECTION_NONE;
-    pl->offset_x =  0;
-    pl->offset_y  = 0;
     pl->flags = 0;
     pl->anim_counter = 0;
     pl->max_frames = 0;
@@ -65,25 +65,18 @@ void player_init(player_t *pl){
     //rect_init(&pl->hitbox);
     SDL_RectEmpty(&pl->hitbox);
 
+    player_spr = sprite_create(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG),0,0,32,32);
 
+    pl->hitbox.h = player_spr->height;
+    pl->hitbox.w = player_spr->width;
+    pl->hitbox.x = player_spr->x;
+    pl->hitbox.y = player_spr->x;
 
-    player_spr = sprite_create(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG),0,0,32,32);  //sprite_init(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
-    //sprite_init(&player_spr, resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG));
-    //sprite_set_spritesheet_offset(player_spr, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
-   // sprite_set_delay(player_spr, anim_delay, 8);
-
-
-    //player_anim_movement_up = sprite_animation_create(6);
-   // animation_resize_array(player_anim_movement_up, 3);
-
-   player_anim_movement_up = sprite_animation_create_empty();
-   sprite_animation_load(&player_anim_movement_up, "resources/sprites/player_up.anim");
-   //animation_add_frame_data(player_anim_movement_up, test, 3);
-
-
+    player_anim_movement_up = sprite_animation_create_empty();
+    sprite_animation_load(&player_anim_movement_up, "resources/sprites/player_up.anim");
     camera_init(&pl->player_camera,0,0, pl->hitbox.w, pl->hitbox.h);
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
-
+    pl->is_falling = 0;
     return;
 
 }
@@ -92,12 +85,14 @@ static void player_move_up(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_UP;
     pl->state = PLAYER_STATE_WALKING;
     pl->y -= pl->speed_y * delta * 0.001;
+    game_rect_update_rect(&pl->screen_rect);
 }
 
 static void player_move_dn(player_t *pl, float delta){
-    pl->direction = PLAYER_DIRECTION_DOWN;
-    pl->state = PLAYER_STATE_WALKING;
+     pl->direction = PLAYER_DIRECTION_DOWN;
+     pl->state = PLAYER_STATE_WALKING;
      pl->y += pl->speed_y * delta * 0.001;
+     game_rect_update_rect(&pl->screen_rect);
 }
 
 
@@ -105,6 +100,7 @@ static void player_move_left(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_LEFT;
     pl->state = PLAYER_STATE_WALKING;
     pl->x += pl->speed_x * delta * 0.001;
+    game_rect_update_rect(&pl->screen_rect);
 }
 
 
@@ -112,6 +108,7 @@ static void player_move_right(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_RIGHT;
     pl->state = PLAYER_STATE_WALKING;
     pl->x += pl->speed_x * delta * 0.001;
+    game_rect_update_rect(&pl->screen_rect);
 }
 
 
@@ -125,18 +122,7 @@ void player_draw(player_t *pl)
 #endif
 
 
-    switch(pl->direction){
-        case PLAYER_DIRECTION_UP:
-
-
-        //sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
-        break;
-
-        default:
-            sprite_draw(player_spr, pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE,45.0f, SDL_FLIP_NONE);
-        break;
-    }
-
+            sprite_draw(player_spr, pl->screen_rect.rect.x, pl->screen_rect.rect.y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE,0.0, SDL_FLIP_NONE);
 
 
 
@@ -146,6 +132,40 @@ void player_draw(player_t *pl)
 
 
 
+static  SDL_Rect player_update_hitbox(player_t *pl){
+    pl->hitbox.h = PLAYER_TILE_SIZE;
+    pl->hitbox.w = PLAYER_TILE_SIZE;
+    pl->hitbox.x = pl->x;
+    pl->hitbox.y = pl->y;
+
+    //
+    pl->screen_rect.rect.x = pl->x;
+    pl->screen_rect.rect.y = pl->y;
+    pl->screen_rect.rect.w = PLAYER_TILE_SIZE;
+    pl->screen_rect.rect.h = PLAYER_TILE_SIZE;
+    game_rect_update_rect(&pl->screen_rect);
+
+    return pl->hitbox;
+}
+
+
+void player_update2(void* data, float delta){
+    game_data_t *gamedata = (game_data_t*)data;
+    player_t *pl = &gamedata->player;
+    map_t *map = gamedata->map;
+
+    camera_update(&pl->player_camera, pl->x, pl->y);
+    player_handle_input(pl, delta);
+    player_update_hitbox(pl);
+
+    if(pl->is_falling == PLAYER_STATE_FALLING){
+         player_apply_gravity(pl, delta);
+    }
+
+    player_move(pl, map, delta);
+
+
+}
 
 void player_update(player_t *pl, float delta)
 {
@@ -153,8 +173,10 @@ void player_update(player_t *pl, float delta)
 
     camera_update(&pl->player_camera, pl->x, pl->y);
     player_handle_input(pl, delta);
+    player_update_hitbox(pl);
 
-    player_apply_gravity(pl, delta);
+
+
 
 
     //pl->y += 80.0 * delta * 0.01;
@@ -165,14 +187,14 @@ void player_handle_input(player_t *pl, float delta)
 {
 
     if(key_pressed(KEY_A) > 0){
-        pl->speed_x = -30.0f;
+        pl->speed_x = -130.0f;
         player_move_left(pl, delta);
     }else {
         pl->speed_x = 0.0f;
     }
 
     if(key_pressed(KEY_D) > 0){
-        pl->speed_x = 30.0f;
+        pl->speed_x = 130.0f;
         player_move_right(pl, delta);
     }else {
         pl->speed_x = 0.0f;
@@ -209,8 +231,8 @@ SDL_bool player_screen_bound(player_t *player)
 
     pl.w = player->hitbox.w - 1;
     pl.h = player->hitbox.h - 1;
-    pl.x = player->x;
-    pl.y = player->y;
+    pl.x = (int)player->x;
+    pl.y = (int)player->y;
 
     return SDL_HasIntersection(&win, &pl);
 }
@@ -224,6 +246,43 @@ void player_end(player_t *pl)
 
 void player_apply_gravity(player_t *pl, float delta)
 {
-    pl->speed_y = 30.0f;
+    pl->speed_y = 350.0f;
     pl->y += pl->speed_y * delta * 0.001;
+}
+
+
+
+void player_move(player_t *player, map_t *map, float delta)
+{
+
+   game_rect_t hit_rect;
+
+    if(collision_player_detect_hit(player,map, &hit_rect)){
+
+        game_rect_update_rect(&player->screen_rect);
+        if(player->speed_y > 0){
+           player->screen_rect.bottom = hit_rect.bottom;
+            player->is_falling = PLAYER_STATE_ON_GROUND;
+        }
+
+
+
+
+         DLOG("scr: %d %d %d %d t: %d b: %d l:%d r%d",
+              player->screen_rect.rect.x,
+              player->screen_rect.rect.y,
+              player->screen_rect.rect.w,
+              player->screen_rect.rect.h,
+
+              player->screen_rect.top,
+              player->screen_rect.bottom,
+              player->screen_rect.left,
+              player->screen_rect.right
+              );
+
+    }else {
+         player->is_falling =  PLAYER_STATE_FALLING;
+    }
+
+
 }

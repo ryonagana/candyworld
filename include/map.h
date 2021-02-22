@@ -28,7 +28,7 @@
 
 #define MAP_FORMAT ".cbmap"
 #define MAP_VERSION 3
-#define MAP_MAX_TILES 200
+#define MAP_MAX_TILES 300
 #define MAP_NAME_BUFFER 127
 #define MAP_FILENAME_BUFFER 255
 #define MAP_SCALE 2.0f
@@ -41,6 +41,8 @@ typedef struct map_tile_t {
     int32_t region_y;
     int32_t x;
     int32_t y;
+    int32_t width;
+    int32_t height;
     int32_t flags;
 }map_tile_t;
 

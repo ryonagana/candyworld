@@ -1,48 +1,119 @@
 #include "collision.h"
-
-int is_overlap(int a_x, int a_y, int a_w, int a_h, int b_x, int b_y, int b_w, int b_h)
-{
-
-    int a_top, a_left, a_right, a_bottom;
-    int b_top, b_left, b_right, b_bottom;
-
-    a_top = a_y;
-    a_left = a_x;
-    a_right = a_x + a_w;
-    a_bottom = a_top + a_h;
+#include "tiles.h"
 
 
-    b_top = b_y;
-    b_left = b_x;
-    b_right = b_x + b_w;
-    b_bottom = b_top + b_h;
+int collision_bounding_box(int a_x, int a_y, int a_w, int a_h, int b_x, int b_y, int b_w, int b_h){
 
 
-    if(a_bottom <= b_top){
-        return 0;
+    game_rect_t a, b;
+
+    game_rect_start(&a, a_x, a_y, a_w, a_h);
+    game_rect_start(&b, b_x, b_y, b_w, b_h);
+    game_rect_update_rect(&a);
+    game_rect_update_rect(&b);
+
+    if(b.left < a.left + a.rect.w ||
+       b.left + b.rect.w > b.left  ||
+       b.top < a.top + a.rect.h ||
+       b.top + b.rect.h > a.top)
+    {
+        return 1;
     }
 
-    if(a_top >= b_bottom){
-        return 0;
-    }
+    return 0;
 
-    if(a_right <= b_left){
-        return 0;
-    }
-
-    if(a_left >= b_right){
-        return 0;
-    }
-
-    return 1;
 }
 
-int is_colliding(SDL_Rect a, SDL_Rect b)
-{
-    return is_overlap(a.x,a.y,a.w,a.h,b.x,b.y,b.w,b.h);
+int collision_SDL_bounding_boxes(SDL_Rect *a, SDL_Rect *b){
+    return collision_bounding_box(a->x,a->y,a->w,a->h,b->x,b->y,b->w,b->h);
 }
 
-int collision_test(player_t *player, map_tile_t *tile)
+int collision_game_rect_bounding_boxes(game_rect_t *a, game_rect_t *b){
+    return collision_bounding_box(a->rect.x,a->rect.y,a->rect.w,a->rect.h,b->rect.x,b->rect.y,b->rect.w,b->rect.h);
+}
+
+int collision_player_detect_hit(player_t *player, map_t *map, game_rect_t *out)
 {
 
+    map_tileset *tileset =  &map->tilesets[0];
+    static game_rect_t r;
+
+    int tile_x =    player->x / tileset->tile_width;
+    int tile_y =    player->y / tileset->tile_height;
+
+    if(map->layers[LAYER_COLLISION].tiles[tile_y][tile_x].id == COLLISION_TILE){
+
+
+        SDL_Rect player_rect = {
+                            player->x / player->hitbox.w,
+                            player->y / player->hitbox.h,
+                            player->hitbox.w,
+                            player->hitbox.h
+        };
+
+        SDL_Rect tile_rect = { player->x / player->hitbox.w,
+                               player->y / player->hitbox.h,
+                               tileset->tile_width,
+                               tileset->tile_height
+                             };
+
+        SDL_bool collision =  SDL_HasIntersection(&player_rect, &tile_rect);
+
+        if(collision){
+            game_rect_start(&r, tile_rect.x * tile_rect.w, tile_rect.y * tile_rect.h, tile_rect.w, tile_rect.h);
+            *out = r;
+            return 1;
+        }
+
+
+
+    }
+
+    return 0;
+
+    /*
+
+
+
+
+
+
+    SDL_Rect player_rect = {
+                        player->x / player->hitbox.w,
+                        player->y / player->hitbox.h,
+                        player->hitbox.w,
+                        player->hitbox.h
+    };
+
+    SDL_Rect tile_rect = { player->x / tileset->tile_width,
+                           player->y / tileset->tile_height,
+                           tileset->tile_width,
+                           tileset->tile_height
+                         };
+
+    int tile_x =    player->x / tileset->tile_width;
+    int tile_y =    player->y / tileset->tile_height;
+
+    SDL_bool collision =  SDL_HasIntersection(&player_rect, &tile_rect);
+    game_rect_t r;
+
+
+    game_rect_empty(&r);
+
+
+    if(collision){
+        if(map->layers[LAYER_COLLISION].tiles[tile_y][tile_x].id == COLLISION_TILE){
+
+            game_rect_start(&r, tile_x * tileset->tile_width, tile_y * tileset->tile_height,  tileset->tile_width,  tileset->tile_height);
+            game_rect_update_rect(&r);
+
+            *out = r;
+
+            return 1;
+        }
+    }
+
+    return 0;
+
+    */
 }

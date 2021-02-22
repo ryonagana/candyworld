@@ -93,6 +93,7 @@ HEADERS += \
         include/sprite_animation.h \
         include/text.h \
     include/texture.h \
+    include/tiles.h \
         include/timer.h \
         include/window.h\
         include/sound.h \

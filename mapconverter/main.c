@@ -89,6 +89,7 @@ static void opt_map_convert_file(char **argv){
     map_show_info(map);
     map_generate_tilesets(map, "tiles.h");
     fclose(in_map);
+    map_free(&map);
 
 
 

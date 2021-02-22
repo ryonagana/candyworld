@@ -8,7 +8,7 @@
  *
  * */
 
-static text_t *debug_render_font = NULL;
+
 static SDL_Texture *map_tileset_texture = NULL;
 
 void map_render_init()
@@ -30,7 +30,7 @@ void map_render_end()
 
 
 
-void map_render(map_t *map, int x, int y)
+void map_render(map_t *map)
 {
 
 
@@ -82,10 +82,10 @@ void map_render(map_t *map, int x, int y)
                                ry,
                                map->tilesets[0].tile_width,
                                map->tilesets[0].tile_height,
-                               map_x *  map->tilesets->tile_width * MAP_SCALE,
-                               map_y *  map->tilesets->tile_width * MAP_SCALE,
-                               map->tilesets[0].tile_width * MAP_SCALE ,
-                               map->tilesets[0].tile_height * MAP_SCALE,
+                               map_x *  map->tilesets->tile_width,
+                               map_y *  map->tilesets->tile_width,
+                               map->tilesets[0].tile_width,
+                               map->tilesets[0].tile_height,
                                0,
                                SDL_FLIP_NONE
                 );

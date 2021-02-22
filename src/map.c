@@ -594,6 +594,8 @@ void map_convert_1d_to_2d(map_t **map)
                     ry,
                     x *  tmp->tilesets->tile_width * MAP_SCALE,
                     y *  tmp->tilesets->tile_height * MAP_SCALE,
+                    tmp->tilesets->tile_width,
+                    tmp->tilesets->tile_height,
                     0
                 };
 
@@ -631,7 +633,7 @@ typedef struct {
 }tile_name;
 
 
-static void map_get_id_file(tile_name **names, map_t *map, const char *input_name){
+static void map_get_id_file(tile_name **names, const char *input_name){
     FILE *in = NULL;
     tile_name *tmp_name = *names;
 
@@ -639,6 +641,7 @@ static void map_get_id_file(tile_name **names, map_t *map, const char *input_nam
 
     if(!in){
         MAPCONV_ERROR("error trying to read %s", input_name);
+        return;
     }
 
     char *bufline = NULL;
@@ -663,26 +666,13 @@ static void map_get_id_file(tile_name **names, map_t *map, const char *input_nam
 
 }
 
-void map_generate_tilesets(map_t *t, const char *output)
+void  map_generate_tilesets(map_t *t, const char *output)
 {
     int x,layer_num;
     FILE *out = NULL;
     char name[127] = {0};
-    map_tileset *ts = t->tilesets;
-    tile_name *tiles = NULL;
 
     strncpy(name, output, 127 - 1);
-
-    tiles = calloc(t->width * t->height, sizeof (tile_name));
-
-    if(!tiles){
-        MAPCONV_ERROR("cannot allocate tiles");
-        return;
-    }
-
-
-
-    map_get_id_file(&tiles,t, "tiles_id.txt");
 
     out = fopen(name, "wb+");
 
@@ -691,23 +681,45 @@ void map_generate_tilesets(map_t *t, const char *output)
         return;
     }
 
-
-
-
     fprintf(out, "// This file is automatic Generated\n\n");
     fprintf(out, "\n");
 
     for(layer_num = 0; layer_num < t->tileset_count; layer_num++){
+
+         map_tileset *ts = &t->tilesets[layer_num];
+
+         tile_name *tiles = NULL;
+
+         tiles = calloc((((ts->width * ts->height) / ts->tile_width) / ts->tile_width) - 1, sizeof (tile_name));
+
+         if(!tiles){
+             MAPCONV_ERROR("cannot allocate tiles");
+             continue;
+         }
+
+
+         char fullname[255] = {0};
+         strncpy(fullname, ts->name, 127 - strlen(ts->name));
+         strncat(fullname, ".txt", 127);
+         map_get_id_file(&tiles, fullname);
+
+
         fprintf(out, "// tileset %s\n\n", ts[layer_num].name);
 
         for(x = 0; x < ((ts->width * ts->height) / ts->tile_width) / ts->tile_width;x++){
 
-            if(tiles[x].id == x){
-                fprintf(out,"#define %s %d\n",tiles[x].name,tiles[x].id);
+
+            if(x == 0 && tiles[x].id == 0){
+                fprintf(out,"#define TILESET_%d\t%d\n",x,x);
+            }else if(tiles[x].id == x){
+                fprintf(out,"#define %s\t\t%d\n",tiles[x].name,tiles[x].id);
             }else{
-                fprintf(out,"#define TILESET_%d %d\n",x,x);
+                fprintf(out,"#define TILESET_%d\t%d\n",x,x);
             }
         }
+
+        free(tiles);
+        tiles = NULL;
 
     }
 
