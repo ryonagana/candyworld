@@ -9,13 +9,15 @@
 
 
 #define UNUSED(v) ((void)v)
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
 
 
 void read_sprite_list(FILE *fp, SDL_Texture *texture,  link_list_t **animation);
 
 
 typedef struct game_rect_t {
-    SDL_Rect rect;
+    SDL_Rect pos;
     int top;
     int bottom;
     int left;

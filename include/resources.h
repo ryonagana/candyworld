@@ -38,7 +38,7 @@
 
 
 #define DIR_BUF_SIZE 2048
-#define FILENAME_BUF_SIZE 255
+#define FILENAME_BUF_SIZE BUFSIZ
 
 typedef struct resource_file_t {
     char name[FILENAME_BUF_SIZE];

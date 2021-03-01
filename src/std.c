@@ -3,11 +3,13 @@
 
 const char *std_basename(const char *path, char separator)
 {
-    if((strrchr(path, separator)) == NULL){
-        return  strdup(path);
+    char *str = strrchr(path,separator);
+
+    if(!str){
+        return strdup(path);
     }
 
-    return strdup(strrchr(path + 1, separator) + 1);
+    return strdup(str + 1);
 }
 
 static void mem_error_message(const char *msg, ...){

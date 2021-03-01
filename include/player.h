@@ -44,6 +44,7 @@ struct player_t {
     int32_t state;
     Uint32 anim_counter;
     int max_frames;
+    game_rect_t hitboxes[4];
     int frames;
     Uint32 flags;
     camera player_camera;
@@ -55,7 +56,6 @@ typedef struct player_t player_t;
 
 void player_init(player_t *pl);
 void player_draw(player_t *pl);
-void player_update(player_t *pl, float delta);
 void player_handle_input(player_t *pl, float delta);
 void player_set_pos_screen(player_t *player, int x, int y);
 void player_end(player_t *pl);

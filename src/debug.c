@@ -19,17 +19,29 @@ void debug_end()
 void debug_render_player_hitbox(player_t *pl)
 {
 
+
     SDL_SetRenderDrawColor(window_get()->events.renderer, 0,0,255,255);
-    SDL_Rect r = { pl->x, pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE  };
+    SDL_Rect r = { (int)pl->x, (int)pl->y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE  };
     SDL_RenderDrawRect(window_get()->events.renderer, &r);
 
-    r.x = pl->x + 4;
-    r.y = pl->y + 4;
-    r.w = pl->hitbox.w - 4;
-    r.h = pl->hitbox.h - 4;
 
-    SDL_SetRenderDrawColor(window_get()->events.renderer, 255,255,0,255);
-    SDL_RenderDrawRect(window_get()->events.renderer, &r);
+
+    int i;
+
+    for(i = 0; i < 3; i++){
+
+        r.x = pl->hitboxes[i].pos.x;
+        r.y = pl->hitboxes[i].pos.y;
+        r.w = pl->hitboxes[i].pos.w;
+        r.h = pl->hitboxes[i].pos.h;
+
+        SDL_SetRenderDrawColor(window_get()->events.renderer, 255,255,0,255);
+        SDL_RenderDrawRect(window_get()->events.renderer, &r);
+
+    }
+
+
+
 
 
     return;

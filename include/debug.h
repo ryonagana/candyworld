@@ -2,9 +2,10 @@
 #define DEBUG_H
 #include "player.h"
 #include "camera.h"
+#include "map.h"
 
-void debug_start();
-void debug_end();
+void debug_start(void);
+void debug_end(void);
 
 
 void debug_render_player_hitbox(player_t *pl);

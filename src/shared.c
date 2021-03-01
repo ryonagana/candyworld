@@ -27,30 +27,33 @@ void game_rect_empty(game_rect_t *r)
 {
     r->bottom = 0;
     r->left = 0;
-    r->rect.h = 0;
-    r->rect.w = 0;
-    r->rect.x = 0;
-    r->rect.y = 0;
+    r->pos.h = 0;
+    r->pos.w = 0;
+    r->pos.x = 0;
+    r->pos.y = 0;
     r->right = 0;
     r->top =0;
 }
 
 void game_rect_start(game_rect_t *r, int x, int y, int w, int h)
 {
-    r->rect.x = (int)x;
-    r->rect.y = (int)y;
-    r->rect.w = (int)w;
-    r->rect.h = (int)h;
+    r->pos.x = (int)x;
+    r->pos.y = (int)y;
+    r->pos.w = (int)w;
+    r->pos.h = (int)h;
 
     game_rect_update_rect(r);
 }
 
 void game_rect_update_rect(game_rect_t *r)
 {
-    r->left   = (int)r->rect.x;
-    r->right  = (int)r->rect.x + r->rect.w;
-    r->top    = (int)r->rect.y;
-    r->bottom = (int)r->rect.y + r->rect.h;
+    r->pos.x = r->pos.x;
+    r->pos.y = r->pos.y;
+    r->left   = (int)r->pos.x;
+    r->right  = (int)r->pos.x + r->pos.w;
+    r->top    = (int)r->pos.y;
+    r->bottom = (int)r->pos.y + r->pos.h;
+
 }
 
 void game_rect_start_SDL(game_rect_t *r, SDL_Rect *rect)
