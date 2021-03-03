@@ -214,7 +214,7 @@ map_t *map_init(void){
 
     mp = calloc(1, sizeof(map_t));
     mp->layers = map_alloc_layer_num(LAYERS_NUM);
-    mp->tilesets = calloc(1, sizeof(map_tileset));
+    mp->tilesets = calloc(1, sizeof(map_tileset_t));
     //mp->name = "";
     mp->width = 0;
     mp->height = 0;
@@ -223,10 +223,10 @@ map_t *map_init(void){
     return mp;
 }
 
- map_layer* map_alloc_layer_num(int num){
-    map_layer *l_tmp = NULL;
+ map_layer_t* map_alloc_layer_num(int num){
+    map_layer_t *l_tmp = NULL;
 
-    l_tmp = calloc(num, sizeof(map_layer));
+    l_tmp = calloc(num, sizeof(map_layer_t));
 
     if(!l_tmp){
         MAPCONV_ERROR("Error Trying to Allocate  %d map layers", num);
@@ -236,9 +236,9 @@ map_t *map_init(void){
     return l_tmp;
 }
 
-map_layer * alloc_map_layer(int rows, int cols){
-        map_layer *mp = NULL;
-        mp = malloc(sizeof (map_layer));
+map_layer_t * alloc_map_layer(int rows, int cols){
+        map_layer_t *mp = NULL;
+        mp = malloc(sizeof (map_layer_t));
         mp->flags = 0;
         mp->layer = malloc(sizeof(int) * rows * cols );
         return mp;
@@ -303,16 +303,16 @@ void map_free(map_t **map_ptr)
 
 }
 
-map_tileset *map_tileset_alloc_mem(int num)
+map_tileset_t *map_tileset_alloc_mem(int num)
 {
-    map_tileset *tmp = NULL;
-    tmp = calloc(num + 1, sizeof (map_tileset));
+    map_tileset_t *tmp = NULL;
+    tmp = calloc(num + 1, sizeof (map_tileset_t));
     return tmp;
 }
 
-void map_tileset_free(map_tileset **ts)
+void map_tileset_free(map_tileset_t **ts)
 {
-    map_tileset *tmp = NULL;
+    map_tileset_t *tmp = NULL;
 
     if((*ts) == NULL){
         return;
@@ -592,8 +592,8 @@ void map_convert_1d_to_2d(map_t **map)
                     id,
                     rx,
                     ry,
-                    x *  tmp->tilesets->tile_width * MAP_SCALE,
-                    y *  tmp->tilesets->tile_height * MAP_SCALE,
+                    x *  tmp->tilesets->tile_width,
+                    y *  tmp->tilesets->tile_height,
                     tmp->tilesets->tile_width,
                     tmp->tilesets->tile_height,
                     0
@@ -686,7 +686,7 @@ void  map_generate_tilesets(map_t *t, const char *output)
 
     for(layer_num = 0; layer_num < t->tileset_count; layer_num++){
 
-         map_tileset *ts = &t->tilesets[layer_num];
+         map_tileset_t *ts = &t->tilesets[layer_num];
 
          tile_name *tiles = NULL;
 

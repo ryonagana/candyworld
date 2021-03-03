@@ -71,7 +71,7 @@ void gameplay_event_loop(game_event_data *e, void* data){
         SDL_SetRenderTarget(window_get()->events.renderer, screen_buffer);
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
-        SDL_RenderSetScale(window_get()->events.renderer, 2, 2);
+        SDL_RenderSetScale(window_get()->events.renderer, 1, 1);
         map_render(gamedata->map);
         player_draw(&gamedata->player);
         SDL_RenderSetScale(window_get()->events.renderer, 1, 1);

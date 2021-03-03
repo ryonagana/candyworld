@@ -47,18 +47,18 @@ typedef struct map_tile_t {
 }map_tile_t;
 
 
-typedef struct map_layer {
+typedef struct map_layer_t {
     char name[127];
     int *layer;
     map_tile_t tiles[MAP_MAX_TILES][MAP_MAX_TILES];
     int flags;
 
-}map_layer;
+}map_layer_t;
 
 
 
 
-typedef struct map_tileset {
+typedef struct map_tileset_t {
     char name[MAP_NAME_BUFFER];
     int tile_width;
     int tile_height;
@@ -68,12 +68,12 @@ typedef struct map_tileset {
     int loaded;
     int rows;
     int cols;
-}map_tileset;
+}map_tileset_t;
 
 
 typedef struct map_t {
-    map_layer   *layers;
-    map_tileset *tilesets;
+    map_layer_t   *layers;
+    map_tileset_t *tilesets;
     char header[6];
     char name[MAP_NAME_BUFFER];
     char filename[MAP_FILENAME_BUFFER];
@@ -99,17 +99,17 @@ map_t *map_init(void);
 void map_free(map_t** map_ptr);
 
 //alloc the number of layers in map
-map_layer *map_alloc_layer_num(int num);
+map_layer_t *map_alloc_layer_num(int num);
 
 /* alloc the size of map for each layer */
-map_layer *alloc_map_layer(int rows, int cols);
+map_layer_t *alloc_map_layer(int rows, int cols);
 
 /* alloc the number of tilesets of map (tiled can allow multiples tilesets for one map)  */
 /* PS need to fix the ini reader to find more than 1 tileset */
-map_tileset *map_tileset_alloc_mem(int num);
+map_tileset_t *map_tileset_alloc_mem(int num);
 
 // frees the tileset ptr
-void map_tileset_free(map_tileset **ts);
+void map_tileset_free(map_tileset_t **ts);
 
 //save the map from the struct to a binary file
 void map_save_name(map_t *map, const char *output_filename);

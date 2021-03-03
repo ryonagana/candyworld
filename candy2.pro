@@ -9,7 +9,7 @@ QMAKE_CFLAGS += -std=gnu11
 win32:DISTRIBUTION = $$system(systeminfo | findstr /B /C:"OS Name")
 unix:DISTRIBUTION = $$system(cat /etc/issue | cut -d\' \' -f1)
 
-PKGCONFIG += lua53 sdl2 SDL2_image SDL2_ttf SDL2_mixer
+PKGCONFIG += lua sdl2 SDL2_image SDL2_ttf SDL2_mixer
 
 
 unix:Debian {

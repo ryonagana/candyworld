@@ -36,7 +36,7 @@ struct player_t {
     float y;
     float speed_y;
     float speed_x;
-    SDL_Rect hitbox;
+    game_rect_t hitbox;
     game_rect_t screen_rect;
     int lives;
     Sint64 score;
