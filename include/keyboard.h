@@ -89,6 +89,8 @@
 #define KEY_PGDN SDL_SCANCODE_PAGEDOWN
 
 
+#define KEY_SPACE SDL_SCANCODE_SPACE
+
 void keyboard_init(void);
 void keyboard_update(SDL_Event *ev);
 

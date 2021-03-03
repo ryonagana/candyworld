@@ -4,6 +4,11 @@
 #include "text.h"
 
 
+#if DEBUG
+#define RENDER_COLLISION (SDL_Color){255,0,0,0}
+#endif
+
+
 void debug_start()
 {
 
@@ -25,22 +30,13 @@ void debug_render_player_hitbox(player_t *pl)
     SDL_RenderDrawRect(window_get()->events.renderer, &r);
 
 
-    int i;
+    r.x = pl->hitbox.pos.x;
+    r.y = pl->hitbox.pos.y;
+    r.w = pl->hitbox.pos.w;
+    r.h = pl->hitbox.pos.h;
 
-    for(i = 0; i < 4; i++){
-        r.x = pl->hitboxes[i].pos.x;
-        r.y = pl->hitboxes[i].pos.y;
-        r.w = pl->hitboxes[i].pos.w;
-        r.h = pl->hitboxes[i].pos.h;
-        SDL_SetRenderDrawColor(window_get()->events.renderer, 255,255,0,255);
-        SDL_RenderDrawRect(window_get()->events.renderer, &r);
-    }
-
-
-
-
-
-
+    SDL_SetRenderDrawColor(window_get()->events.renderer, 255,255,0,255);
+    SDL_RenderDrawRect(window_get()->events.renderer, &r);
 
 
 

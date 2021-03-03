@@ -1,4 +1,4 @@
-#ifndef SHARED_HEADER
+﻿#ifndef SHARED_HEADER
 #define SHARED_HEADER
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,16 +16,16 @@
 void read_sprite_list(FILE *fp, SDL_Texture *texture,  link_list_t **animation);
 
 
-typedef struct game_rect_t {
+typedef struct game_rect {
     SDL_Rect pos;
     int top;
     int bottom;
     int left;
     int right;
-}game_rect_t;
+}game_rect;
 
-void game_rect_empty(game_rect_t *r);
-void game_rect_start(game_rect_t *r, int x, int y, int w, int h);
-void game_rect_start_SDL(game_rect_t *r, SDL_Rect *rect);
-void game_rect_update_rect(game_rect_t *r);
+void grect_empty(game_rect *r);
+void grect_start(game_rect *r, int x, int y, int w, int h);
+void grect_start_SDL(game_rect *r, SDL_Rect *rect);
+void grect_refresh(game_rect *r);
 #endif

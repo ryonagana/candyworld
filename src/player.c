@@ -65,17 +65,17 @@ void player_init(player_t *pl){
     pl->speed_x = 0.0f;
     pl->speed_y = 0.0f;
     //rect_init(&pl->hitbox);
-    SDL_RectEmpty(&pl->hitbox);
+    grect_empty(&pl->hitbox);
 
     player_spr = sprite_create(resources_sprite_get("sprite2", RESOURCE_EXTENSION_PNG),0,0,32,32);
 
     pl->hitbox.pos.h = player_spr->height;
     pl->hitbox.pos.w = player_spr->width;
     pl->hitbox.pos.x = player_spr->x;
-    pl->hitbox.pos.y = player_spr->x;
+    pl->hitbox.pos.y = player_spr->y;
 
-    pl->screen_rect.pos.x = pl->x;
-    pl->screen_rect.pos.y = pl->y;
+    pl->screen_rect.pos.x = (int)pl->x;
+    pl->screen_rect.pos.y = (int)pl->y;
     pl->screen_rect.pos.w = PLAYER_TILE_SIZE;
     pl->screen_rect.pos.h = PLAYER_TILE_SIZE;
 
@@ -83,31 +83,23 @@ void player_init(player_t *pl){
     sprite_animation_load(&player_anim_movement_up, "resources/sprites/player_up.anim");
     camera_init(&pl->player_camera,0,0, pl->hitbox.pos.w, pl->hitbox.pos.h);
     camera_set_area(&pl->player_camera, window_get()->info.width / 2, window_get()->info.height);
-    pl->is_falling = 0;
-
-
-    int i;
-
-    for(i = 0; i < 3; i++){
-        game_rect_empty(&pl->hitboxes[i]);
-    }
-
+    pl->is_falling = PLAYER_STATE_FALLING;
     return;
 
 }
 
 static void player_move_up(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_UP;
-    pl->state = PLAYER_STATE_WALKING;
-    pl->y -= pl->speed_y * delta * 0.001f;
-    game_rect_update_rect(&pl->screen_rect);
+    pl->state = PLAYER_STATE_JUMPING;
+    pl->y += pl->speed_y * delta * 0.001f;
+    grect_refresh(&pl->screen_rect);
 }
 
 static void player_move_dn(player_t *pl, float delta){
      pl->direction = PLAYER_DIRECTION_DOWN;
      pl->state = PLAYER_STATE_WALKING;
      pl->y += pl->speed_y * delta * 0.001f;
-     game_rect_update_rect(&pl->screen_rect);
+     grect_refresh(&pl->screen_rect);
 }
 
 
@@ -115,7 +107,7 @@ static void player_move_left(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_LEFT;
     pl->state = PLAYER_STATE_WALKING;
     pl->x += pl->speed_x * delta * 0.001f;
-    game_rect_update_rect(&pl->screen_rect);
+    grect_refresh(&pl->screen_rect);
 }
 
 
@@ -123,7 +115,7 @@ static void player_move_right(player_t *pl, float delta){
     pl->direction = PLAYER_DIRECTION_RIGHT;
     pl->state = PLAYER_STATE_WALKING;
     pl->x += pl->speed_x * delta * 0.001f;
-    game_rect_update_rect(&pl->screen_rect);
+    grect_refresh(&pl->screen_rect);
 }
 
 
@@ -158,48 +150,13 @@ static  SDL_Rect player_update_hitbox(player_t *pl, map_t *map){
     pl->screen_rect.pos.y = (int)pl->y;
     pl->screen_rect.pos.w = PLAYER_TILE_SIZE;
     pl->screen_rect.pos.h = PLAYER_TILE_SIZE;
-    game_rect_update_rect(&pl->screen_rect);
+    grect_refresh(&pl->screen_rect);
 
     pl->hitbox.pos.h = PLAYER_TILE_SIZE;
-    pl->hitbox.pos.w = PLAYER_TILE_SIZE - 10;
-    pl->hitbox.pos.x = pl->screen_rect.pos.x;
+    pl->hitbox.pos.w = 16;
+    pl->hitbox.pos.x = pl->screen_rect.pos.x + pl->screen_rect.pos.w / 2;
     pl->hitbox.pos.y = pl->screen_rect.pos.y;
-    game_rect_update_rect(&pl->hitbox);
-
-
-
-    pl->hitboxes[0].pos.x = pl->screen_rect.pos.x;
-    pl->hitboxes[0].pos.y = pl->screen_rect.pos.y;
-    pl->hitboxes[0].pos.w = ts->tile_width;
-    pl->hitboxes[0].pos.h = ts->tile_height;
-    game_rect_update_rect(&pl->hitboxes[0]);
-
-    pl->hitboxes[1].pos.x = pl->screen_rect.pos.x + ts->tile_width;
-    pl->hitboxes[1].pos.y = pl->screen_rect.pos.y;
-    pl->hitboxes[1].pos.w = ts->tile_width;
-    pl->hitboxes[1].pos.h = ts->tile_height;
-    game_rect_update_rect(&pl->hitboxes[1]);
-
-    pl->hitboxes[2].pos.x = pl->screen_rect.pos.x;
-    pl->hitboxes[2].pos.y = pl->screen_rect.pos.y + ts->tile_height;
-    pl->hitboxes[2].pos.w = ts->tile_width;
-    pl->hitboxes[2].pos.h = ts->tile_height;
-    game_rect_update_rect(&pl->hitboxes[2]);
-
-    pl->hitboxes[3].pos.x = pl->screen_rect.pos.x + ts->tile_width;
-    pl->hitboxes[3].pos.y = pl->screen_rect.pos.y + ts->tile_height;
-    pl->hitboxes[3].pos.w = ts->tile_width;
-    pl->hitboxes[3].pos.h = ts->tile_height;
-    game_rect_update_rect(&pl->hitboxes[3]);
-
-
-
-
-
-
-
-
-
+    grect_refresh(&pl->hitbox);
 
 
 
@@ -217,30 +174,34 @@ void player_update2(void* data, float delta){
     player_update_hitbox(pl, map);
 
     if(pl->is_falling == PLAYER_STATE_FALLING){
-         player_apply_gravity(pl, delta);
+        player_apply_gravity(pl, delta);
     }
-
     player_move(pl, map, delta);
-
-
 }
 
 
 void player_handle_input(player_t *pl, float delta)
 {
-
     if(key_pressed(KEY_A) > 0){
-        pl->speed_x = -130.0f;
+        pl->speed_x = -230.0f;
         player_move_left(pl, delta);
     }else {
         pl->speed_x = 0.0f;
     }
 
     if(key_pressed(KEY_D) > 0){
-        pl->speed_x = 130.0f;
+        pl->speed_x = 230.0f;
         player_move_right(pl, delta);
     }else {
         pl->speed_x = 0.0f;
+    }
+
+    if(key_pressed(KEY_SPACE) && pl->is_falling == PLAYER_STATE_ON_GROUND ){
+        pl->speed_y -= 230.0f;
+        player_move_up(pl, delta);
+    }else {
+        pl->state = PLAYER_STATE_NONE;
+        pl->speed_y -= 230.0f;
     }
 
     //player_move_up(pl, delta);
@@ -289,8 +250,9 @@ void player_end(player_t *pl)
 
 void player_apply_gravity(player_t *pl, float delta)
 {
-    pl->speed_y = 70.0f;
+    pl->speed_y = 470.0f;
     pl->y += pl->speed_y * delta * 0.001f;
+    grect_refresh(&pl->screen_rect);
 }
 
 
@@ -298,24 +260,27 @@ void player_apply_gravity(player_t *pl, float delta)
 void player_move(player_t *player, map_t *map, float delta)
 {
 
-
-
    map_tileset_t *ts = &map->tilesets[0];
-   int i;
+
+    game_rect r;
+
+   if(collision_player_detect_hit3(&player->screen_rect, &player->hitbox, map, &r)){
+
+       player->screen_rect.bottom = r.top;
+       grect_refresh(&player->screen_rect);
+       player->is_falling = PLAYER_STATE_ON_GROUND;
+       return;
 
 
-   for(i = 0; i < 4; i++){
-       game_rect_t hit;
 
-       if(player->speed_y > 0){
-            if(collision_player_detect_hit2(&player->screen_rect, &player->hitboxes[i],map, &hit)){
-                player->screen_rect.bottom = hit.top;
-                 //player->is_falling = PLAYER_STATE_ON_GROUND;
-            }else {
-                //player->is_falling = PLAYER_STATE_FALLING;
-            }
-       }
+   }else {
+          player->is_falling = PLAYER_STATE_FALLING;
    }
+
+
+
+
+
 
    /*
        if(collision_player_detect_hit2(&player->screen_rect, &player->hitbox,map, &hit)){

@@ -36,15 +36,15 @@ struct player_t {
     float y;
     float speed_y;
     float speed_x;
-    game_rect_t hitbox;
-    game_rect_t screen_rect;
+    game_rect hitbox;
+    game_rect screen_rect;
     int lives;
     Sint64 score;
     int direction;
     int32_t state;
     Uint32 anim_counter;
     int max_frames;
-    game_rect_t hitboxes[4];
+    //game_rect_t hitboxes[4];
     int frames;
     Uint32 flags;
     camera player_camera;

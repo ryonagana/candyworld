@@ -12,6 +12,7 @@ void keyboard_init()
 {
     DLOG("keyboard started");
     key_delay =  SDL_GetTicks();
+
     return;
 }
 

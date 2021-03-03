@@ -23,7 +23,7 @@ void read_sprite_list(FILE *fp, SDL_Texture *texture,  link_list_t **animation)
     }
 }
 
-void game_rect_empty(game_rect_t *r)
+void grect_empty(game_rect *r)
 {
     r->bottom = 0;
     r->left = 0;
@@ -35,17 +35,17 @@ void game_rect_empty(game_rect_t *r)
     r->top =0;
 }
 
-void game_rect_start(game_rect_t *r, int x, int y, int w, int h)
+void grect_start(game_rect *r, int x, int y, int w, int h)
 {
     r->pos.x = (int)x;
     r->pos.y = (int)y;
     r->pos.w = (int)w;
     r->pos.h = (int)h;
 
-    game_rect_update_rect(r);
+    grect_refresh(r);
 }
 
-void game_rect_update_rect(game_rect_t *r)
+void grect_refresh(game_rect *r)
 {
     r->pos.x = r->pos.x;
     r->pos.y = r->pos.y;
@@ -56,8 +56,8 @@ void game_rect_update_rect(game_rect_t *r)
 
 }
 
-void game_rect_start_SDL(game_rect_t *r, SDL_Rect *rect)
+void grect_start_SDL(game_rect *r, SDL_Rect *rect)
 {
-    game_rect_start(r, rect->x, rect->y, rect->w, rect->h);
-    game_rect_update_rect(r);
+    grect_start(r, rect->x, rect->y, rect->w, rect->h);
+    grect_refresh(r);
 }
