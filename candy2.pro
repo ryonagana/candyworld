@@ -4,28 +4,15 @@ CONFIG += link_pkgconfig
 CONFIG -= app_bundle
 CONFIG -= qt
 
-#PKGCONFIG += sdl2 SDL2_image SDL2_image SDL2_mixer SDL2_ttf
 QMAKE_CFLAGS += -std=gnu11
-win32:DISTRIBUTION = $$system(systeminfo | findstr /B /C:"OS Name")
-unix:DISTRIBUTION = $$system(cat /etc/issue | cut -d\' \' -f1)
-
-PKGCONFIG += lua53 sdl2 SDL2_image SDL2_ttf SDL2_mixer
-
-
-unix:Debian {
-}
-
-unix:Fedora {
-    PKGCONFIG += lua physfs sdl2 SDL2_image SDL2_ttf SDL2_mixer
-}
-
+PKGCONFIG += sdl2 SDL2_image SDL2_ttf SDL2_mixer
 
 QMAKE_CFLAGS_DEBUG += -O0
 QMAKE_CFLAGS_DEBUG += -Wall -Wextra -pedantic
 QMAKE_CFLAGS_DEBUG -= -ggdb
 
 
-message($$DISTRIBUTION)
+
 #fedora claims NULL is undefined just cand find stddef.h (it might be a bug?)
 #so i hardcorded my gcc include path just to shut up compiler
 #INCLUDEPATH += /usr/lib/gcc/x86_64-redhat-linux/10/include
@@ -45,6 +32,8 @@ unix : {
     INCLUDEPATH += $$PWD/include
     LIBS += -L/lib/x86_64-linux-gnu/ #debian path
     LIBS += -lphysfs
+    LIBS += -L/usr/lib64
+    LIBS += -llua
 }
 
 win32: {

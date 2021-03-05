@@ -43,41 +43,41 @@ int collision_game_rect_bounding_boxes(game_rect *a, game_rect *b){
 }
 
 
-int collision_player_detect_hit3(game_rect *object_rect, game_rect *hitbox, map_t *map, game_rect *out)
+int collision_player_detect_hit3(game_rect *hitbox, map_t *map, game_rect *out)
 {
     map_tileset_t *ts =  &map->tilesets[0];
-    int tile_x, tile_y;
+    int tile_top, tile_left, tile_right, tile_bottom;
 
 
+    tile_left   = hitbox->pos.x / ts->tile_width;
+    tile_right  = (hitbox->pos.x + hitbox->pos.w) / ts->tile_width;
+    tile_top    = hitbox->pos.y / ts->tile_height;
+    tile_bottom = (hitbox->pos.y + hitbox->pos.h) / ts->tile_height;
+
+
+    if(tile_left < 0 ) tile_left  = 0;
+    if(tile_right > hitbox->pos.w) tile_right = hitbox->pos.w;
+    if(tile_top < 0) tile_right  = 0;
+    if(tile_bottom > hitbox->pos.h ) tile_bottom = hitbox->pos.h;
+
+    int collision = 0;
+    int i,j;
     game_rect r;
-    grect_empty(&r);
 
-    tile_x = object_rect->pos.x / ts->tile_width;
-    tile_y = object_rect->pos.y / ts->tile_height;
+     for(j = tile_left; j <= tile_right; j++){
+        for(i = tile_top; i <= tile_bottom; i++){
+            map_tile_t tile = map->layers[LAYER_COLLISION].tiles[i][j];
 
-    map_layer_t *layer = &map->layers[LAYER_COLLISION];
-
-
-
-
-
-    if(layer->tiles[tile_y][tile_x].id == COLLISION_TILE ||
-       layer->tiles[tile_y][object_rect->pos.x + object_rect->pos.w / ts->tile_width].id == COLLISION_TILE ||
-       layer->tiles[(object_rect->pos.y + object_rect->pos.h) / ts->tile_height][tile_x].id == COLLISION_TILE ||
-       layer->tiles[(object_rect->pos.y + object_rect->pos.h) / ts->tile_width][(object_rect->pos.x + object_rect->pos.w) / ts->tile_height].id == COLLISION_TILE )
-    {
-
-        grect_start(&r, (object_rect->pos.x + object_rect->pos.x / ts->tile_width) * ts->tile_width,
-                            (object_rect->pos.y + object_rect->pos.h / hitbox->pos.w)  * ts->tile_height,
-                            hitbox->pos.w,
-                            hitbox->pos.h);
-
-        *out  = r;
-        return 1;
+            if(tile.id == COLLISION_TILE ){
+                collision = 1;
+                grect_start(&r, tile.x, tile.y , ts->tile_width, ts->tile_height);
+                break;
+            }
+        }
     }
 
-
-    return 0;
+     *out = r;
+    return collision;
 
 
 

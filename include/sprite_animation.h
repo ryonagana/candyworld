@@ -21,7 +21,7 @@ typedef struct sprite_animation {
     int num_frames_added;
 }sprite_animation;
 
-void              sprite_animation_load(sprite_animation **spr, const char *filename);
+
 sprite_animation  *sprite_animation_create_empty();
 sprite_animation  *sprite_animation_create(int animation_num);
 animation_frame_t *animation_create_array(int size);

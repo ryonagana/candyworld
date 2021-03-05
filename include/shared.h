@@ -13,7 +13,6 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 
-void read_sprite_list(FILE *fp, SDL_Texture *texture,  link_list_t **animation);
 
 
 typedef struct game_rect {
@@ -26,6 +25,7 @@ typedef struct game_rect {
 
 void grect_empty(game_rect *r);
 void grect_start(game_rect *r, int x, int y, int w, int h);
+void grect_start2(game_rect **r, int x, int y, int w, int h);
 void grect_start_SDL(game_rect *r, SDL_Rect *rect);
 void grect_refresh(game_rect *r);
 #endif

@@ -16,11 +16,12 @@
 #define PLAYER_DIRECTION_LEFT  3
 #define PLAYER_DIRECTION_RIGHT 4
 
-#define PLAYER_STATE_NONE    0
-#define PLAYER_STATE_IDLE    1
-#define PLAYER_STATE_WALKING 2
-#define PLAYER_STATE_JUMPING 3
-#define PLAYER_STATE_WAIT    4
+#define PLAYER_STATE_NONE        0
+#define PLAYER_STATE_IDLE        (1 << 1)
+#define PLAYER_STATE_WALKING     (1 << 2)
+#define PLAYER_STATE_JUMPING     (1 << 3)
+#define PLAYER_STATE_WAIT        (1 << 4)
+#define PLAYER_STATE_ON_GROUND   (1 << 5)
 
 #define PLAYER_SPEED 350.0f
 #define MAX_PLAYER_ANIMATION 32
@@ -28,8 +29,10 @@
 #define PLAYER_TILE_SIZE 32
 
 
-#define PLAYER_STATE_FALLING   0
-#define PLAYER_STATE_ON_GROUND 1
+
+#define BITMASK(mask, bit) (((mask & bit )) != 0)
+
+
 
 struct player_t {
     float x;
@@ -48,7 +51,7 @@ struct player_t {
     int frames;
     Uint32 flags;
     camera player_camera;
-    int is_falling;
+
 };
 
 typedef struct player_t player_t;
@@ -61,7 +64,7 @@ void player_set_pos_screen(player_t *player, int x, int y);
 void player_end(player_t *pl);
 SDL_bool player_screen_bound(player_t *player);
 
-void player_apply_gravity(player_t *pl, float delta);
+void player_apply_gravity(player_t *pl, float delta, float force);
 void player_update2(void* data, float delta);
 void player_move(player_t *player, map_t *map, float delta);
 

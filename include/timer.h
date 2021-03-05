@@ -13,7 +13,7 @@ typedef struct gametimer_t {
 
 void timer_init(gametimer_t *tm);
 void timer_update(gametimer_t *tm);
-float timer_do_tick(gametimer_t *tm);
+double timer_do_tick(gametimer_t *tm);
 
 
 

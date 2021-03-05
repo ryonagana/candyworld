@@ -49,6 +49,8 @@ void debug_render_player_hitbox(player_t *pl)
 void debug_player_info(player_t *pl)
 {
 
+
+/*
     char *states_pos[6] = {
         "STATE NONE",
         "STATE UP",
@@ -60,7 +62,13 @@ void debug_player_info(player_t *pl)
     debug_render_player_hitbox(pl);
 
     char dbg_text[TEXT_MAX_ENTRY] = {0};
-    snprintf(dbg_text, TEXT_MAX_ENTRY,  "Dir: %s\n",states_pos[pl->direction]);
+
+
+    if( (pl->state & PLAYER_STATE_WALKING) == PLAYER_STATE_WALKING ){
+        snprintf(dbg_text, TEXT_MAX_ENTRY,  "Dir: WALKING");
+    }
+
+
 
     text_t* states = text_create(dbg_text, (SDL_Color){0,0,255,255});
 
@@ -68,18 +76,21 @@ void debug_player_info(player_t *pl)
 
     text_draw(states, 10,0);
 
+    */
+    char dbg_text[TEXT_MAX_ENTRY] = {0};
+
     snprintf(dbg_text, TEXT_MAX_ENTRY, "Speed X: %.2f - Speed Y: %.2f", pl->speed_x, pl->speed_y);
     text_t* speeds = text_create(dbg_text, (SDL_Color){255,0,0,255});
 
     text_draw(speeds, 10, 80);
-    text_destroy(states);
+    //text_destroy(states);
 
 
     snprintf(dbg_text, TEXT_MAX_ENTRY, "X:%.2f Y: %.2f\n",pl->x, pl->y);
 
-    states = text_create(dbg_text, (SDL_Color){0,0,255,255});
-    text_draw(states, 10,40);
-    text_destroy(states);
+    //states = text_create(dbg_text, (SDL_Color){0,0,255,255});
+    //text_draw(states, 10,40);
+    //text_destroy(states);
 
     return;
 }
