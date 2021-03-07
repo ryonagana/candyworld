@@ -94,6 +94,7 @@ static void player_update_coords(player_t *player, float delta){
 
 static void player_jump(player_t *player, float delta){
 
+
     if( (player->state & PLAYER_STATE_JUMPING) == PLAYER_STATE_JUMPING ){
         player->speed_y = -PLAYER_JUMP_LIMIT;
 
