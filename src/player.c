@@ -61,7 +61,6 @@ static void player_handle_keyboard(player_t *player){
     }
 
     if(key_pressed(KEY_SPACE) > 0 && PLAYER_STATE_NOT_SET(player->state, PLAYER_STATE_JUMPING) ){
-        player->speed_y = -1500;
         player->state |= PLAYER_STATE_JUMPING;
     }
 
@@ -93,6 +92,18 @@ static void player_update_coords(player_t *player, float delta){
 }
 
 
+static void player_jump(player_t *player, float delta){
+
+    if( (player->state & PLAYER_STATE_JUMPING) == PLAYER_STATE_JUMPING ){
+        player->speed_y = -PLAYER_JUMP_LIMIT;
+
+
+
+
+
+    }
+}
+
 void player_update(void *data, float delta)
 {
     game_data_t *gamedata = (game_data_t*)data;
@@ -102,8 +113,8 @@ void player_update(void *data, float delta)
     player_handle_keyboard(&gamedata->player);
 
     player_apply_force(&gamedata->player.y, gamedata->player.speed_y, delta);
-    //player_apply_force(&gamedata->player.x, gamedata->player.speed_x, delta);
-    player->x += player->speed_x * delta;
+    player_apply_force(&gamedata->player.x, gamedata->player.speed_x, delta);
+
 
 
     game_rect r;
@@ -112,22 +123,31 @@ void player_update(void *data, float delta)
 
    if(collision){
 
+
+
        if(player->speed_y > 0 ){
            gamedata->player.speed_y = 0;
            gamedata->player.rect.bottom =  r.top;
 
-           if(PLAYER_STATE_IS_SET(player->state, PLAYER_STATE_JUMPING)){
-               player->state &= ~PLAYER_STATE_JUMPING;
-           }
+
 
            player->state |= PLAYER_STATE_ON_GROUND;
+
+           if((player->state & PLAYER_STATE_ON_GROUND) &&  (player->state & PLAYER_STATE_JUMPING) == PLAYER_STATE_JUMPING){
+               player->state &= ~PLAYER_STATE_JUMPING;
+
+           }
 
        }
 
    }else {
        gamedata->player.speed_y = PLAYER_GRAVITY;
        player->state &= ~PLAYER_STATE_ON_GROUND;
+       player_jump(player, delta);
    }
+
+
+
 }
 
 

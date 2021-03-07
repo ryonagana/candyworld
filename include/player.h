@@ -31,6 +31,9 @@
 
 #define PLAYER_GRAVITY 90.0f
 
+
+#define PLAYER_JUMP_LIMIT 245.f;
+
 struct player_t {
     float x;
     float y;
