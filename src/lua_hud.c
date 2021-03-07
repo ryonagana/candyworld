@@ -13,9 +13,8 @@ static int lua_hud_create(lua_State *L)
 
     int x = lua_tointeger(L, 2);
     int y = lua_tointeger(L, 3);
-
-    int w = lua_tointeger(L,4);
-    int h = lua_tointeger(L,5);
+    int w = lua_tointeger(L, 4);
+    int h = lua_tointeger(L, 5);
 
     hud_t *tmp = lua_touserdata(L, 1);
     tmp->x = x;

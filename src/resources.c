@@ -8,7 +8,7 @@ static struct resources_t game_resources;
 
 
 resource_file_t* resources_alloc_mem(const char *path, const char *name, int type, int extension, void *file_ptr){
-    resource_file_t *tmp = calloc(1, sizeof (resource_file_t));
+    resource_file_t *tmp = mem_calloc(1, sizeof (resource_file_t));
     strncpy(tmp->name, name, FILENAME_BUF_SIZE - strlen(name));
     const char *filename = BASENAME(path);
     strncpy(tmp->filename, filename, FILENAME_BUF_SIZE - strlen(filename));

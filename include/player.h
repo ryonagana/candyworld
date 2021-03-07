@@ -29,43 +29,32 @@
 #define PLAYER_TILE_SIZE 32
 
 
-
-#define BITMASK(mask, bit) (((mask & bit )) != 0)
-
-
+#define PLAYER_GRAVITY 90.0f
 
 struct player_t {
     float x;
     float y;
-    float speed_y;
+    game_rect rect;
     float speed_x;
-    game_rect hitbox;
-    game_rect screen_rect;
-    int lives;
-    Sint64 score;
-    int direction;
+    float speed_y;
+    game_rect hitbox_area;
     int32_t state;
-    Uint32 anim_counter;
-    int max_frames;
-    //game_rect_t hitboxes[4];
-    int frames;
-    Uint32 flags;
-    camera player_camera;
+    camera camera;
+
 
 };
 
 typedef struct player_t player_t;
 
+void player_init(player_t *player, int x, int y, int32_t state);
+void player_update(void *data, float delta);
+void player_draw_(player_t *player);
 
-void player_init(player_t *pl);
-void player_draw(player_t *pl);
-void player_handle_input(player_t *pl, float delta);
-void player_set_pos_screen(player_t *player, int x, int y);
-void player_end(player_t *pl);
-SDL_bool player_screen_bound(player_t *player);
 
-void player_apply_gravity(player_t *pl, float delta, float force);
-void player_update2(void* data, float delta);
-void player_move(player_t *player, map_t *map, float delta);
+
+#define PLAYER_STATE_IS_SET(mask, bit) ((mask & bit) == bit)
+#define PLAYER_STATE_NOT_SET(mask, bit) ((mask & bit) == 0)
+
+
 
 #endif // PLAYER_H

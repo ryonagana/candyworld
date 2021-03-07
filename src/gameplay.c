@@ -17,10 +17,14 @@ game_event_t  main_game_event;
 gametimer_t   gameplay_timer;
 
 
+int pause = 0;
+
+
 
 void gameplay_start(game_data_t *gamedata)
 {
-    player_init(&gamedata->player);
+    player_init(&gamedata->player, 0,0, PLAYER_STATE_NONE);
+
 }
 
 void gameplay_end(game_data_t *gamedata)
@@ -62,18 +66,39 @@ void gameplay_event_loop(game_event_data *e, void* data){
                 }
             }
 
+            if(ev.type == SDL_KEYUP){
+                if(ev.key.keysym.scancode == SDL_SCANCODE_R){
+                        gamedata->player.x = 0;
+                        gamedata->player.y = 0;
+                }
+            }
+
 
         }
 
-        keyboard_update(&ev);
-        player_update2(gamedata,  timer_do_tick(&gameplay_timer));
+
+        if(!pause){
+            keyboard_update(&ev);
+            double delta = timer_do_tick(&gameplay_timer);
+            //player_update2(gamedata,  (float)delta_time );
+            player_update(gamedata, (float)delta);
+
+        }
+
+
 
         SDL_SetRenderTarget(window_get()->events.renderer, screen_buffer);
         SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
         SDL_RenderClear(window_get()->events.renderer);
         SDL_RenderSetScale(window_get()->events.renderer, 1, 1);
         map_render(gamedata->map);
-        player_draw(&gamedata->player);
+        //player_draw(&gamedata->player);
+        player_draw_(&gamedata->player);
+
+#if DEBUG
+        debug_render_player_hitbox(&gamedata->player);
+#endif
+
         SDL_RenderSetScale(window_get()->events.renderer, 1, 1);
 
 

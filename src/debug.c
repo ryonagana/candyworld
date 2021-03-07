@@ -26,14 +26,14 @@ void debug_render_player_hitbox(player_t *pl)
 
 
     SDL_SetRenderDrawColor(window_get()->events.renderer, 0,0,255,255);
-    SDL_Rect r = {pl->screen_rect.pos.x, pl->screen_rect.pos.y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE  };
+    SDL_Rect r = {pl->rect.pos.x, pl->rect.pos.y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE  };
     SDL_RenderDrawRect(window_get()->events.renderer, &r);
 
 
-    r.x = pl->hitbox.pos.x;
-    r.y = pl->hitbox.pos.y;
-    r.w = pl->hitbox.pos.w;
-    r.h = pl->hitbox.pos.h;
+    r.x = pl->hitbox_area.pos.x;
+    r.y = pl->hitbox_area.pos.y;
+    r.w = pl->hitbox_area.pos.w;
+    r.h = pl->hitbox_area.pos.h;
 
     SDL_SetRenderDrawColor(window_get()->events.renderer, 255,255,0,255);
     SDL_RenderDrawRect(window_get()->events.renderer, &r);
@@ -49,34 +49,6 @@ void debug_render_player_hitbox(player_t *pl)
 void debug_player_info(player_t *pl)
 {
 
-
-/*
-    char *states_pos[6] = {
-        "STATE NONE",
-        "STATE UP",
-        "STATE DOWN",
-        "STATE LEFT",
-        "STATE RIGHT",
-        NULL
-    };
-    debug_render_player_hitbox(pl);
-
-    char dbg_text[TEXT_MAX_ENTRY] = {0};
-
-
-    if( (pl->state & PLAYER_STATE_WALKING) == PLAYER_STATE_WALKING ){
-        snprintf(dbg_text, TEXT_MAX_ENTRY,  "Dir: WALKING");
-    }
-
-
-
-    text_t* states = text_create(dbg_text, (SDL_Color){0,0,255,255});
-
-
-
-    text_draw(states, 10,0);
-
-    */
     char dbg_text[TEXT_MAX_ENTRY] = {0};
 
     snprintf(dbg_text, TEXT_MAX_ENTRY, "Speed X: %.2f - Speed Y: %.2f", pl->speed_x, pl->speed_y);
@@ -106,3 +78,4 @@ void debug_camera_render(camera *c)
     text_draw(states, 0,50);
     SDL_RenderDrawRect(window_get()->events.renderer, &c->area);
 }
+

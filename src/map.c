@@ -2,7 +2,7 @@
 #include "map.h"
 #include "render.h"
 #include "resources.h"
-
+#include "std.h"
 
 #else
 #include "../include/map.h"
@@ -105,7 +105,7 @@ int map_load_layer(map_t *map, int layer, const char *map_path){
 
     csv_parse_file(fp, map->width, map->height, (void**)&data);
 
-    map->layers[layer].layer = calloc(map->width * map->height + 1, sizeof(int));
+    map->layers[layer].layer = mem_calloc((size_t)(map->width * map->height + 1), sizeof(int));
 
     memcpy(map->layers[layer].layer, data, (sizeof(int) * map->width * map->height) + 1);
     free(data);

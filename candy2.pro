@@ -30,10 +30,11 @@ unix : {
 
     INCLUDEPATH += $$PWD
     INCLUDEPATH += $$PWD/include
+    INCLUDEPATH += /usr/include/lua5.3
     LIBS += -L/lib/x86_64-linux-gnu/ #debian path
     LIBS += -lphysfs
-    LIBS += -L/usr/lib64
-    LIBS += -llua
+    LIBS += -llua5.3
+    #LIBS += -llua
 }
 
 win32: {
