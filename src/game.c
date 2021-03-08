@@ -100,12 +100,6 @@ void game_end()
 
 }
 
-
-
-
-
-
-
 int game_event_switch(int event)
 {
     if(&g_events[event] == NULL){

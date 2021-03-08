@@ -52,6 +52,7 @@ void gameplay_event_loop(game_event_data *e, void* data){
         SDL_Texture *screen_buffer = SDL_CreateTexture(window_get()->events.renderer, SDL_GetWindowPixelFormat(window_get()->events.window) ,SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
 
         SDL_Event ev;
+        game_control_t *cntl  = keyboard_get_player_control();
 
         if(SDL_PollEvent(&ev) != 0){
             if(ev.type == SDL_QUIT){
@@ -71,14 +72,23 @@ void gameplay_event_loop(game_event_data *e, void* data){
                         gamedata->player.x = 0;
                         gamedata->player.y = 0;
                 }
+
+                cntl->flags = 0;
             }
+
+            if(ev.type == SDL_KEYDOWN){
+                keyboard_handle_keys(&ev, cntl);
+            }
+
 
 
         }
 
 
         if(!pause){
-            keyboard_update(&ev);
+
+            keyboard_check(cntl, ev.key.keysym.scancode);
+
             double delta = timer_do_tick(&gameplay_timer);
             //player_update2(gamedata,  (float)delta_time );
             player_update(gamedata, (float)delta);
@@ -93,10 +103,11 @@ void gameplay_event_loop(game_event_data *e, void* data){
         SDL_RenderSetScale(window_get()->events.renderer, 1, 1);
         map_render(gamedata->map);
         //player_draw(&gamedata->player);
-        player_draw_(&gamedata->player);
+        player_draw(&gamedata->player);
 
 #if DEBUG
         debug_render_player_hitbox(&gamedata->player);
+        debug_player_info(&gamedata->player);
 #endif
 
         SDL_RenderSetScale(window_get()->events.renderer, 1, 1);

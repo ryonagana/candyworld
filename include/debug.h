@@ -9,7 +9,7 @@ void debug_end(void);
 
 
 void debug_render_player_hitbox(player_t *pl);
-//void debug_player_info(player_t *pl);
+void debug_player_info(player_t *pl);
 
 
 void debug_camera_render(camera *c);

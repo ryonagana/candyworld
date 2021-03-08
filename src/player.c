@@ -32,7 +32,7 @@ void player_init(player_t *player, int x, int y, int32_t state)
     player->hitbox_area.pos.w = player->rect.pos.w;
     player->hitbox_area.pos.h = player->rect.pos.h;
     player->speed_y = PLAYER_GRAVITY;
-    player->speed_x = 0;
+    player->speed_x = 0.0f;
 
     grect_refresh(&player->rect);
     grect_refresh(&player->hitbox_area);
@@ -45,23 +45,16 @@ static void player_apply_force(float *coord, float speed, float delta){
     *coord += speed * delta;
 }
 
-static void player_handle_keyboard(player_t *player){
-    if(key_pressed(KEY_A) > 0 || key_pressed(KEY_LEFT) ){
-        player->speed_x = -130.0f;
-        //player->rect.pos.x += player->speed_x * delta;
-    }else {
-        player->speed_x = 0;
+static void player_handle_keyboard(player_t *player, float delta){
+    game_control_t *control = keyboard_get_player_control();
+
+
+    if(key_is_right(control)){
+        player->speed_x = -130;
     }
 
-    if(key_pressed(KEY_D) > 0 || key_pressed(KEY_RIGHT)){
-            player->speed_x = 130.0f;
-            //player->rect.pos.x += player->speed_x * delta;
-    }else {
-            player->speed_x = 0;
-    }
-
-    if(key_pressed(KEY_SPACE) > 0 && PLAYER_STATE_NOT_SET(player->state, PLAYER_STATE_JUMPING) ){
-        player->state |= PLAYER_STATE_JUMPING;
+    if(key_is_left(control)){
+        player->speed_x = 130;
     }
 
 
@@ -71,8 +64,8 @@ static void player_handle_keyboard(player_t *player){
 
 static void player_update_coords(player_t *player, float delta){
 
-    player->x +=  player->speed_x * delta * 0.001f;
-    player->y +=  player->speed_y * delta * 0.001f;
+    player->x +=  player->speed_x * delta;
+    player->y +=  player->speed_y * delta;
     player->rect.pos.x = (int) player->x;
     player->rect.pos.y = (int) player->y;
     player->rect.pos.w = PLAYER_TILE_SIZE;
@@ -92,18 +85,6 @@ static void player_update_coords(player_t *player, float delta){
 }
 
 
-static void player_jump(player_t *player, float delta){
-
-
-    if( (player->state & PLAYER_STATE_JUMPING) == PLAYER_STATE_JUMPING ){
-        player->speed_y = -PLAYER_JUMP_LIMIT;
-
-
-
-
-
-    }
-}
 
 void player_update(void *data, float delta)
 {
@@ -111,10 +92,10 @@ void player_update(void *data, float delta)
     player_t *player= &gamedata->player;
 
     player_update_coords(&gamedata->player, delta);
-    player_handle_keyboard(&gamedata->player);
+    player_handle_keyboard(&gamedata->player, delta);
 
-    player_apply_force(&gamedata->player.y, gamedata->player.speed_y, delta);
-    player_apply_force(&gamedata->player.x, gamedata->player.speed_x, delta);
+    //player_apply_force(&gamedata->player.y, gamedata->player.speed_y, delta);
+   // player_apply_force(&gamedata->player.x, gamedata->player.speed_x, delta);
 
 
 
@@ -126,13 +107,14 @@ void player_update(void *data, float delta)
 
 
 
-       if(player->speed_y > 0 ){
-           gamedata->player.speed_y = 0;
+       if(player->speed_y > 0 && (player->state & PLAYER_STATE_ON_GROUND) == 0 ){
+           //
            gamedata->player.rect.bottom =  r.top;
 
 
 
            player->state |= PLAYER_STATE_ON_GROUND;
+           gamedata->player.speed_y = 0;
 
            if((player->state & PLAYER_STATE_ON_GROUND) &&  (player->state & PLAYER_STATE_JUMPING) == PLAYER_STATE_JUMPING){
                player->state &= ~PLAYER_STATE_JUMPING;
@@ -144,7 +126,6 @@ void player_update(void *data, float delta)
    }else {
        gamedata->player.speed_y = PLAYER_GRAVITY;
        player->state &= ~PLAYER_STATE_ON_GROUND;
-       player_jump(player, delta);
    }
 
 
@@ -152,7 +133,7 @@ void player_update(void *data, float delta)
 }
 
 
-void player_draw_(player_t *player)
+void player_draw(player_t *player)
 {
     sprite_draw(player_spr, player->rect.pos.x, player->rect.pos.y, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE,0.0, SDL_FLIP_NONE);
 

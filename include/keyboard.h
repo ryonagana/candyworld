@@ -95,10 +95,52 @@
 #define KEY_DOWN  SDL_SCANCODE_DOWN
 
 #define KEY_SPACE SDL_SCANCODE_SPACE
+#define KEY_LCTRL SDL_SCANCODE_LCTRL
+#define KEY_RCTRL SDL_SCANCODE_RCTRL
+
+#define KEY_LEFT_ALT SDL_SCANCODE_LALT
+#define KEY_RIGHT_ALT SDL_SCANCODE_RALT
+
+
+
+
+typedef struct game_control_t {
+        int k_up;
+        int k_down;
+        int k_left;
+        int k_right;
+        int k_jump;
+        int k_action;
+        int joystick;
+        int32_t flags;
+}game_control_t;
+
+
+#define KEY_UP_FLAG     0x0001
+#define KEY_DOWN_FLAG   0x0002
+#define KEY_LEFT_FLAG   0x0004
+#define KEY_RIGHT_FLAG  0x0008
+#define KEY_JUMP_FLAG   0x00010
+#define KEY_ACTION_FLAG 0x00020
+
 
 void keyboard_init(void);
-void keyboard_update(SDL_Event *ev);
+void keyboard_set(game_control_t* cnt, int up, int down, int left, int right, int jump, int action, int use_joy);
+void keyboard_handle_keys(SDL_Event *event, game_control_t *cnt);
+int keyboard_check(game_control_t *cnt, int key);
 
-Uint8 key_pressed(int key);
+game_control_t *keyboard_get_player_control();
+
+
+void keyboard_save_to_file(game_control_t *cnt,  const char *output);
+void keyboard_load_from_file(game_control_t *cnt,  const char *output);
+void keyboard_load_from_mem(void *mem, game_control_t *cnt);
+
+int key_is_up(game_control_t *cnt);
+int key_is_down(game_control_t *cnt);
+int key_is_left(game_control_t *cnt);
+int key_is_right(game_control_t *cnt);
+int key_is_jump(game_control_t *cnt);
+int key_is_action(game_control_t *cnt);
 
 #endif // KEYBOARD_H

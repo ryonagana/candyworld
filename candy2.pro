@@ -33,8 +33,8 @@ unix : {
     INCLUDEPATH += /usr/include/lua5.3
     LIBS += -L/lib/x86_64-linux-gnu/ #debian path
     LIBS += -lphysfs
-    LIBS += -llua5.3
-    #LIBS += -llua
+    #LIBS += -llua5.3
+    LIBS += -llua
 }
 
 win32: {

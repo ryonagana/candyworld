@@ -51,7 +51,7 @@ typedef struct player_t player_t;
 
 void player_init(player_t *player, int x, int y, int32_t state);
 void player_update(void *data, float delta);
-void player_draw_(player_t *player);
+void player_draw(player_t *player);
 
 
 
