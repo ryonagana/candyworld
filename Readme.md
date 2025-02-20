@@ -12,6 +12,7 @@ This project needs [SDL 2](https://www.libsdl.org) and you need also:
 > [Physfs](https://icculus.org/physfs/)
 
 
+
 ### Installing Packages
 
 ##### Archlinux:
@@ -66,3 +67,8 @@ $ qmake-qt5 candy2.pro
 $ make -j16
 ```
 
+##### Build with CMake
+```sh
+$ cmake -B build -G "Unix Makefiles"
+$ cmake --build build/
+```

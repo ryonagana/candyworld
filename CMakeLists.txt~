@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.15...3.31)
+project(candyworld VERSION 0.1 LANGUAGES C )
+
+include(FindPackageHandleStandardArgs)
+
+
+find_package(SDL2 REQUIRED)
+find_library(SDL2_LIBRARY NAMES SDL2)
+find_library(SDL2_INCLUDE_PATH NAMES SDL2/SDL.h)
+
+ 
+
+if(SDL2_FOUND)
+		mark_as_advanced(SDL2_INCLUDE_DIR)
+		mark_as_advanced(SDL2_LIBRARY)
+endif()
+
+
+find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(SDL2_image CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
+   
+SET(CMAKE_C_FLAGS, "${CMAKE_C_FLAGS} -std=gnu11 -Wall -Wextra -Wpedantic -fvisibility=hidden -Wno-implicit-function-declaration -Wnoint-conversion ")
+
+file(GLOB candyworld_SRC CONFIGURE_DEPENDS "include/*.h" "src/*.c")   
+
+#file(GLOB mapconverter_SRC CONFIGURE_DEPENDS "mapconverter/*.c" "mapconverter/*.h")
+set(mapconverter_SRC mapconverter/csv_parser.c mapconverter/ini.c mapconverter/ini_parser.c)
+     
+add_executable(candyworld ${candyworld_SRC} ${mapconverter_SRC})
+target_link_libraries(candyworld ${SDL2_LIBRARIES} -lSDL2_ttf -lSDL2_mixer -lSDL2_image  -lallegro -llua -lm)
+target_include_directories(candyworld PRIVATE include/ mapconverter/)
+add_definitions(-DDEBUG)
