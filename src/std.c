@@ -19,7 +19,7 @@ static void mem_error_message(const char *msg, ...){
     char buf[BUFSIZ] = {0};
     vsnprintf(buf, BUFSIZ, msg,  lst);
     va_end(lst);
-    DCRITICAL(buf);
+    DCRITICAL("%s",buf);
     return;
 }
 
