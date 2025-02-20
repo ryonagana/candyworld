@@ -70,12 +70,13 @@ void debug_player_info(player_t *pl)
 
 void debug_camera_render(camera *c)
 {
-    SDL_SetRenderDrawColor(window_get()->events.renderer, 0,0,255,255);
+	  return;
+	 //SDL_SetRenderDrawColor(window_get()->events.renderer, 0,0,255,255);
 
-     text_t* states = text_create("CAMERA AREA:", (SDL_Color){255,0,0,255});
+    // text_t* states = text_create("CAMERA AREA:", (SDL_Color){255,0,0,255});
 
 
-    text_draw(states, 0,50);
-    SDL_RenderDrawRect(window_get()->events.renderer, &c->area);
+    //text_draw(states, 0,50);
+    //SDL_RenderDrawRect(window_get()->events.renderer, &c->area);
 }
 
