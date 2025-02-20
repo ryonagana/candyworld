@@ -1,3 +1,7 @@
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+
+
 #if !defined(MAPCONV_PROJECT)
 #include "map.h"
 #include "render.h"
@@ -5,7 +9,7 @@
 #include "std.h"
 
 #else
-#include "../include/map.h"
+#include "map.h"
 
 #endif
 
@@ -73,7 +77,7 @@ void map_show_info(map_t *map){
                   "layer size: %d\n\n", map->layers[i].name, map->layers[i].flags, map->width * map->height);
 
       for(layer_count = 0; layer_count < map->width * map->height; layer_count++){
-        //MAPCONV_LOG(" %d ", map->layers[i].layer[y]);
+		  //MAPCONV_LOG(" %d ", map->layers[i].layer[y]);
         printf(" %d ", map->layers[i].layer[layer_count]);
 
       }
