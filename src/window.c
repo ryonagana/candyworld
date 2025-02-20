@@ -10,7 +10,7 @@
 #include "shared.h"
 #include "debug.h"
 
-#define REPORT_ERROR(...) { fprintf(stderr,  ##__VA_ARGS__); }
+#define REPORT_ERROR(m, ...) { fprintf(stderr, m __VA_ARGS__); }
 
 /* Static definition */
 static game_window main_window;
@@ -66,7 +66,7 @@ static int window_init_libraries(void){
     }
 
 
-    int mix_flags = MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_OGG;
+    int mix_flags = MIX_INIT_OGG;
 
     if( (mix_flags & Mix_Init(mix_flags)) != mix_flags){
          DCRITICAL("MIX_Init() error ! - %s", SDL_GetError());
@@ -109,8 +109,8 @@ static void window_create(int width, int height, int fullscreen, int vsync, int 
 
 
 
-    strncpy(main_window.title, caption, 56 - strlen(caption));
-
+    //strncpy(main_window.title, caption, 56 - strlen(caption));
+    snprintf(main_window.title, 56, "%s", caption);
 
     int window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
@@ -146,7 +146,7 @@ static void window_create(int width, int height, int fullscreen, int vsync, int 
     main_window.info.height = height;
 
     sound_start(4);
-    log_init();
+	 //    log_init();
     keyboard_init();
 
     return;
@@ -226,7 +226,7 @@ void window_free_events(game_window *win)
 {
     if(win == NULL){
         return;
-    }
+		      }
 
     SDL_DestroyRenderer(win->events.renderer);
     SDL_DestroyWindow(win->events.window);
