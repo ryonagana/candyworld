@@ -11,7 +11,7 @@
 #include "debug.h"
 #include "math.h"
 
-
+#define TICKS_PER_FRAME (1000 / 60)
 
 game_event_t  main_game_event;
 gametimer_t   gameplay_timer;
@@ -33,10 +33,32 @@ void gameplay_end(game_data_t *gamedata)
 }
 
 
-
-
 void gameplay_event_loop(game_event_data *e, void* data){
-    UNUSED(e);
+	 UNUSED(e);
+	 UNUSED(data);
+
+	 game_data_t *gamedata = (void*)data;
+    timer_init(&gameplay_timer);
+    gameplay_start(gamedata);
+
+	 while(!window_get()->closed){
+	    SDL_Event ev;
+
+		 while(SDL_PollEvent(&ev) != 0){
+            if(ev.type == SDL_QUIT){
+                window_get()->closed = 1;
+                break;
+            }
+		 }
+		 
+		 SDL_SetRenderDrawColor(window_get()->events.renderer, 255,0,0,255);
+		 SDL_RenderPresent(window_get()->events.renderer);
+	 }
+
+	 gameplay_end(gamedata);
+	 
+	 /*
+	 UNUSED(e);
     game_data_t *gamedata = (void*)data;
     timer_init(&gameplay_timer);
     gameplay_start(gamedata);
@@ -49,7 +71,7 @@ void gameplay_event_loop(game_event_data *e, void* data){
 
 
 
-        SDL_Texture *screen_buffer = SDL_CreateTexture(window_get()->events.renderer, SDL_GetWindowPixelFormat(window_get()->events.window) ,SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
+		  //SDL_Texture *screen_buffer = SDL_CreateTexture(window_get()->events.renderer, SDL_GetWindowPixelFormat(window_get()->events.window) ,SDL_TEXTUREACCESS_TARGET, window_get()->info.width, window_get()->info.height);
 
         SDL_Event ev;
         game_control_t *cntl  = keyboard_get_player_control();
@@ -121,7 +143,9 @@ void gameplay_event_loop(game_event_data *e, void* data){
     }
 
      gameplay_end(gamedata);
+	 */
 
+	 return;
 
 }
 
