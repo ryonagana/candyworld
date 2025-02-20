@@ -1,6 +1,7 @@
 #pragma once
 #define  LOG_HEADER
 //#include <allegro5/allegro.h>
+#include <stdio.h>
 
 
 #define LOG_COMMON 4
@@ -12,25 +13,26 @@
 extern "C" {
 #endif
 
+/*
 void log_init();
 void log_type(int type);
 void log_write(int type, const char *msg, ...);
 void log_file(const char *msg, int type);
+*/
 
 
+#if defined(DEBUG)
 
-#ifdef DEBUG
-
-#define DINFO(m,...) { log_type(LOG_INFO); log_write(LOG_INFO, m,##__VA_ARGS__); }
-#define DLOG(m,...) { log_type(LOG_COMMON); log_write(LOG_INFO, m,##__VA_ARGS__); }
-#define DWARN(m,...) { log_type(LOG_WARN); log_write(LOG_WARN, m,##__VA_ARGS__); }
-#define DCRITICAL(m,...) { log_type(LOG_CRITICAL); log_write(LOG_CRITICAL, m,##__VA_ARGS__); }
-
+#define DINFO(fmt,...)     do { fprintf(stdout,"[INFO]:    %s():%d:%s - "fmt"\n", __func__, __LINE__, __FILE__, ##__VA_ARGS__); }while(0) 
+#define DLOG(fmt,...)      do { fprintf(stdout,"[LOG]:     %s():%d:%s - "fmt"\n", __func__, __LINE__, __FILE__, ##__VA_ARGS__); }while(0)
+#define DWARN(fmt,...)     do { fprintf(stdout,"[WARN]:    %s():%d:%s - "fmt"\n", __func__, __LINE__, __FILE__, ##__VA_ARGS__); }while(0)
+#define DCRITICAL(fmt,...) do { fprintf(stderr,"[CRIT] %s():%d:%s - "fmt"\n", __func__, __LINE__, __FILE__, ##__VA_ARGS__); }while(0)
+ 
 #else
-#define DINFO(m,...)
-#define DLOG(m,...)
-#define DWARN(m,...)
-#define DCRITICAL(m,...)
+#define DINFO(fmt,...)
+#define DLOG(fmt,...)
+#define DWARN(fmt,...)
+#define DCRITICAL(fmt,...)
 #endif
 
 #ifdef __cplusplus

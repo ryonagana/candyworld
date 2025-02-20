@@ -3,13 +3,13 @@
 #include <stdarg.h>
 #include <string.h>
 #include <SDL2/SDL.h>
-//static variables init;
 #include "shared.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/*
 #ifdef ALLEGRO_LOG
 #include <allegro5/allegro_native_dialog.h>
 static ALLEGRO_TEXTLOG *allegro_log = NULL;
@@ -26,35 +26,29 @@ void log_init()
 
 }
 
-
-
 void log_type(int type)
 {
 
+	  switch(type){
+	     default:
+	     case LOG_COMMON:
+              snprintf(prefix,30,"[LOG]");
+			     break;
 
-    switch(type){
-
-        default:
-        case LOG_COMMON:
-            strncpy(prefix, "[LOG] ", 30);
-        break;
-
-        case LOG_INFO:
-            strncpy(prefix, "[INFO] ", 30);
-        break;
-
-        case LOG_WARN:
-            strncpy(prefix, "[WARN] ", 30);
-        break;
-        case LOG_CRITICAL:
-            strncpy(prefix, "[CRITICAL] ", 30);
-        break;
+	        case LOG_INFO:
+              snprintf(prefix,30,"[INFO]");
+			  break;
 
 
+	        case LOG_CRITICAL:
+              snprintf(prefix,30,"[CRITICAL]");
+			  break;
 
-    }
-
-
+	        case LOG_WARN:
+              snprintf(prefix,30,"[WARN]");
+			  break;
+	  }
+					 
 }
 
 
@@ -103,7 +97,7 @@ void log_file(const char *msg, int type)
 
 #endif
 }
-
+*/
 
 #ifdef __cplusplus
 }
